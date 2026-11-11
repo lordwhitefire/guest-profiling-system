@@ -10,6 +10,9 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
+    // Set PLAYWRIGHT_CHANNEL=chrome to use an installed Chrome instead of
+    // downloading a Playwright browser (useful where downloads are blocked).
+    channel: process.env.PLAYWRIGHT_CHANNEL || undefined,
   },
   projects: [
     {

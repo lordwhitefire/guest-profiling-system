@@ -6,7 +6,9 @@
 // Admin group return 403.
 
 import { NextResponse, type NextRequest } from "next/server";
-import { verifyJwt } from "@gps/shared";
+// Import the JWT subpath directly: the package root also exports Argon2 (native
+// module) and the DB client, which the middleware bundler cannot resolve.
+import { verifyJwt } from "@gps/shared/auth/jwt";
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   // Only protect /admin paths.
