@@ -8,12 +8,21 @@ importers:
 
   .:
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.5.0
+        version: 9.39.5
       '@types/node':
         specifier: ^20.12.7
         version: 20.19.43
+      eslint:
+        specifier: ^9.5.0
+        version: 9.39.5
       typescript:
         specifier: ^5.4.5
         version: 5.9.3
+      typescript-eslint:
+        specifier: ^8.0.0
+        version: 8.72.2(eslint@9.39.5)(typescript@5.9.3)
 
   packages/adapter-fill-extension:
     dependencies:

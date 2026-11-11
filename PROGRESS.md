@@ -6,7 +6,7 @@ Format: "Last session: <date>. Completed: <list>. In progress: <list>. Next: <ta
 
 ---
 
-**Last session**: 2026-11-10 (TASK-004 added)
+**Last session**: 2026-11-11 (CI lint fix — ESLint 9 flat config)
 
 **Completed**:
 - Step #1 — Discovery Report (5 reference repos identified)
@@ -33,6 +33,9 @@ Format: "Last session: <date>. Completed: <list>. In progress: <list>. Next: <ta
   - pnpm test:unit: 32 new tests pass in core (api-client, avatar, phase-badge)
   - Total project: 206 tests pass, 1 skipped, 0 fail
   - pnpm build (Next.js): PASS — 15 routes compiled (was 13; +/search + /profile/[guestId])
+- CI fix (2026-11-11): root `eslint.config.mjs` added (ESLint 9 flat config);
+  `packages/core` lint script switched from removed `next lint` to `eslint .`;
+  `CardProps` converted to a type alias. `pnpm lint` / typecheck / test:unit / build all PASS.
 
 **In progress**:
 - nothing
