@@ -8,7 +8,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test:unit": "vitest run",
-    "start": "node --experimental-vm-modules ./src/worker.ts"
+    "start": "node --experimental-vm-modules ./src/worker.ts",
+    "seed:source": "node --experimental-vm-modules ./src/seeding/seed-from-source.ts"
   },
   "dependencies": {
     "@gps/shared": "workspace:*",

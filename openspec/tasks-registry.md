@@ -15,13 +15,14 @@ Status legend: `pending` (not started), `in_progress` (Builder has the task),
 | TASK-003 | Guest profile API — six endpoints + tenant scope resolver (Card 2) | done (verified) | 1 | Six guest endpoints + live search + audit log; typecheck + 175 tests pass; Next.js build OK |
 | TASK-004 | Receptionist web UI — search screen + profile view | done (verified) | 1 | Two-pane search + profile detail; typecheck + 88 tests pass; 15 routes compiled |
 | TASK-005 | Admin UI — tenants, sync status, audit, users, DSR | pending | 1 | Depends on TASK-003 |
+| TASK-005a | Demo slice — messy guest fixture + seeding script (first-load bulk import) | done (verified) | 1 | Adds `pnpm seed:source` CLI + 207-row QloApps fixture + 21 new tests (227 total); first-load path that `worker.ts` throws on. See `developer-workspace/reports/TASK-005a-demo-slice.md` |
 | TASK-006 | Browser extension form-fill — Card 5 algorithm | pending | 2 | Depends on TASK-003 + TASK-004 |
 
 ## Pending external decisions (owner's call)
 
 These block specific tasks but not all of Step #4:
 
-- **First hotel customer** — must be identified before TASK-002 starts. Without a real source PMS to test against, the adapter-read is academic. Recommendation: identify before Phase 1 build starts.
+- **First hotel customer** — must be identified before TASK-002 ships to production. The adapter-read code is verified against a 207-row QloApps-style fixture (TASK-005a); a real hotel is needed only to validate against a real PMS schema and real data volumes. Recommendation: identify before Phase 1 ships, but not before demoing.
 - **Hosting provider** — Render / Fly.io / Railway / VPS. Affects TASK-001's deployment config but NOT the scaffold itself. Patch 0001 is hosting-agnostic.
 - **Brand identity** — name beyond "Guest Profiling System" + logo. Affects TASK-004 (UI copy) but not the scaffold.
 - **Open-source license** — MIT (recommended) or Apache 2.0. Affects the LICENSE file. Patch 0001 ships MIT by default; trivially changeable.
