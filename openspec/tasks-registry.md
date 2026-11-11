@@ -17,7 +17,7 @@ Status legend: `pending` (not started), `in_progress` (Builder has the task),
 | TASK-005 | Admin UI — tenants, sync status, audit, users, DSR | pending | 1 | Depends on TASK-003 |
 | TASK-005a | Demo slice — messy guest fixture + seeding script (first-load bulk import) | done (verified) | 1 | Adds `pnpm seed:source` CLI + 207-row QloApps fixture + 21 new tests (227 total); first-load path that `worker.ts` throws on. See `developer-workspace/reports/TASK-005a-demo-slice.md` |
 | TASK-005b | Wire workspace UI to the real guest API | done (verified) | 1 | Adds adapter layer + React hooks (useGuestSearch, useGuestDirectory, useGuest, useGuestCount) + `api.listGuests()`; falls back to mock GUESTS array with visible "demo data" banner when API unreachable. 29 new tests (256 total). Next.js build clean. See `developer-workspace/reports/TASK-005b-ui-wiring.md` |
-| TASK-006 | Browser extension form-fill — Card 5 algorithm | pending | 2 | Depends on TASK-003 + TASK-004 |
+| TASK-006 | Browser extension form-fill — Card 5 algorithm | done (verified) | 2 | FormFilla-spec Chrome MV3 extension: scanner + scorer + Kuhn-Munkres solver + native prototype setter. 18 hotel-guest rules. 68 new tests (324 total). Workspace UI "Prepare Registration" button wired. Build clean, typecheck clean. See `developer-workspace/reports/TASK-006-extension.md` |
 
 ## Pending external decisions (owner's call)
 

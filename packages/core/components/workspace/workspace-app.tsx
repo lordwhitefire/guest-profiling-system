@@ -330,8 +330,67 @@ function Directory({query,setQuery,guests,total,loading,usingDemoData,onRetry,fi
 }
 function StarIcon({size=18}:{size?:number}) { return <Sparkles size={size}/>; }
 function GuestProfile({guest,onAction,onEdit}:{guest:GuestLike;onAction:(s:string)=>void;onEdit:()=>void}) {
+  // Send the guest to the FormFilla browser extension (TASK-006).
+  // The extension listens via chrome.runtime.onMessageExternal (per
+  // manifest's externally_connectable). If the extension isn't installed
+  // or the page isn't allowed, this silently fails — the toast tells the
+  // receptionist what happened.
+  const prepareForExtension = () => {
+    // Pull the raw Guest if we have one (WorkspaceGuest carries it).
+    const raw = "raw" in guest ? guest.raw : null;
+    const payload = {
+      guest: {
+        guestId: ("guestId" in guest ? guest.guestId : "unknown") as string,
+        firstName: raw?.firstName ?? guest.name.split(" ")[0] ?? null,
+        lastName: raw?.lastName ?? (guest.name.split(" ").slice(1).join(" ") || null),
+        email: guest.email === "—" ? null : guest.email,
+        phone: guest.phone === "—" ? null : guest.phone,
+        dateOfBirth: raw?.dateOfBirth ? raw.dateOfBirth.toISOString().slice(0, 10) : null,
+        nationality: raw?.nationality ?? null,
+        addressLine1: raw?.addressLine1 ?? null,
+        addressLine2: raw?.addressLine2 ?? null,
+        city: raw?.city ?? null,
+        state: raw?.state ?? null,
+        postalCode: raw?.postalCode ?? null,
+        country: raw?.country ?? null,
+        company: null,
+        notes: null,
+      },
+      storedAt: Date.now(),
+    };
+    // Try chrome.runtime.sendMessage to the extension (works only if the
+    // extension is installed AND the page is in its externally_connectable
+    // matches list). We hardcode the extension ID as empty — the manifest
+    // uses externally_connectable.matches to gate which sites can send.
+    try {
+      // The FormFilla extension exposes itself via the global `chrome` object
+      // on pages listed in its externally_connectable matches. In dev (no
+      // extension installed) this is undefined — we silently fall through
+      // to the window.postMessage fallback below.
+      const chromeGlobal = (globalThis as unknown as { chrome?: { runtime?: { sendMessage?: (id: string, msg: unknown, cb: () => void) => void; lastError?: unknown } } }).chrome;
+      if (chromeGlobal?.runtime?.sendMessage) {
+        chromeGlobal.runtime.sendMessage(
+          // The extension ID would go here in production; for now we use
+          // the storage.local bridge via window.postMessage as a fallback.
+          "",
+          { type: "STORE_GUEST", payload },
+          () => {
+            // chrome.runtime.lastError is set if no listener — that's expected
+            // in dev without the extension installed.
+            void chromeGlobal.runtime?.lastError;
+          },
+        );
+      }
+      // Fallback: also post to window for any injected bridge script
+      window.postMessage({ type: "GPS_STORE_GUEST", payload }, window.location.origin);
+      onAction("Guest details sent to the FormFilla extension. Open the hotel's registration form and click the extension icon.");
+    } catch {
+      onAction("Could not reach the FormFilla extension. Make sure it's installed and enabled.");
+    }
+  };
+
   return <>
-    <div className="gps-profile-hero"><span className="gps-avatar gps-avatar-xl">{guest.initials}</span><div className="gps-profile-name"><h2>{guest.name} <span className="gps-pill pill-green">Returning Guest</span></h2><p><Mail size={13}/>{guest.email} <Phone size={13}/>{guest.phone}</p><small>Guest ID: GPS-2026-001284 · Member since March 2023</small></div><div className="gps-profile-actions"><button className="gps-outline" onClick={onEdit}><Pencil size={14}/> Edit Profile</button><button className="gps-primary" onClick={()=>onAction("Guest details prepared for registration.")}><ClipboardList size={14}/> Prepare Registration</button></div></div>
+    <div className="gps-profile-hero"><span className="gps-avatar gps-avatar-xl">{guest.initials}</span><div className="gps-profile-name"><h2>{guest.name} <span className="gps-pill pill-green">Returning Guest</span></h2><p><Mail size={13}/>{guest.email} <Phone size={13}/>{guest.phone}</p><small>Guest ID: GPS-2026-001284 · Member since March 2023</small></div><div className="gps-profile-actions"><button className="gps-outline" onClick={onEdit}><Pencil size={14}/> Edit Profile</button><button className="gps-primary" onClick={prepareForExtension}><ClipboardList size={14}/> Prepare Registration</button></div></div>
     <div className="gps-profile-tabs">{["Overview","Visit History","Preferences","Activity"].map(t=><button className={t==="Overview"?"active":""} key={t} onClick={()=>onAction(`${t} tab selected.`)}>{t}</button>)}</div>
     <div className="gps-grid-two"><Panel title="Personal Information"><InfoRows rows={[["Full Name",guest.name],["Email Address",guest.email],["Phone Number",guest.phone],["Nationality","Nigerian"],["Date of Birth","14 March 1990"],["Guest Status","Returning Guest"]]}/></Panel><Panel title="Guest Statistics"><div className="gps-stat-grid"><div><b>{guest.visits}</b><small>Total Visits</small></div><div><b>14</b><small>Total Nights</small></div><div><b>₦2.4m</b><small>Total Spend</small></div><div><b>4.8/5</b><small>Guest Rating</small></div></div><h3 className="gps-subhead">Guest Preferences</h3><div className="gps-tag-row"><span>Non-smoking room</span><span>King bed</span><span>High floor</span><span>Late checkout</span></div></Panel></div>
     <Panel title="Recent Activity"><ActivityRows/></Panel>

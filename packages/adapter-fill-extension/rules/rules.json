@@ -1,0 +1,151 @@
+{
+  "_meta": {
+    "purpose": "Card 5 §7.5 — FormFilla-style rules dictionary. Each key is a guest profile JSON path; each value is a rule that the scorer applies to a (form field, candidate key) pair.",
+    "scope": "v1 ships hotel-guest fields only. Add new rules here without code changes — that's the FormFilla extensibility contract.",
+    "scoring_formula": "exact phrase +35, regex +20, fuzzy similarity × 15 if > 0.6, autocomplete +45, block context +15, negative −40. Source weights: label 1.0, placeholder 0.9, name 0.8, id 0.7, legend 0.6. Take max across sources."
+  },
+
+  "firstName": {
+    "exactPhrases": ["first name", "given name", "forename", "firstname", "f name"],
+    "regexPatterns": ["^first[_-]?name$", "^given[_-]?name$", "^forename$", "^f[_-]?name$", "\\bfirst\\s+name\\b"],
+    "autocompleteTokens": ["given-name", "additional-name", "cc-given-name"],
+    "allowedTypes": ["text", null],
+    "negativePatterns": ["last", "surname", "family"]
+  },
+
+  "lastName": {
+    "exactPhrases": ["last name", "surname", "family name", "lastname", "l name"],
+    "regexPatterns": ["^last[_-]?name$", "^surname$", "^family[_-]?name$", "^l[_-]?name$", "\\blast\\s+name\\b"],
+    "autocompleteTokens": ["family-name", "cc-family-name"],
+    "allowedTypes": ["text", null],
+    "negativePatterns": ["first", "given", "forename"]
+  },
+
+  "email": {
+    "exactPhrases": ["email", "email address", "e-mail", "email id"],
+    "regexPatterns": ["^email$", "^e[_-]?mail$", "\\bemail\\s*(address)?\\b"],
+    "autocompleteTokens": ["email", "username"],
+    "allowedTypes": ["email", "text"],
+    "negativePatterns": ["confirm", "verify", "repeat"]
+  },
+
+  "phone": {
+    "exactPhrases": ["phone", "phone number", "mobile", "mobile number", "telephone", "tel", "contact number", "cell", "cellphone"],
+    "regexPatterns": ["^phone$", "^phone[_-]?num(ber)?$", "^mobile$", "^mobile[_-]?num(ber)?$", "^tel(ephone)?$", "^contact$", "^cell(phone)?$"],
+    "autocompleteTokens": ["tel", "mobile", "phone-national", "phone"],
+    "allowedTypes": ["tel", "text", "number"],
+    "negativePatterns": ["fax"]
+  },
+
+  "dateOfBirth": {
+    "exactPhrases": ["date of birth", "dob", "birthday", "birth date", "birthdate"],
+    "regexPatterns": ["^dob$", "^date[_-]?of[_-]?birth$", "^birth[_-]?day$", "^birth[_-]?date$", "\\bdate\\s+of\\s+birth\\b"],
+    "autocompleteTokens": ["bday", "bday-day", "bday-month", "bday-year"],
+    "allowedTypes": ["date", "text"],
+    "negativePatterns": []
+  },
+
+  "nationality": {
+    "exactPhrases": ["nationality", "citizenship", "country of citizenship"],
+    "regexPatterns": ["^nationality$", "^citizenship$", "^country[_-]?of[_-]?citizenship$"],
+    "autocompleteTokens": ["country", "country-name"],
+    "allowedTypes": ["text", "select-one"],
+    "negativePatterns": []
+  },
+
+  "addressLine1": {
+    "exactPhrases": ["address", "street address", "address line 1", "address 1", "house number", "building number"],
+    "regexPatterns": ["^address$", "^address[_-]?1$", "^address[_-]?line[_-]?1$", "^street$", "^street[_-]?address$", "^house[_-]?num(ber)?$", "^building[_-]?num(ber)?$"],
+    "autocompleteTokens": ["address-line1", "street-address"],
+    "allowedTypes": ["text", null],
+    "negativePatterns": ["line 2", "line2", "city", "state", "zip", "postal"]
+  },
+
+  "addressLine2": {
+    "exactPhrases": ["address line 2", "address 2", "apartment", "suite", "unit"],
+    "regexPatterns": ["^address[_-]?2$", "^address[_-]?line[_-]?2$", "^apartment$", "^suite$", "^unit$", "^apt$"],
+    "autocompleteTokens": ["address-line2"],
+    "allowedTypes": ["text", null],
+    "negativePatterns": ["line 1", "city", "state", "zip"]
+  },
+
+  "city": {
+    "exactPhrases": ["city", "town", "locality"],
+    "regexPatterns": ["^city$", "^town$", "^locality$"],
+    "autocompleteTokens": ["address-level2"],
+    "allowedTypes": ["text", "select-one"],
+    "negativePatterns": []
+  },
+
+  "state": {
+    "exactPhrases": ["state", "province", "region", "county"],
+    "regexPatterns": ["^state$", "^province$", "^region$", "^county$", "^address[_-]?level[_-]?1$"],
+    "autocompleteTokens": ["address-level1", "state", "region"],
+    "allowedTypes": ["text", "select-one"],
+    "negativePatterns": []
+  },
+
+  "postalCode": {
+    "exactPhrases": ["postal code", "zip code", "postcode", "zip"],
+    "regexPatterns": ["^postal[_-]?code$", "^zip[_-]?code$", "^postcode$", "^zip$", "^postal$"],
+    "autocompleteTokens": ["postal-code", "zip"],
+    "allowedTypes": ["text", null],
+    "negativePatterns": []
+  },
+
+  "country": {
+    "exactPhrases": ["country", "country code"],
+    "regexPatterns": ["^country$", "^country[_-]?code$"],
+    "autocompleteTokens": ["country", "country-name", "country-code"],
+    "allowedTypes": ["text", "select-one"],
+    "negativePatterns": []
+  },
+
+  "company": {
+    "exactPhrases": ["company", "organization", "organisation", "employer", "company name"],
+    "regexPatterns": ["^company$", "^org(anization|anisation)?$", "^employer$", "^company[_-]?name$"],
+    "autocompleteTokens": ["organization", "company"],
+    "allowedTypes": ["text", null],
+    "negativePatterns": []
+  },
+
+  "notes": {
+    "exactPhrases": ["notes", "special requests", "comments", "additional information", "remarks"],
+    "regexPatterns": ["^notes$", "^special[_-]?requests$", "^comments$", "^additional[_-]?info$", "^remarks$"],
+    "autocompleteTokens": [],
+    "allowedTypes": ["textarea", null],
+    "negativePatterns": []
+  },
+
+  "arrivalDate": {
+    "exactPhrases": ["arrival date", "check-in date", "checkin date", "arrival"],
+    "regexPatterns": ["^arrival$", "^arrival[_-]?date$", "^check[_-]?in$", "^check[_-]?in[_-]?date$", "^checkin$"],
+    "autocompleteTokens": [],
+    "allowedTypes": ["date", "text", "datetime-local"],
+    "negativePatterns": ["departure", "checkout"]
+  },
+
+  "departureDate": {
+    "exactPhrases": ["departure date", "checkout date", "check-out date", "departure", "checkout"],
+    "regexPatterns": ["^departure$", "^departure[_-]?date$", "^check[_-]?out$", "^check[_-]?out[_-]?date$", "^checkout$"],
+    "autocompleteTokens": [],
+    "allowedTypes": ["date", "text", "datetime-local"],
+    "negativePatterns": ["arrival", "checkin"]
+  },
+
+  "numGuests": {
+    "exactPhrases": ["number of guests", "guests", "party size", "occupancy", "number of adults"],
+    "regexPatterns": ["^num(ber)?[_-]?of[_-]?guests$", "^guests$", "^party[_-]?size$", "^occupancy$", "^num(ber)?[_-]?of[_-]?adults$", "^adults$"],
+    "autocompleteTokens": [],
+    "allowedTypes": ["number", "text", "select-one"],
+    "negativePatterns": []
+  },
+
+  "roomType": {
+    "exactPhrases": ["room type", "room", "room category", "accommodation type"],
+    "regexPatterns": ["^room[_-]?type$", "^room$", "^room[_-]?category$", "^accommodation[_-]?type$"],
+    "autocompleteTokens": [],
+    "allowedTypes": ["text", "select-one"],
+    "negativePatterns": []
+  }
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guest Profiling System</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <h1>Guest Profiling</h1>
+    <p>Auto-fill registration form</p>
+  </header>
+
+  <main id="app">
+    <!-- Loading state -->
+    <section id="loading" class="state state-loading hidden">
+      <p>Working…</p>
+    </section>
+
+    <!-- Error state -->
+    <section id="error" class="state state-error hidden">
+      <p id="error-message">Something went wrong.</p>
+      <button id="error-retry" class="btn btn-secondary">Retry</button>
+    </section>
+
+    <!-- No guest stored -->
+    <section id="no-guest" class="state state-empty hidden">
+      <p>No guest selected.</p>
+      <p class="hint">Open the Guest Profiling System workspace, search for a guest, and click "Prepare Registration".</p>
+    </section>
+
+    <!-- Ready state: guest stored, ready to fill -->
+    <section id="ready" class="state state-ready hidden">
+      <div class="guest-card">
+        <div class="avatar" id="guest-initials">??</div>
+        <div>
+          <h2 id="guest-name">Unknown Guest</h2>
+          <p id="guest-email">No email</p>
+          <p id="guest-phone" class="hint">No phone</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="fill-button" class="btn btn-primary">Fill Form</button>
+        <button id="scan-button" class="btn btn-secondary">Scan Page Only</button>
+      </div>
+    </section>
+
+    <!-- Scan result -->
+    <section id="scan-result" class="state state-scan hidden">
+      <h2>Scan result</h2>
+      <p id="scan-summary">Found 0 fields.</p>
+      <ul id="scan-preview"></ul>
+      <button id="scan-back" class="btn btn-secondary">Back</button>
+    </section>
+
+    <!-- Fill result -->
+    <section id="fill-result" class="state state-result hidden">
+      <h2>Fill result</h2>
+      <div class="stats">
+        <div><b id="result-high">0</b><small>Filled silently</small></div>
+        <div><b id="result-medium">0</b><small>Need review</small></div>
+        <div><b id="result-time">0ms</b><small>Time</small></div>
+      </div>
+      <ul id="result-assignments"></ul>
+      <button id="result-back" class="btn btn-secondary">Done</button>
+    </section>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>
