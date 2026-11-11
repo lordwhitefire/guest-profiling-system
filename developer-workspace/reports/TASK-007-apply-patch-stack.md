@@ -96,7 +96,11 @@ The four `.patch` files are left untracked in the repo root as inputs.
 - Settings General still shows non-tenant defaults (language, timezone,
   date format) that are not stored by the API; hotel-settings "System
   Defaults" selects are not persisted.
-- `render.yaml`: the Postgres `ipAllowList` was `0.0.0.0/0` (public); changed
-  to `[]` so only Render-internal connections (web + cron) are allowed, per
-  the Render Blueprint spec.
+- `render.yaml`: the Postgres entry was under `services` with `type:
+  postgres` and a `databases:` list, which the current Render Blueprint spec
+  does not accept. Moved it to the top-level `databases:` list with
+  `databaseName: gps`, and changed `ipAllowList` from `0.0.0.0/0` (public)
+  to `[]` (internal only). The `starter` plan ID is kept from the original
+  owner cost decision and should be validated with `render blueprints
+  validate` before the first deploy.
 - `/workspace/*` still has no client-side auth guard (APIs are protected).

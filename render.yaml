@@ -21,14 +21,14 @@
 #   - SYNC_INTERVAL_SECONDS (300)
 #   - SYNC_THROTTLE_PERCENT (75)
 
-services:
-  - type: postgres
-    name: gps-db
+databases:
+  - name: gps-db
+    databaseName: gps
     plan: starter              # 1GB RAM, 4GB storage; upgrade for production
+    region: oregon
     ipAllowList: []            # Only internal connections (web + cron); no public access
-    databases:
-      - gps                     # Database name
 
+services:
   - type: web
     name: gps-core
     runtime: node
