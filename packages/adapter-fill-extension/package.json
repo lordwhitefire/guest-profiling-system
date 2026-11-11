@@ -1,0 +1,24 @@
+{
+  "name": "@gps/adapter-fill-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome MV3 extension — Card 5 algorithm for form-fill. TASK-006.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test:unit": "vitest run",
+    "build": "node ./scripts/build.mjs"
+  },
+  "dependencies": {
+    "@gps/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/chrome": "^0.0.268",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0",
+    "esbuild": "^0.21.5",
+    "eslint": "^9.5.0"
+  }
+}

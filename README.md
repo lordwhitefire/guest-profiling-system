@@ -1,57 +1,79 @@
-# Guest Profiling System — Builder Context Bundle
+# Guest Profiling System
 
-This repository contains a portable context bundle for building the **Guest Profiling System**.
+A hotel add-on that reads existing guest records (read-only) from a hotel's Property Management System (PMS), presents live-filtered matching profiles as a receptionist types, and auto-fills the hotel's existing registration form on click.
 
-## Contents (repacked by repomix)
+**Custom-built per hotel. Maintained by a single developer. Shared core; per-hotel adapter.**
 
-**Agents:**
-- `agents/reverse-engineering-agent.md`
-- `agents/product-management-agent.md`
-- `agents/openspec-architect.md`
+This repository contains the agent definitions, skills, plain-English plan, and (in `packages/`) the actual implementation.
 
-**Skills:**
+## Quick start
 
-*Reverse Engineering (`re/`)*
-- `re-triage` — ownership, mode, hash, type, provenance, lab status
-- `re-static-analysis` — source, binary, APK, JS, firmware; no execution
-- `re-dynamic-lab` — stop-gate, lab checklist, one approval per run, teardown
-- `re-reporting` — evidence, confidence, limits, plain report
-- `re-external-references` — Reversa/REA official sources, gate before install/run
+### Prerequisites
 
-*Product Management (`product-management/`)*
-- `product-management-comprehend` — C: Comprehend the situation
-- `product-management-identify` — I: Identify customer & stakeholder
-- `product-management-report` — R: Report customer's needs
-- `product-management-cut` — C: Cut through prioritization
-- `product-management-list` — L: List solutions (quick win, core bet, longer horizon)
-- `product-management-evaluate` — E: Evaluate trade-offs
-- `product-management-summarize` — S: Summarize recommendation
+- Node.js 20 LTS (see `.nvmrc`)
+- pnpm 9+ (`npm install -g pnpm@9`)
+- PostgreSQL 15+ (local dev: `docker run -d --name gps-pg -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=gps -p 5432:5432 postgres:15`)
 
-*OpenSpec Architect (`openspec/`)*
-- `openspec-explore` — explore/investigate before writing
-- `openspec-propose` — create a change with all artifacts
-- `openspec-update-change` — revise planning artifacts coherently
-- `openspec-sync-specs` — sync delta specs to main specs
-- `openspec-archive-change` — finalize and archive completed change
-
-*Blueprint (`blueprint/`)*
-- `blueprint` — Victor's build model with 80-area Checklist
-
-*Architect boundaries (`architect/`)*
-- (Referenced by openspec-architect; no local skill files)
-
-## Not in repomix (independent in repo)
-
-- `guest-profiling-system-explained.md` — the plain-language plan for the Guest Profiling System
-
-## Usage
+### Install
 
 ```bash
-# The repomix file is the single context bundle for the builder agent
-repomix-output.xml
+pnpm install
+cp .env.example .env
+# edit .env: set DATABASE_URL, JWT_SECRET, ARGON2_SECRET, SOURCE_PMS_URL
 ```
 
-## Software name
+### Run migrations
 
-**Guest Profiling System** — core product.
-**PMS Adapter** — integration component per hotel.
+```bash
+pnpm db:migrate
+```
+
+### Start dev server
+
+```bash
+pnpm dev
+# → http://localhost:3000
+```
+
+### Run tests
+
+```bash
+pnpm typecheck    # tsc --noEmit across all packages
+pnpm lint         # ESLint across all packages
+pnpm test:unit    # Vitest + pg-mem
+pnpm test:e2e     # Playwright smoke test
+```
+
+## Repository layout
+
+```
+.
+├── packages/
+│   ├── core/                       Next.js 16 app + API
+│   ├── adapter-read/               SSLR-pattern sync worker (separate process)
+│   ├── adapter-fill-extension/     Chrome MV3 form-fill extension
+│   └── shared/                     Types + Zod schemas + DB migrations + auth utils
+├── openspec/                       OpenSpec task registry + per-task briefs
+│   ├── tasks-registry.md
+│   └── tasks/TASK-001/{task.md, testing.md}
+├── docs/                           Runbook + OpenAPI spec
+├── ARCHITECTURE.md                 High-level architecture overview
+├── PROGRESS.md                      Blueprint area 73 (session recovery)
+└── .github/workflows/ci.yml
+```
+
+## Architecture
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the high-level architecture. The authoritative specification is the three upstream deliverables (kept outside this repo as Word documents):
+
+1. **Discovery Report** — five open-source reference repositories whose runtime behavior is relevant
+2. **Behavioral Specification** — reverse-engineered runtime behavior of those five repositories (no source code copied)
+3. **PM Plan** — CIRCLES recommendation + Blueprint 80-area checklist + phased build plan
+
+## OpenSpec workflow
+
+This repo uses OpenSpec for spec-driven development. See `openspec/tasks-registry.md` for the current task list. Each task has a `task.md` (implementation brief) and `testing.md` (acceptance criteria) under `openspec/tasks/TASK-XXX/`.
+
+## License
+
+MIT. See [LICENSE](./LICENSE).

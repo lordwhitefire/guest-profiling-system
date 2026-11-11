@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* =============================================================================
+ * Guest Profiling System — global styles
+ * Per PM Plan Section 14.4: 4px base spacing scale; consistent vertical rhythm.
+ * ============================================================================= */
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  font-feature-settings: "cv11", "ss01";
+  font-variation-settings: "opsz" 32;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: theme(colors.ink.50);
+  color: theme(colors.ink.900);
+  font-family: theme(fontFamily.sans);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Focus rings — visible on keyboard nav, subtle on mouse */
+*:focus-visible {
+  outline: 2px solid theme(colors.accent.DEFAULT);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Subtle motion for hover transitions */
+@media (prefers-reduced-motion: no-preference) {
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    transition: background-color theme(transitionDuration.fast) theme(transitionTimingFunction.ease-out-soft),
+                color theme(transitionDuration.fast) theme(transitionTimingFunction.ease-out-soft),
+                border-color theme(transitionDuration.fast) theme(transitionTimingFunction.ease-out-soft);
+  }
+}
+
+/* Skeleton loaders (per testing.md: skeletons, not spinners) */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    theme(colors.ink.100) 0%,
+    theme(colors.ink.200) 50%,
+    theme(colors.ink.100) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: theme(borderRadius.sm);
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

@@ -1,0 +1,135 @@
+openapi: 3.1.0
+info:
+  title: Guest Profiling System API
+  version: 0.1.0
+  description: |
+    The Guest Profiling System API. Six guest endpoints per the Behavioral
+    Specification Card 2 (AWS Sample Hospitality — clean guest API contract).
+    Endpoints are declared but return 501 Not Implemented in TASK-001.
+    Implementation lands in TASK-003.
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:3000/api
+    description: Local dev
+paths:
+  /guests:
+    post:
+      summary: Create a new guest
+      description: Creates a new guest profile linked to the authenticated user. Card 2 contract.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [firstName, lastName, email]
+              properties:
+                firstName: { type: string }
+                lastName: { type: string }
+                email: { type: string, format: email }
+                phone: { type: string }
+                dateOfBirth: { type: string, format: date }
+                preferences: { type: object }
+                commPrefs: { type: object }
+      responses:
+        '201': { description: Created }
+        '401': { description: Unauthorized }
+        '501': { description: Not Implemented (TASK-001) }
+  /guests/{guestId}:
+    get:
+      summary: Get a guest profile
+      description: Owner-only access. Sensitive fields stripped. Card 2 contract.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: guestId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '403': { description: Forbidden }
+        '404': { description: Not Found }
+        '501': { description: Not Implemented (TASK-001) }
+    put:
+      summary: Update a guest profile
+      description: Owner-only access. Card 2 contract.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: guestId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '403': { description: Forbidden }
+        '404': { description: Not Found }
+        '501': { description: Not Implemented (TASK-001) }
+  /guests/{guestId}/reservations:
+    get:
+      summary: List a guest's reservations
+      description: Linked spoke. Owner-only access. Card 2 contract.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: guestId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: status
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200': { description: OK }
+        '403': { description: Forbidden }
+        '404': { description: Not Found }
+        '501': { description: Not Implemented (TASK-001) }
+  /guests/{guestId}/loyalty:
+    get:
+      summary: Get a guest's loyalty profile
+      description: Linked spoke. Owner-only access. Card 2 contract.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: guestId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '403': { description: Forbidden }
+        '404': { description: Not Found }
+        '501': { description: Not Implemented (TASK-001) }
+  /guests:
+    get:
+      summary: List guests (PMS staff only)
+      description: Paginated list. Tenant-scoped by caller's JWT. Card 2 contract.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200': { description: OK }
+        '403': { description: Forbidden }
+        '501': { description: Not Implemented (TASK-001) }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
