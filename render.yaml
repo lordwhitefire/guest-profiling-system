@@ -25,9 +25,7 @@ services:
   - type: postgres
     name: gps-db
     plan: starter              # 1GB RAM, 4GB storage; upgrade for production
-    ipAllowList:               # Restrict to the web service only
-      - source: 0.0.0.0/0      # v1: allow all (Render's internal network isolates)
-        description: Render internal
+    ipAllowList: []            # Only internal connections (web + cron); no public access
     databases:
       - gps                     # Database name
 
