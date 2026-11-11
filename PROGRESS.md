@@ -20,8 +20,9 @@
 | TASK-005b | done (verified) | Workspace UI wired to real guest API |
 | TASK-005c | done (verified) | All admin screens wired to real endpoints; no mock data remains |
 | TASK-006 | done (verified) | FormFilla browser extension (Card 5 algorithm); 68 tests |
+| TASK-007 | done (verified) | Patch stack + fixes: search wiring, pg_trgm tier, extension bridge, real-data screens, working forms |
 
-**Total tests workspace-wide: 324 passing, 0 failing, 1 skipped**
+**Total tests workspace-wide: 326 passing, 0 failing, 1 skipped**
 
 ## Decisions captured (no longer Pending)
 
@@ -65,6 +66,9 @@ when a customer is identified.
 - Cross-origin iframes are skipped silently by the scanner. If the
   hotel's registration form is in a cross-origin iframe, the manifest's
   `host_permissions` needs updating to inject into that origin.
-- The extension ID is empty in the workspace UI's `prepareForExtension`
-  call. Works for unpacked dev installs; set the real ID before
-  publishing to the Chrome Web Store.
+- The extension bridge acknowledges delivery from the content script; set
+  `NEXT_PUBLIC_GPS_EXTENSION_ID` to use the direct `chrome.runtime` path as
+  well. Unpacked dev installs work through the bridge without an ID.
+- The Analytics 30-day chart is illustrative; no reporting endpoint exists.
+- The guest search fuzzy tier (`pg_trgm`) is unit-tested but was not run
+  against a live Postgres in this environment.

@@ -145,6 +145,13 @@ export const api = {
       body: JSON.stringify(updates),
     }),
 
+  createGuest: (guest: Pick<Guest, "firstName" | "lastName" | "email"> & { phone?: string }): Promise<Guest> =>
+    apiFetch<Guest>("/api/guests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(guest),
+    }),
+
   // Linked spokes
   getReservations: (id: string, limit = 5): Promise<Reservation[]> =>
     apiFetch<Reservation[]>(`/api/guests/${id}/reservations?limit=${limit}`),
@@ -229,6 +236,13 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     }),
+
+  // Health (unauthenticated liveness probe)
+  getHealth: async (): Promise<{ status: string; service: string; timestamp: string; uptime: number }> => {
+    const res = await fetch("/api/health", { credentials: "include" });
+    if (!res.ok) throw new ApiError("HEALTH_UNAVAILABLE", `Health check returned ${res.status}.`);
+    return res.json();
+  },
 
   // Settings
   getSettings: (): Promise<TenantSettings> =>

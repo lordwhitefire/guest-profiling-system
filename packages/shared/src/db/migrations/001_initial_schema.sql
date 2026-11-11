@@ -139,6 +139,12 @@ CREATE INDEX idx_guests_phone ON guests (phone);
 CREATE INDEX idx_guests_email_trgm ON guests USING GIN (email gin_trgm_ops);
 CREATE INDEX idx_guests_first_name_trgm ON guests USING GIN (first_name gin_trgm_ops);
 CREATE INDEX idx_guests_last_name_trgm ON guests USING GIN (last_name gin_trgm_ops);
+-- Case-insensitive expression indexes. The search SQL matches on lower(...)
+-- for all tiers (including the tier-5 fuzzy `%` match), so these are the
+-- indexes Postgres can actually use.
+CREATE INDEX idx_guests_email_lower_trgm ON guests USING GIN (lower(email) gin_trgm_ops);
+CREATE INDEX idx_guests_first_name_lower_trgm ON guests USING GIN (lower(first_name) gin_trgm_ops);
+CREATE INDEX idx_guests_last_name_lower_trgm ON guests USING GIN (lower(last_name) gin_trgm_ops);
 
 CREATE TRIGGER trg_guests_updated_at
     BEFORE UPDATE ON guests

@@ -33,13 +33,13 @@ export interface BaseMessage<T extends MessageType, P = unknown> {
   payload: P;
 }
 
-export interface FillRequestMessage extends BaseMessage<"FILL_REQUEST", FillRequestPayload> {}
-export interface FillResultMessage extends BaseMessage<"FILL_RESULT", FillResultPayload> {}
-export interface ScanRequestMessage extends BaseMessage<"SCAN_REQUEST", {}> {}
-export interface ScanResultMessage extends BaseMessage<"SCAN_RESULT", ScanResultPayload> {}
-export interface GetStoredGuestMessage extends BaseMessage<"GET_STORED_GUEST", {}> {}
-export interface StoreGuestMessage extends BaseMessage<"STORE_GUEST", StoreGuestPayload> {}
-export interface GuestStoredMessage extends BaseMessage<"GUEST_STORED", StoreGuestPayload | null> {}
+export type FillRequestMessage = BaseMessage<"FILL_REQUEST", FillRequestPayload>;
+export type FillResultMessage = BaseMessage<"FILL_RESULT", FillResultPayload>;
+export type ScanRequestMessage = BaseMessage<"SCAN_REQUEST", Record<string, never>>;
+export type ScanResultMessage = BaseMessage<"SCAN_RESULT", ScanResultPayload>;
+export type GetStoredGuestMessage = BaseMessage<"GET_STORED_GUEST", Record<string, never>>;
+export type StoreGuestMessage = BaseMessage<"STORE_GUEST", StoreGuestPayload>;
+export type GuestStoredMessage = BaseMessage<"GUEST_STORED", StoreGuestPayload | null>;
 
 export type Message =
   | FillRequestMessage
@@ -72,6 +72,8 @@ export interface FillResultPayload {
     needsConfirmation: boolean;
     fieldLabel: string | null;
   }>;
+  /** Present only when the fill pipeline threw. */
+  error?: string;
 }
 
 export interface ScanResultPayload {

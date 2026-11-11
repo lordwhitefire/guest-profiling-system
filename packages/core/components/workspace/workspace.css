@@ -44,3 +44,9 @@
 .gps-demo-banner svg{color:#c89b2a;flex-shrink:0}
 .gps-demo-banner code{background:#fbeec2;color:#5d4308;padding:1px 5px;border-radius:3px;font-size:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .gps-demo-banner .gps-text-button{margin-left:auto;color:#7a5b14;display:inline-flex;align-items:center;gap:4px;font-size:10px}
+
+.gps-activity-empty{padding:16px 0;font-size:10px;color:#8b97aa}
+.status-bad{color:#d14b4b}
+.health-dot-bad{background:#d14b4b}
+.health-dot-unknown{background:#b8c2d1}
+.gps-chart-note{margin:8px 0 0;font-size:9px;color:#8b97aa}

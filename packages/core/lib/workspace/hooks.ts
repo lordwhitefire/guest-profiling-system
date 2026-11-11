@@ -22,7 +22,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api-client";
-import type { Guest } from "@gps/shared";
+import type { Guest, Reservation } from "@gps/shared";
 import { toWorkspaceGuest, toWorkspaceGuests, type WorkspaceGuest } from "./adapters";
 
 const DEBOUNCE_MS = 200;
@@ -39,15 +39,21 @@ export interface UseGuestSearchResult {
   guests: WorkspaceGuest[];
   loading: boolean;
   error: string | null;
-  query: string;
-  setQuery: (q: string) => void;
+  refetch: () => void;
 }
 
-export function useGuestSearch(initialQuery = ""): UseGuestSearchResult {
-  const [query, setQuery] = useState(initialQuery);
+/**
+ * Live-filter search driven by the caller's query string.
+ *
+ * The query is owned by the screen (so the input stays responsive); this
+ * hook only reacts to it. Passing the query in is what makes typing fire a
+ * request — an internal state copy would never see the caller's updates.
+ */
+export function useGuestSearch(query: string): UseGuestSearchResult {
   const [guests, setGuests] = useState<WorkspaceGuest[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [refetchTick, setRefetchTick] = useState(0);
   const requestIdRef = useRef(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -87,9 +93,11 @@ export function useGuestSearch(initialQuery = ""): UseGuestSearchResult {
     return () => {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-  }, [query]);
+  }, [query, refetchTick]);
 
-  return { guests, loading, error, query, setQuery };
+  const refetch = useCallback(() => setRefetchTick((t) => t + 1), []);
+
+  return { guests, loading, error, refetch };
 }
 
 // ── useGuestDirectory ───────────────────────────────────────────────────────
@@ -203,6 +211,84 @@ export function useGuestByObject(g: Guest | null): UseGuestResult {
   // Convert without a network call.
   const guest = g ? toWorkspaceGuest(g) : null;
   return { guest, loading: false, error: null, refetch: () => {} };
+}
+
+// ── useReservations — Visit History screen ─────────────────────────────────
+// Real stay records for the selected guest. Returns an empty list when no
+// guest id is available (demo data has no database identity).
+
+export interface UseReservationsResult {
+  reservations: Reservation[];
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useReservations(guestId: string | null, limit = 20): UseReservationsResult {
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [loading, setLoading] = useState(!!guestId);
+  const [error, setError] = useState<string | null>(null);
+  const [refetchTick, setRefetchTick] = useState(0);
+
+  useEffect(() => {
+    if (!guestId) {
+      setReservations([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    api.getReservations(guestId, limit)
+      .then((rows) => { if (!cancelled) setReservations(rows); })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof ApiError ? err.message : "Failed to load visit history.");
+          setReservations([]);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
+  }, [guestId, limit, refetchTick]);
+
+  const refetch = useCallback(() => setRefetchTick((t) => t + 1), []);
+  return { reservations, loading, error, refetch };
+}
+
+// ── useHealth — Analytics system-health panel ──────────────────────────────
+
+export interface UseHealthResult {
+  health: { status: string; uptime: number; timestamp: string } | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useHealth(): UseHealthResult {
+  const [health, setHealth] = useState<{ status: string; uptime: number; timestamp: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.getHealth()
+      .then((h) => { if (!cancelled) { setHealth(h); setError(null); } })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof ApiError ? err.message : "Health check failed.");
+          setHealth(null);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [tick]);
+
+  return { health, loading, error, refetch: () => setTick((t) => t + 1) };
 }
 
 // ── useGuestCount ──────────────────────────────────────────────────────────

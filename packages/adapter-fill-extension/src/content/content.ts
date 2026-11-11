@@ -24,6 +24,25 @@ import {
   type FillResultPayload,
 } from "../messaging/messages.js";
 
+// Bridge for the workspace UI ("Prepare Registration").
+// The page cannot call chrome.runtime directly without the extension id, so
+// it posts a window message. We verify it came from this page's own window
+// and origin, forward it to the background worker, then acknowledge so the
+// UI can tell the receptionist whether the extension actually received it.
+window.addEventListener("message", (event: MessageEvent) => {
+  if (event.source !== window) return;
+  if (event.origin !== window.location.origin) return;
+  const data = event.data as { type?: string; payload?: unknown } | null;
+  if (data?.type !== "GPS_STORE_GUEST") return;
+
+  chrome.runtime.sendMessage({ type: "STORE_GUEST", payload: data.payload }, () => {
+    // No listener means the background worker is asleep or broken; either
+    // way the ack records that the content script did receive the message.
+    void chrome.runtime.lastError;
+    window.postMessage({ type: "GPS_STORE_GUEST_ACK", ok: true }, window.location.origin);
+  });
+});
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (isFillRequest(message)) {
     handleFillRequest(message).then(sendResponse);
@@ -76,7 +95,7 @@ async function handleFillRequest(message: FillRequestMessage): Promise<FillResul
         durationMs: 0,
         assignments: [],
         error: err instanceof Error ? err.message : "Unknown error",
-      } as FillResultPayload & { error?: string },
+      },
     };
   }
 }

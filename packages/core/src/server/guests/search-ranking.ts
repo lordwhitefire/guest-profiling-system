@@ -6,10 +6,13 @@
 //   2. Exact phone match (digits-only comparison)
 //   3. Prefix match on first_name or last_name (case-insensitive)
 //   4. Substring match on first_name, last_name, or email (case-insensitive)
+//   5. Trigram similarity match (pg_trgm `%`) — catches typos like
+//      "adebolla" for "adebola" that LIKE cannot match.
 //
 // The actual SQL query uses UNION ALL with a rank column to express this
-// ordering. Postgres's trigram indexes (pg_trgm) on email/first_name/last_name
-// accelerate the substring matches.
+// ordering. Postgres's trigram indexes (pg_trgm) on lower(email),
+// lower(first_name), lower(last_name) accelerate both the substring (tier 4)
+// and fuzzy (tier 5) matches.
 
 import type { Guest } from "@gps/shared";
 
@@ -58,44 +61,69 @@ export function buildSearchSql(
   // Note: we cast id_customer-like source_ref to varchar for the phone match
   // since QloApps stores id_customer as int; our guests.source_ref is varchar.
   const sql = `
-    (
-      SELECT *, 1 as rank FROM guests
-      WHERE tenant_id = $1 AND deleted_at IS NULL
-        AND lower(email) = $2
-    )
-    UNION ALL
-    (
-      SELECT *, 2 as rank FROM guests
-      WHERE tenant_id = $1 AND deleted_at IS NULL
-        AND phone = $3
-        AND lower(email) != $2  -- exclude matches already in tier 1
-    )
-    UNION ALL
-    (
-      SELECT *, 3 as rank FROM guests
-      WHERE tenant_id = $1 AND deleted_at IS NULL
-        AND (
-          lower(first_name) LIKE $4
-          OR lower(last_name) LIKE $4
+    SELECT * FROM (
+      -- Keep one row per guest, at the best (lowest) rank.
+      SELECT DISTINCT ON (guest_id) *
+      FROM (
+        (
+          SELECT *, 1 as rank FROM guests
+          WHERE tenant_id = $1 AND deleted_at IS NULL
+            AND lower(email) = $2
         )
-        AND lower(email) != $2  -- exclude matches already in tier 1
-        AND phone != $3          -- exclude matches already in tier 2
-    )
-    UNION ALL
-    (
-      SELECT *, 4 as rank FROM guests
-      WHERE tenant_id = $1 AND deleted_at IS NULL
-        AND (
-          lower(email) LIKE $4
-          OR lower(first_name) LIKE $4
-          OR lower(last_name) LIKE $4
+        UNION ALL
+        (
+          SELECT *, 2 as rank FROM guests
+          WHERE tenant_id = $1 AND deleted_at IS NULL
+            AND phone = $3
+            AND (lower(email) IS NULL OR lower(email) != $2)
         )
-        AND lower(email) != $2  -- exclude matches already in tier 1
-        AND phone != $3          -- exclude matches already in tier 2
-        AND NOT (
-          lower(first_name) LIKE $4 OR lower(last_name) LIKE $4
-        )  -- exclude matches already in tier 3 (but still allow substring email)
-    )
+        UNION ALL
+        (
+          SELECT *, 3 as rank FROM guests
+          WHERE tenant_id = $1 AND deleted_at IS NULL
+            AND (
+              lower(first_name) LIKE $4
+              OR lower(last_name) LIKE $4
+            )
+            AND (lower(email) IS NULL OR lower(email) != $2)
+            AND (phone IS NULL OR phone != $3)
+        )
+        UNION ALL
+        (
+          SELECT *, 4 as rank FROM guests
+          WHERE tenant_id = $1 AND deleted_at IS NULL
+            AND (
+              lower(email) LIKE $4
+              OR lower(first_name) LIKE $4
+              OR lower(last_name) LIKE $4
+            )
+            AND (lower(email) IS NULL OR lower(email) != $2)
+            AND (phone IS NULL OR phone != $3)
+            AND NOT (
+              lower(first_name) LIKE $4 OR lower(last_name) LIKE $4
+            )
+        )
+        UNION ALL
+        (
+          SELECT *, 5 as rank FROM guests
+          WHERE tenant_id = $1 AND deleted_at IS NULL
+            -- pg_trgm similarity operator. Uses the GIN trigram indexes on the
+            -- lower(...) expressions (see 001_initial_schema.sql).
+            AND (
+              lower(first_name) % $2
+              OR lower(last_name) % $2
+              OR lower(email) % $2
+            )
+            AND (lower(email) IS NULL OR lower(email) != $2)
+            AND (phone IS NULL OR phone != $3)
+            AND NOT (
+              lower(first_name) LIKE $4 OR lower(last_name) LIKE $4
+            )
+            AND (lower(email) IS NULL OR lower(email) NOT LIKE $4)
+        )
+      ) ranked
+      ORDER BY guest_id, rank ASC
+    ) deduped
     ORDER BY rank ASC, last_stay_date DESC NULLS LAST
     LIMIT ${SEARCH_MAX_RESULTS}
   `;

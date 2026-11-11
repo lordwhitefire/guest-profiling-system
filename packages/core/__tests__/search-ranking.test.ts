@@ -53,13 +53,13 @@ describe("Search ranking (Card 2 §4.2 + Feature F1)", () => {
       expect(built!.params[1]).toBe("a".repeat(SEARCH_MAX_QUERY_LENGTH));
     });
 
-    it("returns SQL with UNION ALL across 4 tiers", () => {
+    it("returns SQL with UNION ALL across 5 tiers", () => {
       const built = buildSearchSql("tenant-1", "john");
       expect(built).not.toBeNull();
       expect(built!.sql).toContain("UNION ALL");
-      // Count the UNION ALL occurrences (3 unions for 4 tiers).
+      // Count the UNION ALL occurrences (4 unions for 5 tiers).
       const unions = built!.sql.match(/UNION ALL/g);
-      expect(unions?.length).toBe(3);
+      expect(unions?.length).toBe(4);
     });
 
     it("returns SQL with ORDER BY rank ASC, last_stay_date DESC", () => {
@@ -75,9 +75,9 @@ describe("Search ranking (Card 2 §4.2 + Feature F1)", () => {
 
     it("excludes soft-deleted guests (deleted_at IS NULL)", () => {
       const built = buildSearchSql("tenant-1", "john");
-      // Each of the 4 tier SELECTs must include "deleted_at IS NULL".
+      // Each of the 5 tier SELECTs must include "deleted_at IS NULL".
       const matches = built!.sql.match(/deleted_at IS NULL/g);
-      expect(matches?.length).toBe(4);
+      expect(matches?.length).toBe(5);
     });
 
     it("tenant_id is bound as $1 (parameter, not interpolated)", () => {
@@ -101,6 +101,28 @@ describe("Search ranking (Card 2 §4.2 + Feature F1)", () => {
     it("name-prefix LIKE pattern is bound as $4", () => {
       const built = buildSearchSql("t1", "john");
       expect(built!.params[3]).toBe("%john%");
+    });
+
+    it("uses pg_trgm similarity as the fuzzy tier", () => {
+      const built = buildSearchSql("t1", "adebolla");
+      expect(built!.sql).toContain("lower(first_name) % $2");
+      expect(built!.sql).toContain("lower(last_name) % $2");
+      expect(built!.sql).toContain("lower(email) % $2");
+      expect(built!.sql).toContain("5 as rank");
+    });
+
+    it("deduplicates guests at their best rank", () => {
+      const built = buildSearchSql("t1", "john");
+      expect(built!.sql).toContain("DISTINCT ON (guest_id)");
+      expect(built!.sql.indexOf("DISTINCT ON (guest_id)")).toBeLessThan(
+        built!.sql.indexOf("UNION ALL"),
+      );
+    });
+
+    it("does not drop guests with a missing phone or email", () => {
+      const built = buildSearchSql("t1", "john");
+      expect(built!.sql).toContain("(phone IS NULL OR phone != $3)");
+      expect(built!.sql).toContain("(lower(email) IS NULL OR lower(email) != $2)");
     });
   });
 
