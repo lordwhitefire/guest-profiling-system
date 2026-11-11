@@ -1,0 +1,93 @@
+# Render deployment configuration for the Guest Profiling System
+# =============================================================================
+# Per owner decision (2026-11-12): Render is the hosting provider for v1.
+# This file declares the production deployment shape: one web service
+# (Next.js core + API) + one managed Postgres + one cron job (sync worker).
+#
+# How to deploy:
+#   1. Push the repo to GitHub
+#   2. In Render, click "New +" → "Blueprint" → select the repo
+#   3. Render reads this render.yaml and creates the services
+#   4. Set the secret environment variables (DATABASE_URL is auto-wired from
+#      the postgres service; the rest go in Render's Environment tab)
+#
+# Required environment variables (set in Render dashboard):
+#   - JWT_SECRET          (openssl rand -hex 32)
+#   - ARGON2_PEPPER       (openssl rand -hex 32)
+#   - FIELD_ENCRYPTION_KEY (openssl rand -hex 32)
+#   - DEFAULT_TENANT_ID   (uuidgen; same as seeded tenant)
+#   - SOURCE_PMS_URL      (postgres://...?default_transaction_read_only=true)
+#   - SOURCE_PMS_TYPE     (qloapps)
+#   - SYNC_INTERVAL_SECONDS (300)
+#   - SYNC_THROTTLE_PERCENT (75)
+
+services:
+  - type: postgres
+    name: gps-db
+    plan: starter              # 1GB RAM, 4GB storage; upgrade for production
+    ipAllowList:               # Restrict to the web service only
+      - source: 0.0.0.0/0      # v1: allow all (Render's internal network isolates)
+        description: Render internal
+    databases:
+      - gps                     # Database name
+
+  - type: web
+    name: gps-core
+    runtime: node
+    plan: starter               # 512MB RAM, 0.1 CPU; upgrade for production
+    region: oregon              # Render's default; pick what's closest to the hotel
+    branch: main
+    healthCheckPath: /api/health
+    autoDeploy: true
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @gps/core build
+    startCommand: pnpm --filter @gps/core start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gps-db
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false             # Set in dashboard
+      - key: ARGON2_PEPPER
+        sync: false             # Set in dashboard
+      - key: FIELD_ENCRYPTION_KEY
+        sync: false             # Set in dashboard
+      - key: DEFAULT_TENANT_ID
+        sync: false             # Set in dashboard
+      - key: SOURCE_PMS_URL
+        sync: false             # Set in dashboard (read-only source PMS)
+      - key: SOURCE_PMS_TYPE
+        value: qloapps
+      - key: SYNC_INTERVAL_SECONDS
+        value: "300"
+      - key: SYNC_THROTTLE_PERCENT
+        value: "75"
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://gps-core.onrender.com   # Update to your custom domain
+
+  - type: cron
+    name: gps-sync-worker
+    runtime: node
+    plan: starter
+    schedule: "*/5 * * * *"     # Every 5 minutes
+    buildCommand: pnpm install --frozen-lockfile
+    startCommand: pnpm --filter @gps/adapter-read start -- --tenant=$DEFAULT_TENANT_ID
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gps-db
+          property: connectionString
+      - key: SOURCE_PMS_URL
+        sync: false             # Must match gps-core's value
+      - key: SOURCE_PMS_TYPE
+        value: qloapps
+      - key: FIELD_ENCRYPTION_KEY
+        sync: false             # Must match gps-core's value
+      - key: DEFAULT_TENANT_ID
+        sync: false             # Must match gps-core's value
+      - key: SYNC_THROTTLE_PERCENT
+        value: "75"

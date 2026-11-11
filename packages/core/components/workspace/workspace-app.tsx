@@ -7,7 +7,7 @@ import {
   Activity, AlertCircle, ArrowRight, Bell, Building2, CalendarDays, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Clock3, Database, Download, Eye, FileClock, FileText, Filter, Home, LayoutDashboard, LockKeyhole, LogOut, Menu, MoreHorizontal, Plus, RefreshCw, Search, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Users, UserRound, UserSearch, X, XCircle, Zap, ClipboardList, History, PlugZap, KeyRound, Mail, Phone, CalendarCheck, Save, Pencil, RotateCcw, Info, Loader2
 } from "lucide-react";
 import "./workspace.css";
-import { useGuestSearch, useGuestDirectory, useGuest, useGuestCount } from "@/lib/workspace/hooks";
+import { useGuestSearch, useGuestDirectory, useGuest, useGuestCount, useStats, useAuditLogs, useSyncStatus, useDataRequests, useUsers, useTenants, useSettings } from "@/lib/workspace/hooks";
 import type { WorkspaceGuest } from "@/lib/workspace/adapters";
 
 type Screen =
@@ -94,6 +94,13 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
   const searchHook = useGuestSearch(query);
   const directoryHook = useGuestDirectory(page, 20);
   const countHook = useGuestCount();
+  const statsHook = useStats();
+  const auditLogsHook = useAuditLogs(1, 20);
+  const syncStatusHook = useSyncStatus();
+  const dataRequestsHook = useDataRequests(1, 20);
+  const usersHook = useUsers();
+  const tenantsHook = useTenants();
+  const settingsHook = useSettings();
 
   // For the search screen: if the user has typed ≥2 chars, use the live
   // search results; otherwise use the directory's first page (so the
@@ -115,7 +122,18 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
     : GUESTS.length;
 
   // For dashboard counts: prefer live count; fall back to mock.
-  const dashboardTotal = countHook.error ? 12480 : countHook.total;
+  // Dashboard counts: prefer real /api/stats; fall back to useGuestCount
+  // (which fetches /api/guests?page=1&limit=1 and reads metadata.total);
+  // final fallback is the mock count (only if BOTH fail).
+  const realStats = statsHook.stats;
+  const dashboardTotal = realStats?.totalGuests ?? (countHook.error ? 12480 : countHook.total);
+  const dashboardVip = realStats?.totalVip ?? 0;
+  const dashboardReturning = realStats?.totalReturning ?? 0;
+  const dashboardNew = realStats?.totalNew ?? 0;
+  const dashboardThisMonth = realStats?.totalThisMonth ?? 0;
+  const dashboardLastSync = realStats?.lastSyncAt ?? null;
+  const dashboardAudit24h = realStats?.auditEvents24h ?? 0;
+  const dashboardUsingDemoData = !realStats && !!countHook.error;
 
   const notify = (message: string) => {
     setToast(message);
@@ -212,17 +230,17 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
             </div>
           </div>
 
-          {screen === "dashboard" && <Dashboard onAction={notify} onNavigate={(s) => window.location.assign(`/workspace/${s}`)} totalCount={dashboardTotal} usingDemoData={!!countHook.error} />}
-          {screen === "analytics" && <Analytics onAction={notify} />}
+          {screen === "dashboard" && <Dashboard onAction={notify} onNavigate={(s) => window.location.assign(`/workspace/${s}`)} totalCount={dashboardTotal} vipCount={dashboardVip} returningCount={dashboardReturning} newCount={dashboardNew} thisMonthCount={dashboardThisMonth} lastSyncAt={dashboardLastSync} auditEvents24h={dashboardAudit24h} usingDemoData={dashboardUsingDemoData} onRetry={statsHook.refetch} />}
+          {screen === "analytics" && <Analytics onAction={notify} totalCount={dashboardTotal} auditEvents24h={dashboardAudit24h} />}
           {screen === "guest-search" && <GuestSearch query={query} setQuery={setQuery} guests={filteredGuests} loading={searchLoading} error={searchError} usingDemoData={directoryHook.error !== null && filteredGuests === GUESTS} onRetry={directoryHook.refetch} onSelect={(i) => { setSelectedGuest(i); setModal("guest-detail"); }} onAction={notify} />}
           {screen === "directory" && <Directory query={query} setQuery={setQuery} guests={filteredGuests} total={directoryTotal} loading={directoryHook.loading && directoryGuests === GUESTS} usingDemoData={directoryHook.error !== null && directoryGuests === GUESTS} onRetry={directoryHook.refetch} filter={filter} setFilter={setFilter} page={page} setPage={setPage} onSelect={(i) => { setSelectedGuest(i); setModal("guest-detail"); }} onAction={notify}/>}
           {screen === "guest-profile" && <GuestProfile guest={currentGuest} onAction={notify} onEdit={() => { setForm({name:currentGuest.name,email:currentGuest.email,phone:currentGuest.phone,room:"Deluxe Room"}); setModal("edit-guest"); }}/>}
           {screen === "visit-history" && <VisitHistory guest={currentGuest} onAction={notify}/>}
-          {screen === "pms-sync" && <PmsSync onAction={notify}/>}
-          {screen === "data-requests" && <DataRequests onAction={notify}/>}
-          {screen === "audit-logs" && <AuditLogs onAction={notify}/>}
-          {screen === "users" && <UsersPage onAction={notify} onInvite={() => setModal("invite-user")}/>}
-          {screen === "tenants" && <Tenants onAction={notify} onAdd={() => setModal("add-hotel")}/>}
+          {screen === "pms-sync" && <PmsSync onAction={notify} syncStatus={syncStatusHook.status} loading={syncStatusHook.loading} error={syncStatusHook.error} onRetry={syncStatusHook.refetch}/>}
+          {screen === "data-requests" && <DataRequests onAction={notify} requests={dataRequestsHook.requests} total={dataRequestsHook.total} loading={dataRequestsHook.loading} error={dataRequestsHook.error} onRetry={dataRequestsHook.refetch} onCreate={() => setModal("new-request")}/>}
+          {screen === "audit-logs" && <AuditLogs onAction={notify} logs={auditLogsHook.logs} total={auditLogsHook.total} loading={auditLogsHook.loading} error={auditLogsHook.error} onRetry={auditLogsHook.refetch} page={auditLogsHook.page} setPage={auditLogsHook.setPage}/>}
+          {screen === "users" && <UsersPage onAction={notify} onInvite={() => setModal("invite-user")} users={usersHook.users} total={usersHook.total} loading={usersHook.loading} error={usersHook.error} onRetry={usersHook.refetch}/>}
+          {screen === "tenants" && <Tenants onAction={notify} onAdd={() => setModal("add-hotel")} tenants={tenantsHook.tenants} loading={tenantsHook.loading} error={tenantsHook.error} onRetry={tenantsHook.refetch}/>}
           {screen === "settings" && <SettingsPage toggles={toggles} setToggles={setToggles} tab={tab} setTab={setTab} onAction={notify}/>}
           {screen === "hotel-settings" && <HotelSettings toggles={toggles} setToggles={setToggles} onAction={notify}/>}
           {screen === "processing" && <Processing/>}
@@ -264,11 +282,11 @@ function Metric({ icon: Icon, label, value, delta, tone="blue" }: {icon:any;labe
 function Panel({ title, action, children, className="" }: {title:string;action?:ReactNode;children:ReactNode;className?:string}) {
   return <section className={`gps-panel ${className}`}><div className="gps-panel-head"><h2>{title}</h2>{action}</div>{children}</section>;
 }
-function Dashboard({onAction,onNavigate,totalCount=12480,usingDemoData=false}:{onAction:(s:string)=>void;onNavigate:(s:string)=>void;totalCount?:number;usingDemoData?:boolean}) {
+function Dashboard({onAction,onNavigate,totalCount=12480,vipCount=0,returningCount=0,newCount=0,thisMonthCount=0,lastSyncAt=null,auditEvents24h=0,usingDemoData=false,onRetry}:{onAction:(s:string)=>void;onNavigate:(s:string)=>void;totalCount?:number;vipCount?:number;returningCount?:number;newCount?:number;thisMonthCount?:number;lastSyncAt?:string|null;auditEvents24h?:number;usingDemoData?:boolean;onRetry?:()=>void}) {
   return <>
-    {usingDemoData && <DemoDataBanner/>}
+    {usingDemoData && <DemoDataBanner onRetry={onRetry}/>}
     <div className="gps-welcome"><div><span className="gps-eyebrow">TUESDAY, 11 NOVEMBER 2026</span><h2>Welcome back, Receptionist!</h2><p>Quickly identify returning guests and deliver a better stay.</p></div><div className="gps-welcome-actions"><button className="gps-outline" onClick={()=>onNavigate("guest-search")}><Search size={15}/> Search for a guest</button><button className="gps-primary" onClick={()=>onNavigate("guest-search")}>Quick Search <ArrowRight size={15}/></button></div></div>
-    <div className="gps-metrics"><Metric icon={Users} label="Total Guest Profiles" value={totalCount.toLocaleString()} delta="12.8%" tone="blue"/><Metric icon={UserRound} label="Returning Guests" value="3,126" delta="8.2%" tone="violet"/><Metric icon={Clock3} label="Avg. Search Time" value="2 min ago" delta="18.4%" tone="green"/><Metric icon={CalendarCheck} label="Today's Matches" value="842" delta="6.4%" tone="orange"/></div>
+    <div className="gps-metrics"><Metric icon={Users} label="Total Guest Profiles" value={totalCount.toLocaleString()} delta={thisMonthCount > 0 ? `+${thisMonthCount} this month` : undefined} tone="blue"/><Metric icon={UserRound} label="Returning Guests" value={returningCount.toLocaleString()} tone="violet"/><Metric icon={CalendarCheck} label="New This Month" value={thisMonthCount.toLocaleString()} tone="green"/><Metric icon={Activity} label="Audit Events (24h)" value={auditEvents24h.toLocaleString()} tone="orange"/></div>
     <div className="gps-grid-two">
       <Panel title="Recent Guest Matches" action={<button className="gps-text-button" onClick={()=>onNavigate("directory")}>View all <ArrowRight size={13}/></button>}>
         <GuestRows compact onAction={onAction}/>
@@ -285,9 +303,9 @@ function Dashboard({onAction,onNavigate,totalCount=12480,usingDemoData=false}:{o
     </div>
   </>;
 }
-function Analytics({onAction}:{onAction:(s:string)=>void}) {
+function Analytics({onAction,totalCount=0,auditEvents24h=0}:{onAction:(s:string)=>void;totalCount?:number;auditEvents24h?:number}) {
   return <>
-    <div className="gps-metrics"><Metric icon={Users} label="Total Guest Profiles" value="12,480" delta="12.8%"/><Metric icon={CalendarCheck} label="Guest Visits" value="24,816" delta="8.4%" tone="violet"/><Metric icon={Activity} label="System Health" value="Healthy" tone="green"/><Metric icon={Building2} label="Active Hotels" value="12" delta="2 new" tone="orange"/></div>
+    <div className="gps-metrics"><Metric icon={Users} label="Total Guest Profiles" value={totalCount.toLocaleString()} delta="live"/><Metric icon={CalendarCheck} label="Audit Events (24h)" value={auditEvents24h.toLocaleString()} tone="violet"/><Metric icon={Activity} label="System Health" value="Healthy" tone="green"/><Metric icon={Building2} label="Active Tenants" value="1" delta="v1" tone="orange"/></div>
     <div className="gps-grid-two analytics-grid">
       <Panel title="Guest Activity Analytics" action={<select className="gps-select"><option>Last 30 days</option><option>Last 7 days</option><option>Last 90 days</option></select>}><Chart/></Panel>
       <Panel title="System Health"><div className="gps-health"><div className="gps-health-ring"><b>98.7%</b><small>Healthy</small></div><div className="gps-health-list">{["API Response","Database","PMS Sync","Search Service"].map((v)=><div key={v}><span><i className="health-dot"/>{v}</span><b>Operational</b></div>)}</div></div></Panel>
@@ -405,39 +423,67 @@ function VisitHistory({guest,onAction}:{guest:GuestLike;onAction:(s:string)=>voi
   </>;
 }
 function MoonIcon({size=18}:{size?:number}) { return <CalendarDays size={size}/>; }
-function PmsSync({onAction}:{onAction:(s:string)=>void}) {
+function PmsSync({onAction,syncStatus=null,loading=false,error=null,onRetry}:{onAction:(s:string)=>void;syncStatus?:import("@/lib/api-client").SyncStatusResponse|null;loading?:boolean;error?:string|null;onRetry?:()=>void}) {
+  // Use real sync status; fall back to mock layout if loading
+  const states = syncStatus?.states ?? [];
+  const events = syncStatus?.recentEvents ?? [];
+  const hasConn = syncStatus?.hasAdapterConnection ?? false;
+  const lastSync = states[0]?.updatedAt ?? null;
+  const lastSyncStr = lastSync ? new Date(lastSync).toLocaleString() : "—";
   return <>
-    <div className="gps-sync-hero"><div className="gps-sync-logo"><Database size={28}/></div><div><span className="gps-eyebrow">CONNECTION STATUS</span><h2>Grand Vista Hotel PMS</h2><p>Connected to the hotel's property management system.</p></div><span className="gps-status status-good"><i/> Connected</span></div>
-    <div className="gps-metrics"><Metric icon={Database} label="Profiles Synced" value="12,480" delta="Today"/><Metric icon={RefreshCw} label="Last Synchronisation" value="09:42 AM" tone="violet"/><Metric icon={CheckCircle2} label="Successful Syncs" value="99.9%" tone="green"/><Metric icon={AlertCircle} label="Sync Errors" value="0" tone="orange"/></div>
-    <div className="gps-grid-two"><Panel title="Synchronisation Pipeline"><div className="gps-pipeline">{[{t:"PMS Database",d:"Read-only connection",i:Database},{t:"Guest Data Adapter",d:"Data extraction and mapping",i:Zap},{t:"Guest Profiling System",d:"Profile indexing and matching",i:Users}].map((x,i)=><div className="gps-pipeline-step" key={x.t}><span><x.i size={18}/></span><div><b>{x.t}</b><small>{x.d}</small></div><span className="gps-status status-good"><i/> Active</span>{i!==2&&<ArrowRight className="gps-pipeline-arrow" size={17}/>}</div>)}</div></Panel><Panel title="Connection Details"><InfoRows rows={[["PMS Provider","Grand Vista PMS"],["Connection Type","Secure database connection"],["Sync Frequency","Every 15 minutes"],["Last Successful Sync","11 Nov 2026 · 09:42 AM"],["Connection","Encrypted / Read-only"]]}/><button className="gps-outline gps-full" onClick={()=>onAction("Connection test successful.")}><PlugZap size={14}/> Test Connection</button></Panel></div>
-    <Panel title="Recent Synchronisation History" action={<button className="gps-text-button" onClick={()=>onAction("Sync history refreshed.")}><RefreshCw size={13}/> Refresh</button>}><div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Date & Time</th><th>Operation</th><th>Records</th><th>Duration</th><th>Status</th></tr></thead><tbody>{["09:42 AM","09:27 AM","09:12 AM","08:57 AM"].map((v,i)=><tr key={v}><td>11 Nov 2026 · {v}</td><td>Guest profile sync</td><td>{i===0?"1,284":"24"}</td><td>00:00:0{7+i}</td><td><span className="gps-pill pill-green">Completed</span></td></tr>)}</tbody></table></div></Panel>
+    {error && <ApiErrorState message={error} onRetry={onRetry}/>}
+    {loading && !syncStatus && <LoadingState label="Loading sync status…"/>}
+    <div className="gps-sync-hero"><div className="gps-sync-logo"><Database size={28}/></div><div><span className="gps-eyebrow">CONNECTION STATUS</span><h2>PMS Database</h2><p>{hasConn ? "Connected to the hotel's property management system." : "No adapter connection configured for this tenant."}</p></div><span className={`gps-status ${hasConn?"status-good":"status-warn"}`}><i/> {hasConn ? "Connected" : "Not configured"}</span></div>
+    <div className="gps-metrics"><Metric icon={Database} label="Tables Synced" value={String(states.length)}/><Metric icon={RefreshCw} label="Last Sync" value={lastSync ? new Date(lastSync).toLocaleTimeString() : "—"} tone="violet"/><Metric icon={CheckCircle2} label="Status" value={hasConn ? "Healthy" : "—"} tone="green"/><Metric icon={AlertCircle} label="Sync Errors" value="0" tone="orange"/></div>
+    <div className="gps-grid-two"><Panel title="Synchronisation Pipeline"><div className="gps-pipeline">{[{t:"PMS Database",d:"Read-only connection",i:Database},{t:"Guest Data Adapter",d:"Data extraction and mapping",i:Zap},{t:"Guest Profiling System",d:"Profile indexing and matching",i:Users}].map((x,i)=><div className="gps-pipeline-step" key={x.t}><span><x.i size={18}/></span><div><b>{x.t}</b><small>{x.d}</small></div><span className={`gps-status ${hasConn?"status-good":"status-warn"}`}><i/> {hasConn ? "Active" : "Pending"}</span>{i!==2&&<ArrowRight className="gps-pipeline-arrow" size={17}/>}</div>)}</div></Panel><Panel title="Connection Details"><InfoRows rows={[["PMS Provider","QloApps (v1 mapping)"],["Connection Type","Read-only Postgres"],["Sync Frequency","Manual (per pnpm seed:source)"],["Last Successful Sync",lastSyncStr],["Connection",hasConn?"Encrypted / Read-only":"Not configured"]]}/><button className="gps-outline gps-full" onClick={()=>onAction("Connection test successful.")}><PlugZap size={14}/> Test Connection</button></Panel></div>
+    <Panel title="Sync State (per table)" action={<button className="gps-text-button" onClick={onRetry}><RefreshCw size={13}/> Refresh</button>}><div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Table</th><th>Last xmin</th><th>Updated</th><th>Status</th></tr></thead><tbody>{states.length === 0 ? <tr><td colSpan={4} style={{textAlign:"center",color:"#97a4b6",padding:"20px"}}>No sync state recorded yet. Run the seeding script first.</td></tr> : states.map((s,i)=><tr key={i}><td><b>{s.tableName}</b></td><td>{s.lastSeenXmin}</td><td>{new Date(s.updatedAt).toLocaleString()}</td><td><span className="gps-pill pill-green">Synced</span></td></tr>)}</tbody></table></div></Panel>
+    {events.length > 0 && <Panel title="Recent Sync Events"><div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Event</th><th>Entity Type</th><th>Date</th></tr></thead><tbody>{events.map((e,i)=><tr key={i}><td><b>{e.action}</b></td><td>{e.entityType}</td><td>{new Date(e.createdAt).toLocaleString()}</td></tr>)}</tbody></table></div></Panel>}
   </>;
 }
-function DataRequests({onAction}:{onAction:(s:string)=>void}) {
+function DataRequests({onAction,requests=[],total=0,loading=false,error=null,onRetry,onCreate}:{onAction:(s:string)=>void;requests?:import("@/lib/api-client").DataRequest[];total?:number;loading?:boolean;error?:string|null;onRetry?:()=>void;onCreate?:()=>void}) {
+  const submitted = requests.filter(r => r.status === "SUBMITTED").length;
+  const fulfilled = requests.filter(r => r.status === "FULFILLED").length;
+  const rejected = requests.filter(r => r.status === "REJECTED").length;
   return <>
-    <div className="gps-metrics"><Metric icon={FileText} label="Total Requests" value="24"/><Metric icon={Clock3} label="Pending Review" value="6" tone="violet"/><Metric icon={CheckCircle2} label="Completed" value="15" tone="green"/><Metric icon={XCircle} label="Rejected" value="3" tone="orange"/></div>
-    <div className="gps-grid-two"><Panel title="Request Overview"><div className="gps-request-chart"><div><b>24</b><small>Requests this month</small></div><div className="gps-request-bars"><i style={{height:"35%"}}/><i style={{height:"62%"}}/><i style={{height:"44%"}}/><i style={{height:"80%"}}/><i style={{height:"56%"}}/><i style={{height:"94%"}}/><i style={{height:"72%"}}/></div></div></Panel><Panel title="Request Details"><div className="gps-request-types"><div><span className="request-dot blue"/>Access requests <b>12</b></div><div><span className="request-dot violet"/>Data export <b>6</b></div><div><span className="request-dot green"/>Correction <b>3</b></div><div><span className="request-dot orange"/>Deletion <b>3</b></div></div></Panel></div>
-    <Panel title="Request List" action={<select className="gps-select"><option>All Requests</option><option>Pending</option><option>Completed</option></select>}><div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Request ID</th><th>Guest</th><th>Request Type</th><th>Date Submitted</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>{[["DSR-024","Adebola Kamal","Data Access","10 Nov 2026","20 Nov 2026","Pending"],["DSR-023","Sarah Kamal","Data Export","09 Nov 2026","19 Nov 2026","In Review"],["DSR-022","Michael Johnson","Correction","08 Nov 2026","18 Nov 2026","Completed"],["DSR-021","Fatima Bello","Data Deletion","06 Nov 2026","16 Nov 2026","Pending"]].map(r=><tr key={r[0]}>{r.slice(0,5).map((v,i)=><td key={i}>{v}</td>)}<td><span className={`gps-pill ${r[5]==="Completed"?"pill-green":"pill-orange"}`}>{r[5]}</span></td><td><button className="gps-row-action" onClick={()=>onAction(`${r[0]} details opened.`)}><Eye size={14}/></button><button className="gps-row-action" onClick={()=>onAction(`${r[0]} assigned for review.`)}><MoreHorizontal size={14}/></button></td></tr>)}</tbody></table></div></Panel>
+    {error && <ApiErrorState message={error} onRetry={onRetry}/>}
+    <div className="gps-metrics"><Metric icon={FileText} label="Total Requests" value={total.toLocaleString()}/><Metric icon={Clock3} label="Pending Review" value={String(submitted)} tone="violet"/><Metric icon={CheckCircle2} label="Fulfilled" value={String(fulfilled)} tone="green"/><Metric icon={XCircle} label="Rejected" value={String(rejected)} tone="orange"/></div>
+    <Panel title="Data Subject Requests (NDPR/GDPR/CCPA)" action={<button className="gps-primary" onClick={onCreate}><Plus size={14}/> New Request</button>}>
+      {loading && requests.length === 0 ? <LoadingState label="Loading requests…"/> :
+      <div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Request ID</th><th>Guest Email</th><th>Type</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead><tbody>{requests.length === 0 ? <tr><td colSpan={6} style={{textAlign:"center",color:"#97a4b6",padding:"20px"}}>No data subject requests yet.</td></tr> : requests.map(r=><tr key={r.requestId}><td><b>{r.requestId.slice(0,8)}</b></td><td>{r.guestEmail ?? "—"}</td><td>{r.type}</td><td><span className={`gps-pill ${r.status==="FULFILLED"?"pill-green":r.status==="REJECTED"?"pill-red":"pill-orange"}`}>{r.status}</span></td><td>{new Date(r.submittedAt).toLocaleString()}</td><td><button className="gps-row-action" onClick={()=>onAction(`${r.requestId} details opened.`)}><Eye size={14}/></button></td></tr>)}</tbody></table></div>}
+    </Panel>
   </>;
 }
-function AuditLogs({onAction}:{onAction:(s:string)=>void}) {
+function AuditLogs({onAction,logs=[],total=0,loading=false,error=null,onRetry,page=1,setPage}:{onAction:(s:string)=>void;logs?:import("@gps/shared").AuditLog[];total?:number;loading?:boolean;error?:string|null;onRetry?:()=>void;page?:number;setPage?:(p:number)=>void}) {
   return <>
-    <div className="gps-metrics"><Metric icon={Activity} label="Total Events" value="124,820"/><Metric icon={ShieldCheck} label="Security Events" value="1,284" tone="violet"/><Metric icon={Users} label="Active Users" value="24" tone="green"/><Metric icon={AlertCircle} label="Flagged Events" value="3" tone="orange"/></div>
-    <Panel title="Activity Log" action={<button className="gps-outline" onClick={()=>onAction("Audit logs exported.")}><Download size={14}/> Export Logs</button>}><div className="gps-toolbar"><div className="gps-search-inline"><Search size={15}/><input placeholder="Search user, action or resource..."/></div><select className="gps-select"><option>All Events</option><option>Authentication</option><option>Guest Records</option><option>System</option></select><select className="gps-select"><option>Last 30 days</option><option>Last 7 days</option><option>Today</option></select><button className="gps-outline" onClick={()=>onAction("Advanced filters opened.")}><SlidersHorizontal size={14}/> Filters</button></div><div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Event</th><th>User</th><th>Resource</th><th>IP Address</th><th>Date & Time</th><th>Result</th></tr></thead><tbody>{[["Guest profile viewed","Admin Operator","Adebola Kamal","192.168.1.24","11 Nov · 09:42","Success"],["User login","Sarah Admin","Authentication","192.168.1.18","11 Nov · 09:31","Success"],["PMS sync initiated","System","Grand Vista PMS","127.0.0.1","11 Nov · 09:27","Success"],["Role permissions updated","Admin Operator","Receptionist","192.168.1.24","11 Nov · 08:54","Success"],["Failed login attempt","Unknown","Authentication","102.18.42.10","10 Nov · 21:16","Failed"]].map((r,i)=><tr key={i}>{r.slice(0,5).map((v,j)=><td key={j}>{v}</td>)}<td><span className={`gps-pill ${r[5]==="Success"?"pill-green":"pill-red"}`}>{r[5]}</span></td></tr>)}</tbody></table></div></Panel>
+    {error && <ApiErrorState message={error} onRetry={onRetry}/>}
+    <div className="gps-metrics"><Metric icon={Activity} label="Total Events" value={total.toLocaleString()}/><Metric icon={ShieldCheck} label="Audit Table" value="append-only" tone="violet"/><Metric icon={Clock3} label="Showing Page" value={String(page)} tone="green"/><Metric icon={AlertCircle} label="Errors" value="0" tone="orange"/></div>
+    <Panel title="Activity Log" action={<button className="gps-outline" onClick={()=>onAction("Audit logs export started.")}><Download size={14}/> Export Logs</button>}>
+      {loading && logs.length === 0 ? <LoadingState label="Loading audit logs…"/> :
+      <div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Action</th><th>Entity Type</th><th>Entity ID</th><th>Actor</th><th>Date & Time</th></tr></thead><tbody>{logs.length === 0 ? <tr><td colSpan={5} style={{textAlign:"center",color:"#97a4b6",padding:"20px"}}>No audit log entries yet. Mutations to guest records will appear here.</td></tr> : logs.map(l=><tr key={l.logId}><td><span className={`gps-pill ${l.action==="DELETE"?"pill-red":l.action==="CREATE"?"pill-green":l.action.startsWith("DSR")?"pill-violet":"pill-blue"}`}>{l.action}</span></td><td>{l.entityType}</td><td>{l.entityId ? l.entityId.slice(0,8) : "—"}</td><td>{l.actorUserId ? l.actorUserId.slice(0,8) : "system"}</td><td>{new Date(l.createdAt).toLocaleString()}</td></tr>)}</tbody></table></div>}
+      {total > 20 && <div className="gps-pagination"><span>Showing {logs.length} of {total.toLocaleString()} events</span><div><button onClick={()=>setPage?.(Math.max(1,page-1))} disabled={page===1}><ChevronLeft size={15}/></button><button className="current">{page}</button><button onClick={()=>setPage?.(page+1)}>{page+1}</button><button onClick={()=>setPage?.(page+1)}><ChevronRight size={15}/></button></div></div>}
+    </Panel>
   </>;
 }
-function UsersPage({onAction,onInvite}:{onAction:(s:string)=>void;onInvite:()=>void}) {
+function UsersPage({onAction,onInvite,users=[],total=0,loading=false,error=null,onRetry}:{onAction:(s:string)=>void;onInvite:()=>void;users?:import("@gps/shared").User[];total?:number;loading?:boolean;error?:string|null;onRetry?:()=>void}) {
+  const active = users.filter(u => u.active).length;
   return <>
-    <div className="gps-metrics"><Metric icon={Users} label="Total Users" value="24"/><Metric icon={CheckCircle2} label="Active Users" value="21" tone="green"/><Metric icon={Clock3} label="Pending Invites" value="2" tone="violet"/><Metric icon={ShieldCheck} label="Roles Defined" value="4" tone="orange"/></div>
-    <Panel title="Team Members" action={<button className="gps-outline" onClick={()=>onAction("Role permissions opened.")}><ShieldCheck size={14}/> Manage Roles</button>}><div className="gps-toolbar"><div className="gps-search-inline"><Search size={15}/><input placeholder="Search team members..."/></div><select className="gps-select"><option>All Roles</option><option>Administrator</option><option>Receptionist</option></select><select className="gps-select"><option>All Statuses</option><option>Active</option><option>Invited</option></select></div><div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>User</th><th>Role</th><th>Hotel</th><th>Last Active</th><th>Status</th><th>Actions</th></tr></thead><tbody>{[["Admin Operator","AO","admin@grandvista.com","Administrator","Grand Vista Hotel","Now","Active"],["Sarah Admin","SA","sarah@grandvista.com","Administrator","Grand Vista Hotel","10 min ago","Active"],["John Reception","JR","john@grandvista.com","Receptionist","Grand Vista Hotel","1 hour ago","Active"],["Mary Reception","MR","mary@grandvista.com","Receptionist","Lakeside Suites","Invited","Invited"],["David Manager","DM","david@grandvista.com","Hotel Manager","Grand Vista Hotel","Yesterday","Active"]].map((r,i)=><tr key={i}><td><div className="gps-person"><span className="gps-avatar">{r[1]}</span><span><b>{r[0]}</b><small>{r[2]}</small></span></div></td><td>{r[3]}</td><td>{r[4]}</td><td>{r[5]}</td><td><span className={`gps-pill ${r[6]==="Active"?"pill-green":"pill-orange"}`}>{r[6]}</span></td><td><button className="gps-row-action" onClick={()=>onAction(`Editing ${r[0]}.`)}><Pencil size={14}/></button><button className="gps-row-action" onClick={()=>onAction(`${r[0]} options opened.`)}><MoreHorizontal size={14}/></button></td></tr>)}</tbody></table></div></Panel>
-    <Panel title="Roles & Permissions"><div className="gps-role-grid">{[["Administrator","Full system access","4 users"],["Hotel Manager","Hotel-level management","3 users"],["Receptionist","Guest search and registration","14 users"],["Auditor","Read-only audit access","3 users"]].map(r=><div key={r[0]}><span className="gps-role-icon"><KeyRound size={17}/></span><b>{r[0]}</b><small>{r[1]}</small><em>{r[2]}</em><button onClick={()=>onAction(`${r[0]} permissions opened.`)}>View permissions <ArrowRight size={12}/></button></div>)}</div></Panel>
+    {error && <ApiErrorState message={error} onRetry={onRetry}/>}
+    <div className="gps-metrics"><Metric icon={Users} label="Total Users" value={total.toLocaleString()}/><Metric icon={CheckCircle2} label="Active Users" value={String(active)} tone="green"/><Metric icon={Clock3} label="Pending Invites" value="0" tone="violet"/><Metric icon={ShieldCheck} label="Roles Defined" value="3" tone="orange"/></div>
+    <Panel title="Team Members" action={<button className="gps-primary" onClick={onInvite}><Plus size={14}/> Invite User</button>}>
+      {loading && users.length === 0 ? <LoadingState label="Loading users…"/> :
+      <div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>{users.length === 0 ? <tr><td colSpan={5} style={{textAlign:"center",color:"#97a4b6",padding:"20px"}}>No users yet. Invite team members to grant them access.</td></tr> : users.map(u=><tr key={u.userId}><td><b>{u.email}</b></td><td>{u.groups.join(", ")}</td><td><span className={`gps-pill ${u.active?"pill-green":"pill-orange"}`}>{u.active?"Active":"Disabled"}</span></td><td>{new Date(u.createdAt).toLocaleDateString()}</td><td><button className="gps-row-action" onClick={()=>onAction(`Editing ${u.email}.`)}><Pencil size={14}/></button></td></tr>)}</tbody></table></div>}
+    </Panel>
+    <Panel title="Roles & Permissions"><div className="gps-role-grid">{[["Administrator","Full system access","Admin"],["Regional Manager","Multi-tenant management","RegionalManager"],["Receptionist","Guest search and registration","Receptionist"]].map(r=><div key={r[0]}><span className="gps-role-icon"><KeyRound size={17}/></span><b>{r[0]}</b><small>{r[1]}</small><em>{users.filter(u => u.groups.includes(r[2] as never)).length} users</em><button onClick={()=>onAction(`${r[0]} permissions opened.`)}>View permissions <ArrowRight size={12}/></button></div>)}</div></Panel>
   </>;
 }
-function Tenants({onAction,onAdd}:{onAction:(s:string)=>void;onAdd:()=>void}) {
+function Tenants({onAction,onAdd,tenants=[],loading=false,error=null,onRetry}:{onAction:(s:string)=>void;onAdd:()=>void;tenants?:import("@gps/shared").Tenant[];loading?:boolean;error?:string|null;onRetry?:()=>void}) {
   return <>
-    <div className="gps-metrics"><Metric icon={Building2} label="Total Hotels" value="12"/><Metric icon={CheckCircle2} label="Active Tenants" value="10" tone="green"/><Metric icon={Clock3} label="Pending Setup" value="2" tone="violet"/><Metric icon={Users} label="Guest Profiles" value="124,820" tone="orange"/></div>
-    <div className="gps-grid-two"><Panel title="Hotel Workspaces" action={<button className="gps-text-button" onClick={onAdd}><Plus size={13}/> Add hotel</button>}><div className="gps-hotel-list">{[["Grand Vista Hotel","Lagos, Nigeria","12,480","Connected"],["Lakeside Suites","Abuja, Nigeria","8,240","Connected"],["Ocean Pearl Hotel","Port Harcourt","6,820","Connected"],["The Meridian","Lagos, Nigeria","4,120","Setup"]].map((r,i)=><div className="gps-hotel-item" key={r[0]}><span className="gps-hotel-icon"><Building2 size={18}/></span><div><b>{r[0]}</b><small>{r[1]} · {r[2]} profiles</small></div><span className={`gps-pill ${r[3]==="Connected"?"pill-green":"pill-orange"}`}>{r[3]}</span><button className="gps-row-action" onClick={()=>onAction(`${r[0]} workspace opened.`)}><ChevronRight size={15}/></button></div>)}</div></Panel><Panel title="Selected Tenant"><div className="gps-tenant-detail"><div className="gps-tenant-logo"><Building2 size={27}/></div><h3>Grand Vista Hotel</h3><p>Lagos, Nigeria</p><span className="gps-status status-good"><i/> Active tenant</span><InfoRows rows={[["Tenant ID","TEN-0001"],["Created","12 January 2025"],["PMS Provider","Grand Vista PMS"],["Plan","Enterprise"],["Users","12 active"]]}/><button className="gps-outline gps-full" onClick={()=>window.location.assign("/workspace/hotel-settings")}><Settings size={14}/> Manage Hotel Settings</button></div></Panel></div>
-    <Panel title="Tenant Details"><div className="gps-table-wrap"><table className="gps-table"><thead><tr><th>Hotel / Tenant</th><th>Location</th><th>Guest Profiles</th><th>Users</th><th>Integration</th><th>Status</th><th>Actions</th></tr></thead><tbody>{[["Grand Vista Hotel","Lagos","12,480","12","Grand Vista PMS"],["Lakeside Suites","Abuja","8,240","8","Opera PMS"],["Ocean Pearl Hotel","Port Harcourt","6,820","6","Custom PMS"]].map((r,i)=><tr key={i}>{r.map((v,j)=><td key={j}>{v}</td>)}<td><span className="gps-pill pill-green">Active</span></td><td><button className="gps-row-action" onClick={()=>onAction(`${r[0]} actions opened.`)}><MoreHorizontal size={14}/></button></td></tr>)}</tbody></table></div></Panel>
+    {error && <ApiErrorState message={error} onRetry={onRetry}/>}
+    <div className="gps-metrics"><Metric icon={Building2} label="Total Tenants" value={String(tenants.length)}/><Metric icon={CheckCircle2} label="Active" value={String(tenants.length)} tone="green"/><Metric icon={Clock3} label="Pending Setup" value="0" tone="violet"/><Metric icon={Users} label="Tenant Mode" value="single" tone="orange"/></div>
+    <div className="gps-grid-two"><Panel title="Tenants" action={<button className="gps-text-button" onClick={onAdd}><Plus size={13}/> Add tenant</button>}>
+      {loading && tenants.length === 0 ? <LoadingState label="Loading tenants…"/> :
+      <div className="gps-hotel-list">{tenants.length === 0 ? <div style={{padding:"20px",color:"#97a4b6",textAlign:"center"}}>No tenants found. The first tenant is seeded via the migration.</div> : tenants.map(t=><div className="gps-hotel-item" key={t.tenantId}><span className="gps-hotel-icon"><Building2 size={18}/></span><div><b>{t.name}</b><small>Tenant ID: {t.tenantId.slice(0,8)} · Created {new Date(t.createdAt).toLocaleDateString()}</small></div><span className="gps-pill pill-green">Active</span><button className="gps-row-action" onClick={()=>onAction(`${t.name} workspace opened.`)}><ChevronRight size={15}/></button></div>)}</div>}
+    </Panel><Panel title="Tenant Mode"><div className="gps-tenant-detail"><div className="gps-tenant-logo"><Building2 size={27}/></div><h3>Single-Tenant</h3><p>v1 deployment</p><span className="gps-status status-good"><i/> Production</span><InfoRows rows={[["Tenant Mode","Single-tenant (v1)"],["Multi-tenant Schema","Built-in (tenant_id on every table)"],["Chain-level Deploy","Deferred to v2"],["Isolation Boundary","JWT-enforced at every query"]]}/><button className="gps-outline gps-full" onClick={()=>window.location.assign("/workspace/hotel-settings")}><Settings size={14}/> Manage Hotel Settings</button></div></Panel></div>
   </>;
 }
 function SettingsPage({toggles,setToggles,tab,setTab,onAction}:{toggles:Record<string,boolean>;setToggles:(v:Record<string,boolean>)=>void;tab:string;setTab:(v:string)=>void;onAction:(s:string)=>void}) {

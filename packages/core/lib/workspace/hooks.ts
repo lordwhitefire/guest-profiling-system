@@ -240,3 +240,264 @@ export function useGuestCount(): UseGuestCountResult {
 
   return { total, loading, error };
 }
+
+// ── useStats — dashboard metrics (real /api/stats endpoint) ───────────────
+
+import type { TenantStats, SyncStatusResponse, DataRequest, TenantSettings } from "@/lib/api-client";
+import type { AuditLog, Tenant, User } from "@gps/shared";
+
+export interface UseStatsResult {
+  stats: TenantStats | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useStats(): UseStatsResult {
+  const [stats, setStats] = useState<TenantStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.getStats()
+      .then((s) => { if (!cancelled) setStats(s); })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof ApiError ? err.message : "Failed to load stats.");
+          setStats(null);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [tick]);
+
+  return { stats, loading, error, refetch: () => setTick((t) => t + 1) };
+}
+
+// ── useAuditLogs — audit-logs screen ───────────────────────────────────────
+
+export interface UseAuditLogsResult {
+  logs: AuditLog[];
+  total: number;
+  loading: boolean;
+  error: string | null;
+  page: number;
+  setPage: (p: number) => void;
+  refetch: () => void;
+}
+
+export function useAuditLogs(initialPage = 1, limit = 20): UseAuditLogsResult {
+  const [page, setPage] = useState(initialPage);
+  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.listAuditLogs(page, limit)
+      .then((r) => {
+        if (cancelled) return;
+        setLogs(r.logs);
+        setTotal(r.total);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err instanceof ApiError ? err.message : "Failed to load audit logs.");
+        setLogs([]);
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [page, limit, tick]);
+
+  return { logs, total, loading, error, page, setPage, refetch: () => setTick((t) => t + 1) };
+}
+
+// ── useSyncStatus — PMS Integration screen ──────────────────────────────────
+
+export interface UseSyncStatusResult {
+  status: SyncStatusResponse | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useSyncStatus(): UseSyncStatusResult {
+  const [status, setStatus] = useState<SyncStatusResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.getSyncStatus()
+      .then((s) => { if (!cancelled) setStatus(s); })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof ApiError ? err.message : "Failed to load sync status.");
+          setStatus(null);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [tick]);
+
+  return { status, loading, error, refetch: () => setTick((t) => t + 1) };
+}
+
+// ── useDataRequests — Data Requests screen ────────────────────────────────
+
+export interface UseDataRequestsResult {
+  requests: DataRequest[];
+  total: number;
+  loading: boolean;
+  error: string | null;
+  page: number;
+  setPage: (p: number) => void;
+  refetch: () => void;
+}
+
+export function useDataRequests(initialPage = 1, limit = 20): UseDataRequestsResult {
+  const [page, setPage] = useState(initialPage);
+  const [requests, setRequests] = useState<DataRequest[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.listDataRequests(page, limit)
+      .then((r) => {
+        if (cancelled) return;
+        setRequests(r.requests);
+        setTotal(r.total);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err instanceof ApiError ? err.message : "Failed to load data requests.");
+        setRequests([]);
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [page, limit, tick]);
+
+  return { requests, total, loading, error, page, setPage, refetch: () => setTick((t) => t + 1) };
+}
+
+// ── useUsers — Users screen ─────────────────────────────────────────────────
+
+export interface UseUsersResult {
+  users: User[];
+  total: number;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useUsers(): UseUsersResult {
+  const [users, setUsers] = useState<User[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.listUsers(1, 100)
+      .then((r) => {
+        if (cancelled) return;
+        setUsers(r.users);
+        setTotal(r.total);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err instanceof ApiError ? err.message : "Failed to load users.");
+        setUsers([]);
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [tick]);
+
+  return { users, total, loading, error, refetch: () => setTick((t) => t + 1) };
+}
+
+// ── useTenants — Tenants screen ─────────────────────────────────────────────
+
+export interface UseTenantsResult {
+  tenants: Tenant[];
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useTenants(): UseTenantsResult {
+  const [tenants, setTenants] = useState<Tenant[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.listTenants()
+      .then((t) => { if (!cancelled) setTenants(t); })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof ApiError ? err.message : "Failed to load tenants.");
+          setTenants([]);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [tick]);
+
+  return { tenants, loading, error, refetch: () => setTick((t) => t + 1) };
+}
+
+// ── useSettings — Settings screen ─────────────────────────────────────────
+
+export interface UseSettingsResult {
+  settings: TenantSettings | null;
+  loading: boolean;
+  error: string | null;
+  update: (s: Partial<TenantSettings>) => Promise<void>;
+  refetch: () => void;
+}
+
+export function useSettings(): UseSettingsResult {
+  const [settings, setSettings] = useState<TenantSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.getSettings()
+      .then((s) => { if (!cancelled) setSettings(s); })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof ApiError ? err.message : "Failed to load settings.");
+          setSettings(null);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [tick]);
+
+  const update = async (s: Partial<TenantSettings>) => {
+    const updated = await api.updateSettings(s);
+    setSettings(updated);
+  };
+
+  return { settings, loading, error, update, refetch: () => setTick((t) => t + 1) };
+}

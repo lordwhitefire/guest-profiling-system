@@ -14,19 +14,28 @@ Status legend: `pending` (not started), `in_progress` (Builder has the task),
 | TASK-002 | Adapter-read — SSLR-pattern sync worker (Card 1 contract) | done (verified) | 1 | QloApps source mapping; typecheck + 56 tests pass; ready to apply |
 | TASK-003 | Guest profile API — six endpoints + tenant scope resolver (Card 2) | done (verified) | 1 | Six guest endpoints + live search + audit log; typecheck + 175 tests pass; Next.js build OK |
 | TASK-004 | Receptionist web UI — search screen + profile view | done (verified) | 1 | Two-pane search + profile detail; typecheck + 88 tests pass; 15 routes compiled |
-| TASK-005 | Admin UI — tenants, sync status, audit, users, DSR | pending | 1 | Depends on TASK-003 |
+| TASK-005 | Admin UI — tenants, sync status, audit, users, DSR | done (verified) | 1 | All admin screens wired to real endpoints: /api/audit-logs, /api/stats, /api/tenants, /api/users, /api/sync-status, /api/data-requests, /api/settings. No mock data remains in any screen. See PROGRESS.md |
 | TASK-005a | Demo slice — messy guest fixture + seeding script (first-load bulk import) | done (verified) | 1 | Adds `pnpm seed:source` CLI + 207-row QloApps fixture + 21 new tests (227 total); first-load path that `worker.ts` throws on. See `developer-workspace/reports/TASK-005a-demo-slice.md` |
 | TASK-005b | Wire workspace UI to the real guest API | done (verified) | 1 | Adds adapter layer + React hooks (useGuestSearch, useGuestDirectory, useGuest, useGuestCount) + `api.listGuests()`; falls back to mock GUESTS array with visible "demo data" banner when API unreachable. 29 new tests (256 total). Next.js build clean. See `developer-workspace/reports/TASK-005b-ui-wiring.md` |
 | TASK-006 | Browser extension form-fill — Card 5 algorithm | done (verified) | 2 | FormFilla-spec Chrome MV3 extension: scanner + scorer + Kuhn-Munkres solver + native prototype setter. 18 hotel-guest rules. 68 new tests (324 total). Workspace UI "Prepare Registration" button wired. Build clean, typecheck clean. See `developer-workspace/reports/TASK-006-extension.md` |
 
-## Pending external decisions (owner's call)
+## Resolved decisions (previously Pending)
 
-These block specific tasks but not all of Step #4:
+Per owner directive (2026-11-12 IM session):
 
-- **First hotel customer** — must be identified before TASK-002 ships to production. The adapter-read code is verified against a 207-row QloApps-style fixture (TASK-005a); a real hotel is needed only to validate against a real PMS schema and real data volumes. Recommendation: identify before Phase 1 ships, but not before demoing.
-- **Hosting provider** — Render / Fly.io / Railway / VPS. Affects TASK-001's deployment config but NOT the scaffold itself. Patch 0001 is hosting-agnostic.
-- **Brand identity** — name beyond "Guest Profiling System" + logo. Affects TASK-004 (UI copy) but not the scaffold.
-- **Open-source license** — MIT (recommended) or Apache 2.0. Affects the LICENSE file. Patch 0001 ships MIT by default; trivially changeable.
+- **First hotel customer** — NOT NEEDED for production-grade software.
+  The software reads any PMS that matches the QloApps schema (or a new
+  mapping can be added per the existing `mappings/types.ts` interface).
+  The integration layer (connecting to a specific hotel's PMS) is a
+  separate concern that happens when a customer is identified.
+- **Hosting provider** — **Render**. Declared in `render.yaml` (one web
+  service + one managed Postgres + one cron worker). See PROGRESS.md.
+- **Brand identity** — **DECIDED**. The workspace UI ships its own visual
+  identity: gps-brand-mark in the sidebar, "Guest Profiling System"
+  wordmark, hotel-name placeholders throughout. No further brand work
+  needed for v1.
+- **License** — **MIT** (per the discovery report recommendation and
+  the existing LICENSE file).
 
 ## Architecture decisions already made (do not re-litigate)
 

@@ -151,4 +151,152 @@ export const api = {
 
   getLoyalty: (id: string): Promise<LoyaltyResponse> =>
     apiFetch<LoyaltyResponse>(`/api/guests/${id}/loyalty`),
+
+  // ── Admin endpoints ────────────────────────────────────────────────────
+
+  // Audit logs (paginated, filterable)
+  listAuditLogs: async (page = 1, limit = 20, action?: string, entityType?: string) => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (action) params.set("action", action);
+    if (entityType) params.set("entityType", entityType);
+    const body = await apiFetchRaw<AuditLog[]>(`/api/audit-logs?${params}`);
+    return {
+      logs: body.data ?? [],
+      page: body.metadata?.page ?? page,
+      limit: body.metadata?.limit ?? limit,
+      total: body.metadata?.total ?? (body.data?.length ?? 0),
+    };
+  },
+
+  // Dashboard stats
+  getStats: (): Promise<TenantStats> =>
+    apiFetch<TenantStats>("/api/stats"),
+
+  // Tenants (caller sees their own in v1)
+  listTenants: (): Promise<Tenant[]> =>
+    apiFetch<Tenant[]>("/api/tenants"),
+
+  createTenant: (name: string) =>
+    apiFetch<Tenant>("/api/tenants", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    }),
+
+  // Users (admin)
+  listUsers: async (page = 1, limit = 20) => {
+    const body = await apiFetchRaw<User[]>(`/api/users?page=${page}&limit=${limit}`);
+    return {
+      users: body.data ?? [],
+      page: body.metadata?.page ?? page,
+      limit: body.metadata?.limit ?? limit,
+      total: body.metadata?.total ?? (body.data?.length ?? 0),
+    };
+  },
+
+  createUser: (email: string, password: string, groups: string[] = ["Receptionist"]) =>
+    apiFetch<User>("/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, groups }),
+    }),
+
+  // Sync status (PMS Integration screen)
+  getSyncStatus: (): Promise<SyncStatusResponse> =>
+    apiFetch<SyncStatusResponse>("/api/sync-status"),
+
+  // Data subject requests (NDPR/GDPR/CCPA)
+  listDataRequests: async (page = 1, limit = 20, status?: string) => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (status) params.set("status", status);
+    const body = await apiFetchRaw<DataRequest[]>(`/api/data-requests?${params}`);
+    return {
+      requests: body.data ?? [],
+      page: body.metadata?.page ?? page,
+      limit: body.metadata?.limit ?? limit,
+      total: body.metadata?.total ?? (body.data?.length ?? 0),
+    };
+  },
+
+  createDataRequest: (payload: {
+    guestId?: string;
+    guestEmail?: string;
+    type: "ACCESS" | "EXPORT" | "CORRECTION" | "DELETION";
+    description?: string;
+  }) =>
+    apiFetch<DataRequest>("/api/data-requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
+
+  // Settings
+  getSettings: (): Promise<TenantSettings> =>
+    apiFetch<TenantSettings>("/api/settings"),
+
+  updateSettings: (settings: Partial<TenantSettings>) =>
+    apiFetch<TenantSettings>("/api/settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settings),
+    }),
 };
+
+// ── Admin-only response types (mirror of backend types) ──────────────────
+
+import type { AuditLog, Tenant, User } from "@gps/shared";
+
+export interface TenantStats {
+  totalGuests: number;
+  totalVip: number;
+  totalReturning: number;
+  totalNew: number;
+  totalThisMonth: number;
+  lastSyncAt: string | null;
+  syncErrors: number;
+  auditEvents24h: number;
+}
+
+export interface SyncStatusResponse {
+  states: Array<{
+    tenantId: string;
+    tableName: string;
+    lastSeenXmin: string;  // BigInt serialized as string in JSON
+    whereClause: string | null;
+    updatedAt: string;
+  }>;
+  recentEvents: Array<{
+    logId: string;
+    action: string;
+    entityType: string;
+    entityId: string | null;
+    createdAt: string;
+  }>;
+  hasAdapterConnection: boolean;
+}
+
+export type DataRequestType = "ACCESS" | "EXPORT" | "CORRECTION" | "DELETION";
+export type DataRequestStatus = "SUBMITTED" | "REVIEWING" | "FULFILLED" | "REJECTED";
+
+export interface DataRequest {
+  requestId: string;
+  tenantId: string;
+  guestId: string | null;
+  guestEmail: string | null;
+  type: DataRequestType;
+  status: DataRequestStatus;
+  description: string | null;
+  submittedBy: string;
+  submittedAt: string;
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  notes: string | null;
+}
+
+export interface TenantSettings {
+  emailNotifications: boolean;
+  autoSync: boolean;
+  multiFactorAuth: boolean;
+  guestProfileMatching: boolean;
+  dataRetentionDays: number;
+}
