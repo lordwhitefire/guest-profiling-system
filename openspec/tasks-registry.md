@@ -16,6 +16,7 @@ Status legend: `pending` (not started), `in_progress` (Builder has the task),
 | TASK-004 | Receptionist web UI — search screen + profile view | done (verified) | 1 | Two-pane search + profile detail; typecheck + 88 tests pass; 15 routes compiled |
 | TASK-005 | Admin UI — tenants, sync status, audit, users, DSR | pending | 1 | Depends on TASK-003 |
 | TASK-005a | Demo slice — messy guest fixture + seeding script (first-load bulk import) | done (verified) | 1 | Adds `pnpm seed:source` CLI + 207-row QloApps fixture + 21 new tests (227 total); first-load path that `worker.ts` throws on. See `developer-workspace/reports/TASK-005a-demo-slice.md` |
+| TASK-005b | Wire workspace UI to the real guest API | done (verified) | 1 | Adds adapter layer + React hooks (useGuestSearch, useGuestDirectory, useGuest, useGuestCount) + `api.listGuests()`; falls back to mock GUESTS array with visible "demo data" banner when API unreachable. 29 new tests (256 total). Next.js build clean. See `developer-workspace/reports/TASK-005b-ui-wiring.md` |
 | TASK-006 | Browser extension form-fill — Card 5 algorithm | pending | 2 | Depends on TASK-003 + TASK-004 |
 
 ## Pending external decisions (owner's call)

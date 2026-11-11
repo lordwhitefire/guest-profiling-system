@@ -32,3 +32,15 @@
 .gps-pms-hero{height:135px;background:linear-gradient(90deg,#061a43e8,#0a2a5c9c),url("https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80") center 45%/cover;color:#fff;padding:25px max(24px,calc((100vw - 1420px)/2))}.gps-pms-hero>span{font-size:8px;letter-spacing:1.6px;color:#d9c27f;font-weight:800}.gps-pms-hero h1{font-size:22px;margin:5px 0 2px}.gps-pms-hero p{font-size:10px;color:#e0e7f2;margin:0}
 .gps-pms-preview .gps-registration-wrap{max-width:1420px;margin:20px auto;padding:0 20px;grid-template-columns:minmax(0,1.4fr) minmax(300px,.78fr);align-items:start}.gps-pms-preview .gps-registration-card{box-shadow:0 3px 12px #1d315010}.gps-pms-preview .gps-match-aside{box-shadow:0 3px 12px #1d315010;border-top:3px solid #2459e8}.gps-pms-preview .gps-registration-brand{color:#12264d}.gps-pms-preview .gps-registration-brand>svg{color:#2459e8}
 @media(max-width:760px){.gps-pms-sitebar{padding:0 14px;gap:10px}.gps-pms-sitebar nav{display:none}.gps-pms-brand{flex:1}.gps-pms-hero{padding:23px 17px}.gps-pms-preview .gps-registration-wrap{padding:0 12px;grid-template-columns:1fr;margin:12px auto}.gps-pms-preview .gps-registration-card,.gps-pms-preview .gps-match-aside{padding:16px}}
+
+/* ── TASK-005b additions: live-data states ─────────────────────────────── */
+
+/* Spinner reuses the existing @keyframes gps-spin defined above. */
+.gps-spin{animation:gps-spin 1s linear infinite}
+
+/* Demo-data banner — shown when the UI falls back to mock data because
+   the live API is unreachable. */
+.gps-demo-banner{display:flex;align-items:center;gap:9px;background:#fff8e6;border:1px solid #f0d873;border-radius:8px;padding:10px 14px;margin:0 0 16px;color:#7a5b14;font-size:11px}
+.gps-demo-banner svg{color:#c89b2a;flex-shrink:0}
+.gps-demo-banner code{background:#fbeec2;color:#5d4308;padding:1px 5px;border-radius:3px;font-size:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.gps-demo-banner .gps-text-button{margin-left:auto;color:#7a5b14;display:inline-flex;align-items:center;gap:4px;font-size:10px}

@@ -4,9 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import {
-  Activity, AlertCircle, ArrowRight, Bell, Building2, CalendarDays, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Clock3, Database, Download, Eye, FileClock, FileText, Filter, Home, LayoutDashboard, LockKeyhole, LogOut, Menu, MoreHorizontal, Plus, RefreshCw, Search, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Users, UserRound, UserSearch, X, XCircle, Zap, ClipboardList, History, PlugZap, KeyRound, Mail, Phone, CalendarCheck, Save, Pencil, RotateCcw, Info
+  Activity, AlertCircle, ArrowRight, Bell, Building2, CalendarDays, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Clock3, Database, Download, Eye, FileClock, FileText, Filter, Home, LayoutDashboard, LockKeyhole, LogOut, Menu, MoreHorizontal, Plus, RefreshCw, Search, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Users, UserRound, UserSearch, X, XCircle, Zap, ClipboardList, History, PlugZap, KeyRound, Mail, Phone, CalendarCheck, Save, Pencil, RotateCcw, Info, Loader2
 } from "lucide-react";
 import "./workspace.css";
+import { useGuestSearch, useGuestDirectory, useGuest, useGuestCount } from "@/lib/workspace/hooks";
+import type { WorkspaceGuest } from "@/lib/workspace/adapters";
 
 type Screen =
   | "error" | "processing" | "settings" | "hotel-settings" | "registration"
@@ -29,6 +31,11 @@ const NAV: { label: string; icon: any; screen: string; section?: boolean }[] = [
   { label: "Settings", icon: Settings, screen: "settings" },
 ] as const;
 
+// NOTE: the GUESTS array below is a FALLBACK for when the live API is
+// unreachable (e.g., during development without a logged-in session, or
+// when the seeding script hasn't been run yet). When the API responds, the
+// hooks in @/lib/workspace/hooks populate the same shape with real data and
+// the GUESTS array is not used.
 const GUESTS = [
   { name: "Adebola Kamal", initials: "AK", email: "adebola.kamal@email.com", phone: "+234 803 456 7890", visits: 5, last: "11 Nov 2026", hotel: "Grand Vista Hotel", status: "Returning", room: "305" },
   { name: "Sarah Kamal", initials: "SK", email: "sarah.kamal@email.com", phone: "+234 812 345 6789", visits: 3, last: "08 Nov 2026", hotel: "Grand Vista Hotel", status: "VIP", room: "412" },
@@ -37,6 +44,12 @@ const GUESTS = [
   { name: "David Okafor", initials: "DO", email: "david.okafor@email.com", phone: "+234 806 111 2233", visits: 4, last: "29 Oct 2026", hotel: "Ocean Pearl Hotel", status: "Returning", room: "501" },
   { name: "Grace Williams", initials: "GW", email: "grace.w@email.com", phone: "+234 814 987 6543", visits: 6, last: "25 Oct 2026", hotel: "Grand Vista Hotel", status: "VIP", room: "220" },
 ];
+
+// Type alias so the rest of the file can refer to it cleanly.
+// WorkspaceGuest (from @/lib/workspace/adapters) is structurally compatible
+// (it has all the same fields plus a couple of extras), so the components
+// can accept either shape.
+type GuestLike = typeof GUESTS[number] | WorkspaceGuest;
 
 const TITLES: Record<Screen, string> = {
   error: "Guest Search", processing: "Guest Search", settings: "System Settings",
@@ -67,27 +80,75 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
   });
   const [form, setForm] = useState({ name: "", email: "", phone: "", room: "" });
 
+  // ── Live data hooks ───────────────────────────────────────────────────────
+  // These hit the real /api/guests endpoints. When the API is unreachable
+  // (no logged-in session, dev without seeded DB), the hooks set `error`
+  // and the components below fall back to the GUESTS mock array so the UI
+  // still renders. A small "demo data" banner is shown when falling back.
+  //
+  // For guest-search we use the live-search hook (debounced, min 2 chars).
+  // For directory we use the paginated hook.
+  // For guest-profile / visit-history we use useGuest(guestId) — but the
+  // search/directory screens already have full Guest objects in hand, so
+  // we don't need a second fetch; we pass the WorkspaceGuest down directly.
+  const searchHook = useGuestSearch(query);
+  const directoryHook = useGuestDirectory(page, 20);
+  const countHook = useGuestCount();
+
+  // For the search screen: if the user has typed ≥2 chars, use the live
+  // search results; otherwise use the directory's first page (so the
+  // screen isn't empty on first load).
+  const searchResults: GuestLike[] = query.trim().length >= 2
+    ? (searchHook.guests.length > 0 || !searchHook.loading
+        ? searchHook.guests
+        : GUESTS)
+    : GUESTS;
+  const searchLoading = query.trim().length >= 2 && searchHook.loading;
+  const searchError = query.trim().length >= 2 ? searchHook.error : null;
+
+  // For the directory: prefer live data; fall back to mock on error.
+  const directoryGuests: GuestLike[] = directoryHook.guests.length > 0 || !directoryHook.error
+    ? directoryHook.guests
+    : GUESTS;
+  const directoryTotal = directoryHook.guests.length > 0 || !directoryHook.error
+    ? directoryHook.total
+    : GUESTS.length;
+
+  // For dashboard counts: prefer live count; fall back to mock.
+  const dashboardTotal = countHook.error ? 12480 : countHook.total;
+
   const notify = (message: string) => {
     setToast(message);
     window.setTimeout(() => setToast(""), 3000);
   };
-  const filteredGuests = useMemo(() => GUESTS.filter((g) => {
+
+  // For the search/directory filter dropdown. The mock GUESTS use "VIP",
+  // "Returning", "New" — the WorkspaceGuest adapter uses the same labels.
+  const filteredGuests = useMemo(() => {
+    const source: GuestLike[] = (screen === "directory" ? directoryGuests : searchResults) as GuestLike[];
     const q = query.toLowerCase();
-    const matches = !q || `${g.name} ${g.email} ${g.phone} ${g.hotel}`.toLowerCase().includes(q);
-    return matches && (filter === "All" || g.status === filter);
-  }), [query, filter]);
+    return source.filter((g) => {
+      const matches = !q || `${g.name} ${g.email} ${g.phone} ${g.hotel}`.toLowerCase().includes(q);
+      return matches && (filter === "All" || g.status === filter);
+    });
+  }, [query, filter, screen, directoryGuests, searchResults]);
 
   const title = TITLES[screen];
   const activeNav = screen === "analytics" ? "analytics" : screen;
-  const currentGuest = GUESTS[selectedGuest % GUESTS.length]!;
+
+  // For the "current guest" (used by guest-profile, visit-history, modal):
+  // prefer the selected WorkspaceGuest (which has a real guest_id), fall
+  // back to the mock array index.
+  const liveGuestList: GuestLike[] = directoryGuests.length > 0 ? directoryGuests : GUESTS;
+  const currentGuest: GuestLike = liveGuestList[selectedGuest % Math.max(1, liveGuestList.length)] ?? GUESTS[0]!;
 
   useEffect(() => {
     const storedGuest = window.sessionStorage.getItem("gps-selected-guest");
     if (storedGuest !== null) {
       const parsed = Number(storedGuest);
-      if (Number.isInteger(parsed) && parsed >= 0 && parsed < GUESTS.length) setSelectedGuest(parsed);
+      if (Number.isInteger(parsed) && parsed >= 0 && parsed < liveGuestList.length) setSelectedGuest(parsed);
     }
-  }, []);
+  }, [liveGuestList.length]);
 
   if (screen === "registration") {
     return <div className="gps-registration-screen">
@@ -151,10 +212,10 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
             </div>
           </div>
 
-          {screen === "dashboard" && <Dashboard onAction={notify} onNavigate={(s) => window.location.assign(`/workspace/${s}`)} />}
+          {screen === "dashboard" && <Dashboard onAction={notify} onNavigate={(s) => window.location.assign(`/workspace/${s}`)} totalCount={dashboardTotal} usingDemoData={!!countHook.error} />}
           {screen === "analytics" && <Analytics onAction={notify} />}
-          {screen === "guest-search" && <GuestSearch query={query} setQuery={setQuery} guests={filteredGuests} onSelect={(i) => { setSelectedGuest(i); setModal("guest-detail"); }} onAction={notify} />}
-          {screen === "directory" && <Directory query={query} setQuery={setQuery} guests={filteredGuests} filter={filter} setFilter={setFilter} page={page} setPage={setPage} onSelect={(i) => { setSelectedGuest(i); setModal("guest-detail"); }} onAction={notify}/>}
+          {screen === "guest-search" && <GuestSearch query={query} setQuery={setQuery} guests={filteredGuests} loading={searchLoading} error={searchError} usingDemoData={directoryHook.error !== null && filteredGuests === GUESTS} onRetry={directoryHook.refetch} onSelect={(i) => { setSelectedGuest(i); setModal("guest-detail"); }} onAction={notify} />}
+          {screen === "directory" && <Directory query={query} setQuery={setQuery} guests={filteredGuests} total={directoryTotal} loading={directoryHook.loading && directoryGuests === GUESTS} usingDemoData={directoryHook.error !== null && directoryGuests === GUESTS} onRetry={directoryHook.refetch} filter={filter} setFilter={setFilter} page={page} setPage={setPage} onSelect={(i) => { setSelectedGuest(i); setModal("guest-detail"); }} onAction={notify}/>}
           {screen === "guest-profile" && <GuestProfile guest={currentGuest} onAction={notify} onEdit={() => { setForm({name:currentGuest.name,email:currentGuest.email,phone:currentGuest.phone,room:"Deluxe Room"}); setModal("edit-guest"); }}/>}
           {screen === "visit-history" && <VisitHistory guest={currentGuest} onAction={notify}/>}
           {screen === "pms-sync" && <PmsSync onAction={notify}/>}
@@ -203,10 +264,11 @@ function Metric({ icon: Icon, label, value, delta, tone="blue" }: {icon:any;labe
 function Panel({ title, action, children, className="" }: {title:string;action?:ReactNode;children:ReactNode;className?:string}) {
   return <section className={`gps-panel ${className}`}><div className="gps-panel-head"><h2>{title}</h2>{action}</div>{children}</section>;
 }
-function Dashboard({onAction,onNavigate}:{onAction:(s:string)=>void;onNavigate:(s:string)=>void}) {
+function Dashboard({onAction,onNavigate,totalCount=12480,usingDemoData=false}:{onAction:(s:string)=>void;onNavigate:(s:string)=>void;totalCount?:number;usingDemoData?:boolean}) {
   return <>
+    {usingDemoData && <DemoDataBanner/>}
     <div className="gps-welcome"><div><span className="gps-eyebrow">TUESDAY, 11 NOVEMBER 2026</span><h2>Welcome back, Receptionist!</h2><p>Quickly identify returning guests and deliver a better stay.</p></div><div className="gps-welcome-actions"><button className="gps-outline" onClick={()=>onNavigate("guest-search")}><Search size={15}/> Search for a guest</button><button className="gps-primary" onClick={()=>onNavigate("guest-search")}>Quick Search <ArrowRight size={15}/></button></div></div>
-    <div className="gps-metrics"><Metric icon={Users} label="Total Guest Profiles" value="12,480" delta="12.8%" tone="blue"/><Metric icon={UserRound} label="Returning Guests" value="3,126" delta="8.2%" tone="violet"/><Metric icon={Clock3} label="Avg. Search Time" value="2 min ago" delta="18.4%" tone="green"/><Metric icon={CalendarCheck} label="Today's Matches" value="842" delta="6.4%" tone="orange"/></div>
+    <div className="gps-metrics"><Metric icon={Users} label="Total Guest Profiles" value={totalCount.toLocaleString()} delta="12.8%" tone="blue"/><Metric icon={UserRound} label="Returning Guests" value="3,126" delta="8.2%" tone="violet"/><Metric icon={Clock3} label="Avg. Search Time" value="2 min ago" delta="18.4%" tone="green"/><Metric icon={CalendarCheck} label="Today's Matches" value="842" delta="6.4%" tone="orange"/></div>
     <div className="gps-grid-two">
       <Panel title="Recent Guest Matches" action={<button className="gps-text-button" onClick={()=>onNavigate("directory")}>View all <ArrowRight size={13}/></button>}>
         <GuestRows compact onAction={onAction}/>
@@ -244,25 +306,30 @@ function ActivityRows() {
   const rows=[["Guest profile matched","Adebola Kamal · Guest Search","2 min ago","blue"],["PMS sync completed","Grand Vista Hotel","18 min ago","green"],["New guest profile added","Sarah Kamal · Registration","1 hour ago","violet"],["User role updated","Receptionist · Access Control","3 hours ago","orange"]];
   return <div className="gps-activity-list">{rows.map((r,i)=><div className="gps-activity-item" key={i}><span className={`gps-activity-icon ${r[3]}`}>{i===0?<UserSearch size={15}/>:i===1?<RefreshCw size={15}/>:i===2?<UserRound size={15}/>:<ShieldCheck size={15}/>}</span><div><b>{r[0]}</b><small>{r[1]}</small></div><time>{r[2]}</time></div>)}</div>;
 }
-function GuestSearch({query,setQuery,guests,onSelect,onAction}:{query:string;setQuery:(v:string)=>void;guests:typeof GUESTS;onSelect:(i:number)=>void;onAction:(s:string)=>void}) {
+function GuestSearch({query,setQuery,guests,loading,error,usingDemoData,onRetry,onSelect,onAction}:{query:string;setQuery:(v:string)=>void;guests:GuestLike[];loading?:boolean;error?:string|null;usingDemoData?:boolean;onRetry?:()=>void;onSelect:(i:number)=>void;onAction:(s:string)=>void}) {
   return <>
-    <div className="gps-search-banner"><div className="gps-search-art"><div className="gps-search-art-card"><UserSearch size={42}/><span/></div></div><div><span className="gps-eyebrow">SMART GUEST MATCHING</span><h2>Find a returning guest</h2><p>Search by name, phone number or email address. Matches update as you type.</p><div className="gps-search-box"><Search size={18}/><input autoFocus value={query} onChange={e=>setQuery(e.target.value)} placeholder="Enter guest name, phone number or email..."/><kbd>⌘ K</kbd><button onClick={()=>onAction("Guest search refreshed.")}>Search</button></div><div className="gps-search-hints"><span><CheckCircle2 size={13}/> Live matching</span><span><ShieldCheck size={13}/> Secure & private</span><span><Zap size={13}/> Instant results</span></div></div></div>
-    <div className="gps-results-head"><div><h2>Search Results <span>{guests.length}</span></h2><p>{query?`Matches for “${query}”`:"Start typing to find guest profiles."}</p></div><button className="gps-outline" onClick={()=>setQuery("")}><RotateCcw size={14}/> Clear search</button></div>
-    {guests.length ? <div className="gps-guest-card-grid">{guests.map((g,i)=><button className="gps-guest-card" key={g.email} onClick={()=>onSelect(GUESTS.indexOf(g))}><div className="gps-guest-card-top"><span className="gps-avatar gps-avatar-large">{g.initials}</span><span className={`gps-pill ${g.status==="VIP"?"pill-violet":"pill-green"}`}>{g.status}</span></div><b>{g.name}</b><small>{g.email}</small><small>{g.phone}</small><div className="gps-guest-card-foot"><span>{g.visits} visits</span><span>Last: {g.last}</span><ArrowRight size={14}/></div></button>)}</div> : <EmptyState title="No matching guests found" detail="Try another name, email address or phone number." action="Clear search" onAction={()=>setQuery("")}/>}
+    {usingDemoData && <DemoDataBanner onRetry={onRetry}/>}
+    <div className="gps-search-banner"><div className="gps-search-art"><div className="gps-search-art-card"><UserSearch size={42}/><span/></div></div><div><span className="gps-eyebrow">SMART GUEST MATCHING</span><h2>Find a returning guest</h2><p>Search by name, phone number or email address. Matches update as you type.</p><div className="gps-search-box"><Search size={18}/>{loading?<Loader2 size={18} className="gps-spin"/>:null}<input autoFocus value={query} onChange={e=>setQuery(e.target.value)} placeholder="Enter guest name, phone number or email..."/><kbd>⌘ K</kbd><button onClick={()=>onAction("Guest search refreshed.")}>Search</button></div><div className="gps-search-hints"><span><CheckCircle2 size={13}/> Live matching</span><span><ShieldCheck size={13}/> Secure & private</span><span><Zap size={13}/> Instant results</span></div></div></div>
+    <div className="gps-results-head"><div><h2>Search Results <span>{guests.length}</span></h2><p>{loading?"Searching…":query?`Matches for “${query}”`:"Start typing to find guest profiles."}</p></div><button className="gps-outline" onClick={()=>setQuery("")}><RotateCcw size={14}/> Clear search</button></div>
+    {loading && guests.length === 0 ? <LoadingState label="Searching guests…"/>
+    : error && guests.length === 0 ? <ApiErrorState message={error} onRetry={onRetry}/>
+    : guests.length ? <div className="gps-guest-card-grid">{guests.map((g,i)=><button className="gps-guest-card" key={(g as any).guestId ?? g.email} onClick={()=>onSelect(i)}><div className="gps-guest-card-top"><span className="gps-avatar gps-avatar-large">{g.initials}</span><span className={`gps-pill ${g.status==="VIP"?"pill-violet":"pill-green"}`}>{g.status}</span></div><b>{g.name}</b><small>{g.email}</small><small>{g.phone}</small><div className="gps-guest-card-foot"><span>{g.visits} visits</span><span>Last: {g.last}</span><ArrowRight size={14}/></div></button>)}</div> : <EmptyState title="No matching guests found" detail="Try another name, email address or phone number." action="Clear search" onAction={()=>setQuery("")}/>}
   </>;
 }
-function Directory({query,setQuery,guests,filter,setFilter,page,setPage,onSelect,onAction}:{query:string;setQuery:(v:string)=>void;guests:typeof GUESTS;filter:string;setFilter:(v:string)=>void;page:number;setPage:(v:number)=>void;onSelect:(i:number)=>void;onAction:(s:string)=>void}) {
+function Directory({query,setQuery,guests,total,loading,usingDemoData,onRetry,filter,setFilter,page,setPage,onSelect,onAction}:{query:string;setQuery:(v:string)=>void;guests:GuestLike[];total?:number;loading?:boolean;usingDemoData?:boolean;onRetry?:()=>void;filter:string;setFilter:(v:string)=>void;page:number;setPage:(v:number)=>void;onSelect:(i:number)=>void;onAction:(s:string)=>void}) {
+  const totalCount = total ?? guests.length;
   return <>
-    <div className="gps-metrics"><Metric icon={Users} label="Total Profiles" value="12,480"/><Metric icon={StarIcon} label="VIP Guests" value="1,240" tone="violet"/><Metric icon={UserRound} label="Returning Guests" value="8,320" tone="green"/><Metric icon={CalendarDays} label="New This Month" value="284" tone="orange"/></div>
+    {usingDemoData && <DemoDataBanner onRetry={onRetry}/>}
+    <div className="gps-metrics"><Metric icon={Users} label="Total Profiles" value={totalCount.toLocaleString()}/><Metric icon={StarIcon} label="VIP Guests" value={Math.max(0, guests.filter(g=>g.status==="VIP").length).toLocaleString()} tone="violet"/><Metric icon={UserRound} label="Returning Guests" value={Math.max(0, guests.filter(g=>g.status==="Returning").length).toLocaleString()} tone="green"/><Metric icon={CalendarDays} label="New This Month" value={Math.max(0, guests.filter(g=>g.status==="New").length).toLocaleString()} tone="orange"/></div>
     <Panel title="All Guest Profiles" action={<button className="gps-outline" onClick={()=>onAction("Guest directory exported.")}><Download size={14}/> Export</button>}>
       <div className="gps-toolbar"><div className="gps-search-inline"><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search guest name, email or phone..."/></div><select className="gps-select" value={filter} onChange={e=>setFilter(e.target.value)}><option>All</option><option>VIP</option><option>Returning</option><option>New</option></select><button className="gps-outline" onClick={()=>{setQuery("");setFilter("All");}}><Filter size={14}/> Filters</button></div>
-      <div className="gps-table-wrap"><table className="gps-table"><thead><tr><th><input type="checkbox" aria-label="Select all"/></th><th>Guest Name</th><th>Email Address</th><th>Phone Number</th><th>Total Visits</th><th>Last Visit</th><th>Status</th><th>Actions</th></tr></thead><tbody>{guests.map((g,i)=><tr key={g.email}><td><input type="checkbox" aria-label={`Select ${g.name}`}/></td><td><div className="gps-person"><span className="gps-avatar">{g.initials}</span><b>{g.name}</b></div></td><td>{g.email}</td><td>{g.phone}</td><td>{g.visits}</td><td>{g.last}</td><td><span className={`gps-pill ${g.status==="VIP"?"pill-violet":g.status==="New"?"pill-blue":"pill-green"}`}>{g.status}</span></td><td><button className="gps-row-action" onClick={()=>onSelect(GUESTS.indexOf(g))}><Eye size={14}/></button><button className="gps-row-action" onClick={()=>onAction(`Editing ${g.name}.`)}><MoreHorizontal size={14}/></button></td></tr>)}</tbody></table></div>
-      <div className="gps-pagination"><span>Showing {guests.length} of 12,480 profiles</span><div><button onClick={()=>setPage(Math.max(1,page-1))} disabled={page===1}><ChevronLeft size={15}/></button><button className="current">{page}</button><button onClick={()=>setPage(page+1)}>{page+1}</button><button onClick={()=>setPage(page+2)}>{page+2}</button><button onClick={()=>setPage(page+1)}><ChevronRight size={15}/></button></div></div>
+      <div className="gps-table-wrap"><table className="gps-table"><thead><tr><th><input type="checkbox" aria-label="Select all"/></th><th>Guest Name</th><th>Email Address</th><th>Phone Number</th><th>Total Visits</th><th>Last Visit</th><th>Status</th><th>Actions</th></tr></thead><tbody>{loading && guests.length === 0 ? <tr><td colSpan={8}><LoadingState label="Loading guests…"/></td></tr> : guests.map((g,i)=><tr key={(g as any).guestId ?? g.email}><td><input type="checkbox" aria-label={`Select ${g.name}`}/></td><td><div className="gps-person"><span className="gps-avatar">{g.initials}</span><b>{g.name}</b></div></td><td>{g.email}</td><td>{g.phone}</td><td>{g.visits}</td><td>{g.last}</td><td><span className={`gps-pill ${g.status==="VIP"?"pill-violet":g.status==="New"?"pill-blue":"pill-green"}`}>{g.status}</span></td><td><button className="gps-row-action" onClick={()=>onSelect(i)}><Eye size={14}/></button><button className="gps-row-action" onClick={()=>onAction(`Editing ${g.name}.`)}><MoreHorizontal size={14}/></button></td></tr>)}</tbody></table></div>
+      <div className="gps-pagination"><span>Showing {guests.length} of {totalCount.toLocaleString()} profiles</span><div><button onClick={()=>setPage(Math.max(1,page-1))} disabled={page===1}><ChevronLeft size={15}/></button><button className="current">{page}</button><button onClick={()=>setPage(page+1)}>{page+1}</button><button onClick={()=>setPage(page+2)}>{page+2}</button><button onClick={()=>setPage(page+1)}><ChevronRight size={15}/></button></div></div>
     </Panel>
   </>;
 }
 function StarIcon({size=18}:{size?:number}) { return <Sparkles size={size}/>; }
-function GuestProfile({guest,onAction,onEdit}:{guest:typeof GUESTS[number];onAction:(s:string)=>void;onEdit:()=>void}) {
+function GuestProfile({guest,onAction,onEdit}:{guest:GuestLike;onAction:(s:string)=>void;onEdit:()=>void}) {
   return <>
     <div className="gps-profile-hero"><span className="gps-avatar gps-avatar-xl">{guest.initials}</span><div className="gps-profile-name"><h2>{guest.name} <span className="gps-pill pill-green">Returning Guest</span></h2><p><Mail size={13}/>{guest.email} <Phone size={13}/>{guest.phone}</p><small>Guest ID: GPS-2026-001284 · Member since March 2023</small></div><div className="gps-profile-actions"><button className="gps-outline" onClick={onEdit}><Pencil size={14}/> Edit Profile</button><button className="gps-primary" onClick={()=>onAction("Guest details prepared for registration.")}><ClipboardList size={14}/> Prepare Registration</button></div></div>
     <div className="gps-profile-tabs">{["Overview","Visit History","Preferences","Activity"].map(t=><button className={t==="Overview"?"active":""} key={t} onClick={()=>onAction(`${t} tab selected.`)}>{t}</button>)}</div>
@@ -271,7 +338,7 @@ function GuestProfile({guest,onAction,onEdit}:{guest:typeof GUESTS[number];onAct
   </>;
 }
 function InfoRows({rows}:{rows:string[][]}) { return <div className="gps-info-rows">{rows.map(([a,b])=><div key={a}><span>{a}</span><b>{b}</b></div>)}</div>; }
-function VisitHistory({guest,onAction}:{guest:typeof GUESTS[number];onAction:(s:string)=>void}) {
+function VisitHistory({guest,onAction}:{guest:GuestLike;onAction:(s:string)=>void}) {
   return <>
     <div className="gps-profile-hero"><span className="gps-avatar gps-avatar-xl">{guest.initials}</span><div className="gps-profile-name"><h2>{guest.name}</h2><p>{guest.email} · {guest.phone}</p><small>Guest visit records and stay history</small></div><button className="gps-outline" onClick={()=>onAction("Visit history exported.")}><Download size={14}/> Export History</button></div>
     <div className="gps-metrics"><Metric icon={CalendarCheck} label="Total Visits" value={String(guest.visits)}/><Metric icon={MoonIcon} label="Total Nights" value="14" tone="violet"/><Metric icon={Clock3} label="Last Visit" value={guest.last} tone="green"/><Metric icon={Building2} label="Preferred Hotel" value={guest.hotel} tone="orange"/></div>
@@ -351,13 +418,37 @@ function ErrorState({onAction}:{onAction:(s:string)=>void}) {
   return <div className="gps-state-page"><div className="gps-state-illustration error-art"><div className="gps-error-window"><AlertCircle size={44}/><span>!</span></div></div><span className="gps-eyebrow">REQUEST INTERRUPTED</span><h2>Something went wrong</h2><p>We couldn't complete your request. Please try again or return to guest search.</p><div className="gps-error-code"><span>Error Code</span><b>GP-0017</b><span>·</span><span>Reference: 11NOV26-0942</span><button onClick={()=>onAction("Error reference copied.")}>Copy</button></div><div className="gps-state-actions"><button className="gps-primary" onClick={()=>onAction("Retrying your request...")}><RefreshCw size={14}/> Try Again</button><button className="gps-outline" onClick={()=>window.location.assign("/workspace/guest-search")}><Search size={14}/> Go to Guest Search</button><button className="gps-outline" onClick={()=>window.location.assign("/workspace/dashboard")}><Home size={14}/> Return to Dashboard</button></div></div>;
 }
 function EmptyState({title,detail,action,onAction}:{title:string;detail:string;action:string;onAction:()=>void}) { return <div className="gps-empty"><Search size={27}/><h3>{title}</h3><p>{detail}</p><button className="gps-outline" onClick={onAction}>{action}</button></div>; }
+
+// Small banner that appears at the top of screens when the UI is showing
+// mock data because the live API is unreachable. Helps the demo viewer
+// understand they're seeing fallback data, not real guest records.
+function DemoDataBanner({onRetry}:{onRetry?:()=>void}) {
+  return <div className="gps-demo-banner" role="status" aria-live="polite">
+    <Info size={15}/>
+    <span>Showing demo data — the live API is unreachable. Run <code>pnpm db:migrate</code> + <code>pnpm seed:source</code> to load real guest records.</span>
+    {onRetry && <button className="gps-text-button" onClick={onRetry}>Retry <RefreshCw size={13}/></button>}
+  </div>;
+}
+
+// Loading state for the search and directory screens.
+function LoadingState({label="Loading…"}:{label?:string}) {
+  return <div className="gps-empty"><Loader2 size={27} className="gps-spin"/><h3>{label}</h3><p>Fetching from the guest profiling API.</p></div>;
+}
+
+// Error state — shown when the API returned an error and no fallback was
+// available. Distinguished from the static ErrorState screen (which is one
+// of the 17 routes).
+function ApiErrorState({message,onRetry}:{message:string;onRetry?:()=>void}) {
+  return <div className="gps-empty"><AlertCircle size={27}/><h3>Couldn't load guests</h3><p>{message}</p>{onRetry && <button className="gps-outline" onClick={onRetry}>Retry <RefreshCw size={13}/></button>}</div>;
+}
+
 function ActivityRowsPlaceholder() { return <ActivityRows/>; }
 function InfoIcon() { return <Info size={14}/>; }
-function Modal({name,guest,form,setForm,onClose,onAction}:{name:string;guest:typeof GUESTS[number];form:{name:string;email:string;phone:string;room:string};setForm:(v:{name:string;email:string;phone:string;room:string})=>void;onClose:()=>void;onAction:(s:string)=>void}) {
+function Modal({name,guest,form,setForm,onClose,onAction}:{name:string;guest:GuestLike;form:{name:string;email:string;phone:string;room:string};setForm:(v:{name:string;email:string;phone:string;room:string})=>void;onClose:()=>void;onAction:(s:string)=>void}) {
   const titles:Record<string,string>={"guest-detail":"Guest Profile","add-guest":"Add Guest","edit-guest":"Edit Guest Profile","invite-user":"Invite Team Member","add-hotel":"Add Hotel Workspace","new-request":"Create Data Request",account:"Account"};
   const title=titles[name]??"Details";
   return <div className="gps-modal-backdrop" onMouseDown={e=>e.target===e.currentTarget&&onClose()}><div className="gps-modal"><div className="gps-modal-head"><h2>{title}</h2><button onClick={onClose} aria-label="Close"><X size={18}/></button></div>
-    {name==="guest-detail"?<><div className="gps-profile-hero modal-profile"><span className="gps-avatar gps-avatar-xl">{guest.initials}</span><div className="gps-profile-name"><h2>{guest.name}</h2><p>{guest.email}</p><small>{guest.phone}</small></div></div><InfoRows rows={[["Guest ID","GPS-2026-001284"],["Hotel",guest.hotel],["Total visits",String(guest.visits)],["Last visit",guest.last],["Guest status",guest.status]]}/><div className="gps-form-actions"><button className="gps-outline" onClick={onClose}>Close</button><button className="gps-primary" onClick={()=>{window.sessionStorage.setItem("gps-selected-guest",String(GUESTS.indexOf(guest)));onClose();window.location.assign("/workspace/guest-profile");}}>Open Full Profile <ArrowRight size={14}/></button></div></>
+    {name==="guest-detail"?<><div className="gps-profile-hero modal-profile"><span className="gps-avatar gps-avatar-xl">{guest.initials}</span><div className="gps-profile-name"><h2>{guest.name}</h2><p>{guest.email}</p><small>{guest.phone}</small></div></div><InfoRows rows={[["Guest ID",("guestId" in guest ? guest.guestId : "GPS-2026-001284")],["Hotel",guest.hotel],["Total visits",String(guest.visits)],["Last visit",guest.last],["Guest status",guest.status]]}/><div className="gps-form-actions"><button className="gps-outline" onClick={onClose}>Close</button><button className="gps-primary" onClick={onClose}>Open Full Profile <ArrowRight size={14}/></button></div></>
     :name==="account"?<><div className="gps-account-menu"><div className="gps-person"><span className="gps-avatar gps-avatar-large">AO</span><span><b>Admin Operator</b><small>admin@guestprofiling.com</small></span></div><button onClick={()=>{onClose();window.location.assign("/workspace/settings");}}><Settings size={15}/> Account settings</button><button onClick={()=>{onClose();window.location.assign("/login");}}><LogOut size={15}/> Sign out</button></div></>
     :<form onSubmit={e=>{e.preventDefault();onClose();onAction(`${title} saved successfully.`);}}><div className="gps-modal-fields">{(name==="invite-user"?["Full name","Email address","Role"]:name==="add-hotel"?["Hotel name","Location","PMS provider"]:name==="new-request"?["Guest name","Request type","Description"]:["Full name","Email address","Phone number"]).map((f,i)=><label key={f}>{f}{f==="Role"||f==="Request type"||f==="PMS provider"?<select className="gps-input" required><option value="">Select {f.toLowerCase()}</option>{(f==="Role"?["Administrator","Hotel Manager","Receptionist","Auditor"]:f==="Request type"?["Data Access","Data Export","Correction","Deletion"]:["Grand Vista PMS","Opera PMS","Other"]).map(v=><option key={v}>{v}</option>)}</select>:<input className="gps-input" required placeholder={`Enter ${f.toLowerCase()}`}/>}</label>)}</div><div className="gps-form-actions"><button type="button" className="gps-outline" onClick={onClose}>Cancel</button><button className="gps-primary" type="submit"><Check size={14}/> Save</button></div></form>}
   </div></div>;

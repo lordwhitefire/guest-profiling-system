@@ -189,4 +189,84 @@ describe("API client", () => {
       );
     });
   });
+
+  describe("api.listGuests", () => {
+    it("hits /api/guests?page=N&limit=M with the given page and limit", async () => {
+      mockFetch.mockResolvedValue(
+        mockResponse({
+          success: true,
+          data: [],
+          metadata: { page: 2, limit: 20, total: 207 },
+        }),
+      );
+      await api.listGuests(2, 20);
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/guests?page=2&limit=20",
+        expect.objectContaining({ credentials: "include" }),
+      );
+    });
+
+    it("returns the data array + metadata.total in a flat object", async () => {
+      mockFetch.mockResolvedValue(
+        mockResponse({
+          success: true,
+          data: [{ guestId: "g1" }, { guestId: "g2" }],
+          metadata: { page: 1, limit: 20, total: 207 },
+        }),
+      );
+      const result = await api.listGuests(1, 20);
+      expect(result.guests).toEqual([{ guestId: "g1" }, { guestId: "g2" }]);
+      expect(result.page).toBe(1);
+      expect(result.limit).toBe(20);
+      expect(result.total).toBe(207);
+    });
+
+    it("defaults page=1, limit=20 when called with no args", async () => {
+      mockFetch.mockResolvedValue(
+        mockResponse({
+          success: true,
+          data: [],
+          metadata: { page: 1, limit: 20, total: 0 },
+        }),
+      );
+      await api.listGuests();
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/guests?page=1&limit=20",
+        expect.objectContaining({ credentials: "include" }),
+      );
+    });
+
+    it("falls back to data.length for total when metadata is missing", async () => {
+      mockFetch.mockResolvedValue(
+        mockResponse({
+          success: true,
+          data: [{ guestId: "g1" }, { guestId: "g2" }, { guestId: "g3" }],
+        }),
+      );
+      const result = await api.listGuests(1, 20);
+      expect(result.total).toBe(3);
+    });
+
+    it("falls back to the requested page/limit when metadata is missing", async () => {
+      mockFetch.mockResolvedValue(
+        mockResponse({ success: true, data: [] }),
+      );
+      const result = await api.listGuests(5, 50);
+      expect(result.page).toBe(5);
+      expect(result.limit).toBe(50);
+    });
+
+    it("throws ApiError on a non-success response", async () => {
+      mockFetch.mockResolvedValue(
+        mockResponse({
+          success: false,
+          error: { code: "FORBIDDEN", message: "Access denied." },
+        }, 403),
+      );
+      await expect(api.listGuests()).rejects.toMatchObject({
+        code: "FORBIDDEN",
+        message: "Access denied.",
+      });
+    });
+  });
 });
