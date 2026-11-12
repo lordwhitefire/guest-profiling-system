@@ -21,7 +21,8 @@
 | TASK-005c | done (verified) | All admin screens wired to real endpoints; no mock data remains |
 | TASK-006 | done (verified) | FormFilla browser extension (Card 5 algorithm); 68 tests |
 | TASK-007 | done (code) | Patch stack + fixes: search wiring, pg_trgm tier, extension bridge, real-data screens, working forms |
-| TASK-008 | in_progress | Migration runner + persisted settings + real analytics chart done. Blocked: local DB creation/seeding needs the postgres password. |
+| TASK-008 | in_progress | Migration runner + persisted settings + real analytics chart done. `gps` created and 206 real guests seeded; live pg_trgm search verified. Registration write path + production-build verification moved to TASK-009. |
+| TASK-009 | in_progress | Runtime map of everything supposed to be clickable, then every behaviour, on a production build. No reference site; the map is captured first. Tracker: `developer-workspace/briefs/TASK-009-runtime-map-clickability.md`. |
 
 **Total tests workspace-wide: 333 passing, 0 failing, 1 skipped**
 
@@ -51,11 +52,13 @@ Per owner directive (2026-11-12):
 - ✅ Client's devices: web-only, any modern browser
 - ✅ Constraints documented in ARCHITECTURE.md
 
-## What's still pending external (genuinely not blocking)
+## What's still pending external
 
-None. The software is production-grade. The integration layer
-(connecting to a specific hotel's PMS) is a separate concern that happens
-when a customer is identified.
+The integration layer (connecting to a specific hotel's PMS) is a separate
+concern that happens when a customer is identified. The core registration
+loop is **not** complete: the screen does not filter profiles as the user
+types, and completing registration writes nothing to the guest profile.
+Tracked in TASK-009.
 
 ## Known limitations
 
