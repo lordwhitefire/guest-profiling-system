@@ -1,0 +1,207 @@
+{
+  "counts": {
+    "PASS": 5,
+    "FAKE": 1,
+    "NOT RUN": 2
+  },
+  "results": [
+    {
+      "id": "page-17",
+      "route": "/workspace/tenants",
+      "scope": "page",
+      "label": "Add Hotel",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/tenants",
+      "urlAfter": "/workspace/tenants",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/tenants",
+      "scope": "page",
+      "label": "Add tenant",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/tenants",
+      "urlAfter": "/workspace/tenants",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/tenants",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Grand Vista Hotel workspace opened.",
+      "urlBefore": "/workspace/tenants",
+      "urlAfter": "/workspace/tenants",
+      "toasts": [
+        "Grand Vista Hotel workspace opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/tenants",
+      "scope": "page",
+      "label": "Manage Hotel Settings",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/hotel-settings",
+      "urlBefore": "/workspace/tenants",
+      "urlAfter": "/workspace/hotel-settings",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/hotel-settings"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/hotel-settings",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "add-hotel-0",
+      "route": "/workspace/tenants",
+      "scope": "add-hotel",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "add-hotel-1",
+      "route": "/workspace/tenants",
+      "scope": "add-hotel",
+      "label": "e.g. Lakeside Suites",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "add-hotel-2",
+      "route": "/workspace/tenants",
+      "scope": "add-hotel",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "add-hotel-3",
+      "route": "/workspace/tenants",
+      "scope": "add-hotel",
+      "label": "Save",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (form submit)",
+      "expected": "persist the change",
+      "verdict": "NOT RUN",
+      "reason": "submitting creates a record; tested in phase 4 with disposable data"
+    }
+  ]
+}

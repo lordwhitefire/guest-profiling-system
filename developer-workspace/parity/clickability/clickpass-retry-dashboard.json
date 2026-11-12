@@ -1,0 +1,395 @@
+{
+  "counts": {
+    "PASS": 7,
+    "NOT RUN": 2,
+    "FAKE": 4
+  },
+  "results": [
+    {
+      "id": "page-17",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "Search for a guest",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/guest-search",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/guest-search"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/workspace/guest-search",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "Quick Search",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/guest-search; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds6vfv-18\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/guest-search"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/workspace/guest-search",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds6vfv-18\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button cla"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View all",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/directory; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds75ck-19\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/directory"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/workspace/directory",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds75ck-19\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button cla"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Jennifer Adeyemi",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "NOT RUN",
+      "reason": "not found in live DOM"
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Arjun Okafor",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Arjun Okafor's profile opened.",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Arjun Okafor's profile opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Ngozi Garcia",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Ngozi Garcia's profile opened.",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Ngozi Garcia's profile opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Chukwuemeka Mohammed",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "NOT RUN",
+      "reason": "not found in live DOM"
+    },
+    {
+      "id": "page-24",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View all",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/audit-logs; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds827i-24\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/audit-logs",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/audit-logs"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/audit-logs",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds827i-24\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button cla"
+    },
+    {
+      "id": "page-25",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Sync Details",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Opening PMS synchronisation details.",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Opening PMS synchronisation details."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-26",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Quick Guide",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "network: GET /api/data-requests?page=1&limit=20 200; GET /api/users?page=1&limit=100 200",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Quick guide opened."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "account-menu-0",
+      "route": "/workspace/dashboard",
+      "scope": "account-menu",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "account-menu-1",
+      "route": "/workspace/dashboard",
+      "scope": "account-menu",
+      "label": "Account settings",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/settings",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "clickErr": ""
+    },
+    {
+      "id": "account-menu-2",
+      "route": "/workspace/dashboard",
+      "scope": "account-menu",
+      "label": "Sign out",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "end the session",
+      "verdict": "FAKE",
+      "reason": "navigates to /login but session cookie survives",
+      "urlAfter": "http://localhost:3100/workspace/dashboard"
+    }
+  ]
+}

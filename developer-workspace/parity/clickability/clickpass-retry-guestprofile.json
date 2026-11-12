@@ -1,0 +1,261 @@
+{
+  "counts": {
+    "PASS": 5,
+    "NOT RUN": 6,
+    "FAKE": 2
+  },
+  "results": [
+    {
+      "id": "page-17",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Edit Profile",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Prepare Registration",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "NOT RUN",
+      "reason": "extension bridge not loaded: Extension not detected. Install and enable the Guest Profiling extension, then try again.",
+      "toasts": [
+        "Extension not detected. Install and enable the Guest Profiling extension, then try again."
+      ],
+      "clickErr": ""
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Overview",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=1 200; GET /api/users?page=1&limit=100 200",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [
+        "Overview tab selected."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Visit History",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Visit History tab selected.",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [
+        "Visit History tab selected."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Preferences",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=1 200",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [
+        "Preferences tab selected."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Activity",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Activity tab selected.",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [
+        "Activity tab selected."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "guest-edit-0",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close the panel",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "guest-edit-1",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "guest-edit-2",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "guest-edit-3",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "guest-edit-4",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "guest-edit-5",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "perform the labelled action",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "guest-edit-6",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "Save",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (handler)",
+      "expected": "perform the labelled action",
+      "verdict": "NOT RUN",
+      "reason": "submitting creates a record; tested in phase 4 with disposable data"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "counts": {
+    "PASS": 2,
+    "NOT RUN": 1,
+    "DEAD": 1
+  },
+  "results": [
+    {
+      "id": "page-17",
+      "route": "/workspace/pms-sync",
+      "scope": "page",
+      "label": "Sync Now",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=20 200; GET /api/users?page=1&limit=100 200",
+      "urlBefore": "/workspace/pms-sync",
+      "urlAfter": "/workspace/pms-sync",
+      "toasts": [
+        "A new synchronisation has been queued."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/pms-sync",
+      "scope": "page",
+      "label": "Retry",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "NOT RUN",
+      "reason": "not found in live DOM"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/pms-sync",
+      "scope": "page",
+      "label": "Test Connection",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=20 200; GET /api/data-requests?page=1&limit=20 200",
+      "urlBefore": "/workspace/pms-sync",
+      "urlAfter": "/workspace/pms-sync",
+      "toasts": [
+        "Connection test successful."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/pms-sync",
+      "scope": "page",
+      "label": "Refresh",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/pms-sync",
+      "urlAfter": "/workspace/pms-sync",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/sync-status"
+        }
+      ],
+      "responses": [],
+      "downloads": []
+    }
+  ]
+}

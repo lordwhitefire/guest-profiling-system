@@ -1,0 +1,66 @@
+{
+  "counts": {
+    "FAKE": 1,
+    "NATIVE": 1,
+    "PASS": 1
+  },
+  "results": [
+    {
+      "id": "page-17",
+      "route": "/workspace/visit-history",
+      "scope": "page",
+      "label": "Export History",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "FAKE",
+      "reason": "toast only: Visit history exported.",
+      "urlBefore": "/workspace/visit-history",
+      "urlAfter": "/workspace/visit-history",
+      "toasts": [
+        "Visit history exported."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/visit-history",
+      "scope": "page",
+      "label": "All time 2026 2025",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "NATIVE (no effect)",
+      "expected": "change the selected option",
+      "verdict": "NATIVE",
+      "reason": "select changed All time -> 2026; no data effect",
+      "valueBefore": "All time",
+      "valueAfter": "2026"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/visit-history",
+      "scope": "page",
+      "label": "Refresh",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "PASS",
+      "reason": "screen/state changed",
+      "urlBefore": "/workspace/visit-history",
+      "urlAfter": "/workspace/visit-history",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/40f3ebf4-0b08-4e49-8e30-4999d01e7081/reservations?limit=20"
+        }
+      ],
+      "responses": [],
+      "downloads": []
+    }
+  ]
+}

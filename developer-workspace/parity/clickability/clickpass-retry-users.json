@@ -1,0 +1,223 @@
+{
+  "counts": {
+    "PASS": 5,
+    "NOT RUN": 4,
+    "FAKE": 4
+  },
+  "results": [
+    {
+      "id": "page-17",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "Invite User",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "Invite User",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "NOT RUN",
+      "reason": "not found in live DOM"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing admin@grandvista.test.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Editing admin@grandvista.test."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "View permissions",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Administrator permissions opened.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Administrator permissions opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "View permissions",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Regional Manager permissions opened.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Regional Manager permissions opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "View permissions",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Receptionist permissions opened.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Receptionist permissions opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "invite-user-0",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "clickErr": ""
+    },
+    {
+      "id": "invite-user-1",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "name@hotel.com",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "invite-user-2",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "At least 8 characters",
+      "tag": "input",
+      "type": "password",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "invite-user-3",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "Receptionist Hotel Manager Administrator",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed Receptionist -> RegionalManager (state change)",
+      "valueBefore": "Receptionist",
+      "valueAfter": "RegionalManager"
+    },
+    {
+      "id": "invite-user-4",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "invite-user-5",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "Save",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (form submit)",
+      "expected": "persist the change",
+      "verdict": "NOT RUN",
+      "reason": "submitting creates a record; tested in phase 4 with disposable data"
+    }
+  ]
+}
