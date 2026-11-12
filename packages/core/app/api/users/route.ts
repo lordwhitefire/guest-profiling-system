@@ -21,6 +21,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!auth.ok) return auth.response;
   const claims = auth.claims;
 
+  // The user directory is an admin screen: receptionists must not be able to
+  // enumerate staff emails and groups.
+  if (!claims.groups?.includes("Admin")) {
+    return forbidden("Only admins can view users.");
+  }
+
   const scope = resolveTenantScope(claims);
   if (scope.kind === "denied") return forbidden(scope.reason);
   if (scope.kind !== "single-tenant") return forbidden("Chain-level scope not supported in v1.");
