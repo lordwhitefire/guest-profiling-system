@@ -21,9 +21,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test:unit": "vitest run",
-    "db:migrate": "node-pg-migrate --database-url \"$DATABASE_URL\" --migration-file-format sql up",
-    "db:rollback": "node-pg-migrate --database-url \"$DATABASE_URL\" --migration-file-format sql down",
-    "db:migrate:create": "node-pg-migrate --migration-file-format sql create"
+    "db:migrate": "node scripts/migrate.mjs up",
+    "db:migrate:status": "node scripts/migrate.mjs status"
   },
   "dependencies": {
     "postgres": "^3.4.4",

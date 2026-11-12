@@ -50,3 +50,4 @@
 .health-dot-bad{background:#d14b4b}
 .health-dot-unknown{background:#b8c2d1}
 .gps-chart-note{margin:8px 0 0;font-size:9px;color:#8b97aa}
+.gps-chart-empty{padding:40px 0;text-align:center;font-size:10px;color:#8b97aa}

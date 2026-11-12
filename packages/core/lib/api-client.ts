@@ -7,7 +7,10 @@
 //   - Throws ApiError with code + message + details on failure
 //   - Returns just the `data` payload on success (caller doesn't see envelope)
 
-import type { Guest, Reservation, ApiResponse } from "@gps/shared";
+import type { Guest, Reservation, TenantSettings, ApiResponse } from "@gps/shared";
+
+// Re-exported so existing imports (`@/lib/api-client`) keep working.
+export type { TenantSettings };
 
 export class ApiError extends Error {
   constructor(
@@ -179,6 +182,9 @@ export const api = {
   getStats: (): Promise<TenantStats> =>
     apiFetch<TenantStats>("/api/stats"),
 
+  getGuestActivity: (days = 30): Promise<{ days: number; points: Array<{ date: string; count: number }> }> =>
+    apiFetch(`/api/analytics/activity?days=${days}`),
+
   // Tenants (caller sees their own in v1)
   listTenants: (): Promise<Tenant[]> =>
     apiFetch<Tenant[]>("/api/tenants"),
@@ -307,10 +313,3 @@ export interface DataRequest {
   notes: string | null;
 }
 
-export interface TenantSettings {
-  emailNotifications: boolean;
-  autoSync: boolean;
-  multiFactorAuth: boolean;
-  guestProfileMatching: boolean;
-  dataRetentionDays: number;
-}

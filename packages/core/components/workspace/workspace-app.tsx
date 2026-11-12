@@ -7,10 +7,10 @@ import {
   Activity, AlertCircle, ArrowRight, Bell, Building2, CalendarDays, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Clock3, Database, Download, Eye, FileClock, FileText, Filter, Home, LayoutDashboard, LockKeyhole, LogOut, Menu, MoreHorizontal, Plus, RefreshCw, Search, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Users, UserRound, UserSearch, X, XCircle, Zap, ClipboardList, History, PlugZap, KeyRound, Mail, Phone, CalendarCheck, Save, Pencil, RotateCcw, Info, Loader2
 } from "lucide-react";
 import "./workspace.css";
-import { useGuestSearch, useGuestDirectory, useGuest, useGuestCount, useStats, useAuditLogs, useSyncStatus, useDataRequests, useUsers, useTenants, useSettings, useReservations, useHealth } from "@/lib/workspace/hooks";
+import { useGuestSearch, useGuestDirectory, useGuest, useGuestCount, useStats, useAuditLogs, useSyncStatus, useDataRequests, useUsers, useTenants, useSettings, useReservations, useHealth, useGuestActivity } from "@/lib/workspace/hooks";
 import type { WorkspaceGuest } from "@/lib/workspace/adapters";
 import type { AuditLog } from "@gps/shared";
-import { api, ApiError } from "@/lib/api-client";
+import { api, ApiError, type TenantSettings } from "@/lib/api-client";
 
 type Screen =
   | "error" | "processing" | "settings" | "hotel-settings" | "registration"
@@ -74,7 +74,7 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
   const [selectedGuestId, setSelectedGuestId] = useState<string | null>(null);
   const [modal, setModal] = useState("");
   const [toast, setToast] = useState("");
-  const [tab, setTab] = useState("Overview");
+  const [tab, setTab] = useState("General");
   const [filter, setFilter] = useState("All");
   const [hotel, setHotel] = useState("Grand Vista Hotel");
   const [page, setPage] = useState(1);
@@ -85,6 +85,7 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
     "Guest profile matching": true, "Data retention": true,
   });
   const [form, setForm] = useState({ name: "", email: "", phone: "", room: "" });
+  const [settingsForm, setSettingsForm] = useState<Partial<TenantSettings>>({});
 
   // ── Live data hooks ───────────────────────────────────────────────────────
   // These hit the real /api/guests endpoints. When the API is unreachable
@@ -108,6 +109,7 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
   const tenantsHook = useTenants();
   const settingsHook = useSettings();
   const healthHook = useHealth();
+  const activityHook = useGuestActivity(30);
 
   // Reflect the tenant's saved settings in the toggles. The toggles stay
   // local while editing; saving writes them back below.
@@ -121,6 +123,14 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
       "Multi-factor authentication": saved.multiFactorAuth,
       "Guest profile matching": saved.guestProfileMatching,
     }));
+    setSettingsForm({
+      defaultLanguage: saved.defaultLanguage,
+      timezone: saved.timezone,
+      dateFormat: saved.dateFormat,
+      matchingSensitivity: saved.matchingSensitivity,
+      syncFrequencyMinutes: saved.syncFrequencyMinutes,
+      dataRetentionDays: saved.dataRetentionDays,
+    });
   }, [settingsHook.settings]);
 
   // For the search screen: if the user has typed ≥2 chars, use the live
@@ -165,6 +175,7 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
       autoSync: toggles["Auto sync"] ?? true,
       multiFactorAuth: toggles["Multi-factor authentication"] ?? false,
       guestProfileMatching: toggles["Guest profile matching"] ?? true,
+      ...settingsForm,
     });
   };
 
@@ -275,7 +286,7 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
           </div>
 
           {screen === "dashboard" && <Dashboard onAction={notify} onNavigate={(s) => window.location.assign(`/workspace/${s}`)} totalCount={dashboardTotal} vipCount={dashboardVip} returningCount={dashboardReturning} newCount={dashboardNew} thisMonthCount={dashboardThisMonth} lastSyncAt={dashboardLastSync} auditEvents24h={dashboardAudit24h} syncErrors={realStats?.syncErrors ?? 0} usingDemoData={dashboardUsingDemoData} onRetry={statsHook.refetch} guests={liveGuestList} logs={auditLogsHook.logs} />}
-          {screen === "analytics" && <Analytics onAction={notify} totalCount={dashboardTotal} auditEvents24h={dashboardAudit24h} logs={auditLogsHook.logs} tenantCount={tenantsHook.tenants.length} health={healthHook.health} healthError={healthHook.error} pmsConnected={syncStatusHook.status?.hasAdapterConnection ?? false}/>}
+          {screen === "analytics" && <Analytics onAction={notify} totalCount={dashboardTotal} auditEvents24h={dashboardAudit24h} logs={auditLogsHook.logs} tenantCount={tenantsHook.tenants.length} health={healthHook.health} healthError={healthHook.error} pmsConnected={syncStatusHook.status?.hasAdapterConnection ?? false} activity={activityHook.points}/>}
           {screen === "guest-search" && <GuestSearch query={query} setQuery={setQuery} guests={filteredGuests} loading={searchLoading} error={searchError} usingDemoData={searchUsingDemoData} onRetry={searchHook.refetch} onSelect={selectGuest} onAction={notify} />}
           {screen === "directory" && <Directory query={query} setQuery={setQuery} guests={filteredGuests} total={directoryTotal} loading={directoryHook.loading && directoryGuests === GUESTS} usingDemoData={directoryHook.error !== null && directoryGuests === GUESTS} onRetry={directoryHook.refetch} filter={filter} setFilter={setFilter} page={page} setPage={setPage} onSelect={selectGuest} onAction={notify}/>}
           {screen === "guest-profile" && <GuestProfile guest={currentGuest} onAction={notify} logs={auditLogsHook.logs} onEdit={() => { setForm({name:currentGuest.name,email:currentGuest.email,phone:currentGuest.phone,room:"Deluxe Room"}); setModal("edit-guest"); }}/>}
@@ -285,8 +296,8 @@ export function WorkspaceApp({ initialScreen }: { initialScreen: string }) {
           {screen === "audit-logs" && <AuditLogs onAction={notify} logs={auditLogsHook.logs} total={auditLogsHook.total} loading={auditLogsHook.loading} error={auditLogsHook.error} onRetry={auditLogsHook.refetch} page={auditLogsHook.page} setPage={auditLogsHook.setPage}/>}
           {screen === "users" && <UsersPage onAction={notify} onInvite={() => setModal("invite-user")} users={usersHook.users} total={usersHook.total} loading={usersHook.loading} error={usersHook.error} onRetry={usersHook.refetch}/>}
           {screen === "tenants" && <Tenants onAction={notify} onAdd={() => setModal("add-hotel")} tenants={tenantsHook.tenants} loading={tenantsHook.loading} error={tenantsHook.error} onRetry={tenantsHook.refetch}/>}
-          {screen === "settings" && <SettingsPage toggles={toggles} setToggles={setToggles} tab={tab} setTab={setTab} onAction={notify} onSave={saveSettings} tenantName={tenantsHook.tenants[0]?.name ?? "—"}/>}
-          {screen === "hotel-settings" && <HotelSettings toggles={toggles} setToggles={setToggles} onAction={notify} onSave={saveSettings} tenantName={tenantsHook.tenants[0]?.name ?? "—"} pmsConnected={syncStatusHook.status?.hasAdapterConnection ?? false}/>}
+          {screen === "settings" && <SettingsPage toggles={toggles} setToggles={setToggles} tab={tab} setTab={setTab} onAction={notify} onSave={saveSettings} tenantName={tenantsHook.tenants[0]?.name ?? "—"} settings={settingsForm} onSettingsChange={setSettingsForm}/>}
+          {screen === "hotel-settings" && <HotelSettings toggles={toggles} setToggles={setToggles} onAction={notify} onSave={saveSettings} tenantName={tenantsHook.tenants[0]?.name ?? "—"} pmsConnected={syncStatusHook.status?.hasAdapterConnection ?? false} settings={settingsForm} onSettingsChange={setSettingsForm}/>}
           {screen === "processing" && <Processing/>}
           {screen === "error" && <ErrorState onAction={notify}/>}
         </div>
@@ -347,21 +358,29 @@ function Dashboard({onAction,onNavigate,totalCount=12480,vipCount=0,returningCou
     </div>
   </>;
 }
-function Analytics({onAction,totalCount=0,auditEvents24h=0,logs,tenantCount=0,health=null,healthError=null,pmsConnected=false}:{onAction:(s:string)=>void;totalCount?:number;auditEvents24h?:number;logs?:AuditLog[];tenantCount?:number;health?:{status:string;uptime:number;timestamp:string}|null;healthError?:string|null;pmsConnected?:boolean}) {
+function Analytics({onAction,totalCount=0,auditEvents24h=0,logs,tenantCount=0,health=null,healthError=null,pmsConnected=false,activity=[]}:{onAction:(s:string)=>void;totalCount?:number;auditEvents24h?:number;logs?:AuditLog[];tenantCount?:number;health?:{status:string;uptime:number;timestamp:string}|null;healthError?:string|null;pmsConnected?:boolean;activity?:Array<{date:string;count:number}>}) {
   const healthy = health?.status === "ok";
   const uptime = health ? `${Math.floor(health.uptime / 60)} min` : healthError ? "—" : "…";
   return <>
     <div className="gps-metrics"><Metric icon={Users} label="Total Guest Profiles" value={totalCount.toLocaleString()} delta="live"/><Metric icon={CalendarCheck} label="Audit Events (24h)" value={auditEvents24h.toLocaleString()} tone="violet"/><Metric icon={Activity} label="System Health" value={healthy?"Healthy":healthError?"Unavailable":"…"} tone={healthy?"green":"orange"}/><Metric icon={Building2} label="Active Tenants" value={tenantCount.toLocaleString()} tone="orange"/></div>
     <div className="gps-grid-two analytics-grid">
-      <Panel title="Guest Activity Analytics" action={<select className="gps-select"><option>Last 30 days</option><option>Last 7 days</option><option>Last 90 days</option></select>}><Chart/><p className="gps-chart-note">Illustrative 30-day trend — live reporting is not connected yet.</p></Panel>
+      <Panel title="Guest Activity Analytics" action={<select className="gps-select"><option>Last 30 days</option></select>}><Chart points={activity}/><p className="gps-chart-note">Guest profiles created per day (UTC), last 30 days.</p></Panel>
       <Panel title="System Health"><div className="gps-health"><div className="gps-health-ring"><b>{healthy?"OK":"—"}</b><small>{healthy?"Healthy":healthError?"Unavailable":"Checking"}</small></div><div className="gps-health-list">{[["API Response",healthy],["Process uptime",health?uptime:null],["PMS Sync",pmsConnected],["Database",null]].map(([label,state])=><div key={String(label)}><span><i className={`health-dot ${state===false?"health-dot-bad":state===null?"health-dot-unknown":""}`}/>{label}</span><b>{state===true?"Operational":state===false?"Not connected":state===null?"Monitored separately":String(state)}</b></div>)}</div></div></Panel>
     </div>
     <div className="gps-grid-two"><Panel title="Recent Administrator Activity"><ActivityRows logs={logs}/></Panel><Panel title="Quick Access"><div className="gps-quick-grid">{[{label:"Guest Directory",icon:Users,route:"directory"},{label:"PMS Integration",icon:PlugZap,route:"pms-sync"},{label:"User Management",icon:ShieldCheck,route:"users"},{label:"System Settings",icon:Settings,route:"settings"}].map(x=><button key={x.label} onClick={()=>window.location.assign(`/workspace/${x.route}`)}><x.icon size={19}/><span>{x.label}</span><ArrowRight size={13}/></button>)}</div></Panel></div>
   </>;
 }
-function Chart() {
-  const vals=[36,48,43,60,52,72,66,82,70,91,76,88,96,82,100,92,112,96,120,108,126,112,138,126,144,130,152,140,160,148];
-  return <div className="gps-chart"><div className="gps-chart-y"><span>160</span><span>120</span><span>80</span><span>40</span><span>0</span></div><div className="gps-chart-area"><div className="gps-chart-lines"><i/><i/><i/><i/><i/></div><svg viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Guest activity line chart"><defs><linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#2563eb" stopOpacity=".2"/><stop offset="1" stopColor="#2563eb" stopOpacity="0"/></linearGradient></defs><path d={`M ${vals.map((v,i)=>`${i*20},${170-v}`).join(" L ")} L 580,180 L 0,180 Z`} fill="url(#chartFill)"/><polyline points={vals.map((v,i)=>`${i*20},${170-v}`).join(" ")} fill="none" stroke="#2563eb" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/></svg><div className="gps-chart-x"><span>Oct 13</span><span>Oct 20</span><span>Oct 27</span><span>Nov 03</span><span>Nov 11</span></div></div></div>;
+function Chart({points=[]}:{points?:Array<{date:string;count:number}>}) {
+  if (points.length === 0) {
+    return <div className="gps-chart-empty">No guest activity recorded in this period.</div>;
+  }
+  const max = Math.max(...points.map((p) => p.count), 1);
+  const vals = points.map((p) => Math.round((p.count / max) * 150));
+  const step = points.length > 1 ? 580 / (points.length - 1) : 0;
+  const coords = vals.map((v, i) => `${Math.round(i * step)},${170 - v}`);
+  const fmt = (d: string) => new Date(`${d}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+  const labels = [points[0], points[Math.floor(points.length / 2)], points[points.length - 1]].filter((p): p is { date: string; count: number } => !!p);
+  return <div className="gps-chart"><div className="gps-chart-y"><span>{max.toLocaleString()}</span><span>{Math.round(max * 0.75).toLocaleString()}</span><span>{Math.round(max * 0.5).toLocaleString()}</span><span>{Math.round(max * 0.25).toLocaleString()}</span><span>0</span></div><div className="gps-chart-area"><div className="gps-chart-lines"><i/><i/><i/><i/><i/></div><svg viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Guest activity line chart"><defs><linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#2563eb" stopOpacity=".2"/><stop offset="1" stopColor="#2563eb" stopOpacity="0"/></linearGradient></defs><path d={`M ${coords.join(" L ")} L 580,180 L 0,180 Z`} fill="url(#chartFill)"/><polyline points={coords.join(" ")} fill="none" stroke="#2563eb" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/></svg><div className="gps-chart-x">{labels.map((p, i) => <span key={i}>{fmt(p.date)}</span>)}</div></div></div>;
 }
 function GuestRows({compact=false,onAction,guests}:{compact?:boolean;onAction:(s:string)=>void;guests?:GuestLike[]}) {
   const rows = guests && guests.length > 0 ? guests : GUESTS;
@@ -600,12 +619,12 @@ function Tenants({onAction,onAdd,tenants=[],loading=false,error=null,onRetry}:{o
     </Panel><Panel title="Tenant Mode"><div className="gps-tenant-detail"><div className="gps-tenant-logo"><Building2 size={27}/></div><h3>Single-Tenant</h3><p>v1 deployment</p><span className="gps-status status-good"><i/> Production</span><InfoRows rows={[["Tenant Mode","Single-tenant (v1)"],["Multi-tenant Schema","Built-in (tenant_id on every table)"],["Chain-level Deploy","Deferred to v2"],["Isolation Boundary","JWT-enforced at every query"]]}/><button className="gps-outline gps-full" onClick={()=>window.location.assign("/workspace/hotel-settings")}><Settings size={14}/> Manage Hotel Settings</button></div></Panel></div>
   </>;
 }
-function SettingsPage({toggles,setToggles,tab,setTab,onAction,onSave,tenantName}:{toggles:Record<string,boolean>;setToggles:(v:Record<string,boolean>)=>void;tab:string;setTab:(v:string)=>void;onAction:(s:string)=>void;onSave:()=>Promise<void>;tenantName:string}) {
+function SettingsPage({toggles,setToggles,tab,setTab,onAction,onSave,tenantName,settings,onSettingsChange}:{toggles:Record<string,boolean>;setToggles:(v:Record<string,boolean>)=>void;tab:string;setTab:(v:string)=>void;onAction:(s:string)=>void;onSave:()=>Promise<void>;tenantName:string;settings:Partial<TenantSettings>;onSettingsChange:(s:Partial<TenantSettings>)=>void}) {
   const [saving,setSaving]=useState(false);
   const save=async()=>{setSaving(true);try{await onSave();onAction("Settings saved successfully.");}catch(err){onAction(err instanceof ApiError?err.message:"Could not save settings.");}finally{setSaving(false);}};
   const tabs=["General","Notifications","Security","Integrations","Account"];
   const settingsRows: [string,string][] = tab==="General"
-    ? [["Hotel Name",tenantName],["Default Language","English (United States)"],["Timezone","Africa/Lagos"],["Date Format","DD/MM/YYYY"]]
+    ? []
     : tab==="Notifications"
     ? [["Email notifications","Receive important system alerts"],["Guest match alerts","Get notified when a guest match is found"],["Sync notifications","Receive PMS synchronisation updates"]]
     : tab==="Security"
@@ -617,15 +636,21 @@ function SettingsPage({toggles,setToggles,tab,setTab,onAction,onSave,tenantName}
     <div className="gps-success-banner"><CheckCircle2 size={19}/><div><b>Settings successfully updated</b><small>Your preferences have been saved.</small></div><button onClick={()=>onAction("Settings notice dismissed.")}><X size={15}/></button></div>
     <div className="gps-settings-layout"><aside className="gps-settings-tabs">{tabs.map(t=><button className={tab===t?"active":""} onClick={()=>setTab(t)} key={t}>{t==="General"?<Settings size={15}/>:t==="Notifications"?<Bell size={15}/>:t==="Security"?<LockKeyhole size={15}/>:t==="Integrations"?<PlugZap size={15}/>:<UserRound size={15}/>} {t}</button>)}</aside><div className="gps-settings-content">
       <Panel title={`${tab} Settings`}><div className="gps-settings-section"><h3>{tab==="General"?"System Preferences":tab==="Notifications"?"Notification Preferences":tab==="Security"?"Security & Access":tab==="Integrations"?"Integration Settings":"Account Preferences"}</h3><p>Manage how your Guest Profiling System operates.</p>
+        {tab==="General" && <div className="gps-form-grid">
+          <label>Hotel name<input className="gps-input" value={tenantName} readOnly/></label>
+          <label>Default language<select className="gps-input" value={settings.defaultLanguage ?? "en-US"} onChange={(e)=>onSettingsChange({...settings, defaultLanguage: e.target.value as TenantSettings["defaultLanguage"]})}><option value="en-US">English (United States)</option><option value="en-GB">English (United Kingdom)</option></select></label>
+          <label>Timezone<select className="gps-input" value={settings.timezone ?? "Africa/Lagos"} onChange={(e)=>onSettingsChange({...settings, timezone: e.target.value as TenantSettings["timezone"]})}><option value="Africa/Lagos">Africa/Lagos (WAT)</option><option value="UTC">UTC</option></select></label>
+          <label>Date format<select className="gps-input" value={settings.dateFormat ?? "DD/MM/YYYY"} onChange={(e)=>onSettingsChange({...settings, dateFormat: e.target.value as TenantSettings["dateFormat"]})}><option value="DD/MM/YYYY">DD/MM/YYYY</option><option value="MM/DD/YYYY">MM/DD/YYYY</option></select></label>
+        </div>}
         {settingsRows.map(([label,desc])=><div className="gps-setting-row" key={label}><div><b>{label}</b><small>{desc}</small></div>{toggles[label]!==undefined?<button className={`gps-switch ${toggles[label]?"on":""}`} onClick={()=>setToggles({...toggles,[label]:!toggles[label]})} aria-label={`Toggle ${label}`}><i/></button>:<button className="gps-select-button" onClick={()=>onAction(`${label} options opened.`)}>{desc} <ChevronDown size={13}/></button>}</div>)}
       </div></Panel><div className="gps-form-actions"><button className="gps-outline" onClick={()=>onAction("Changes discarded.")}>Cancel</button><button className="gps-primary" onClick={save} disabled={saving}><Save size={14}/> {saving?"Saving…":"Save Changes"}</button></div>
     </div></div>
   </>;
 }
-function HotelSettings({toggles,setToggles,onAction,onSave,tenantName,pmsConnected}:{toggles:Record<string,boolean>;setToggles:(v:Record<string,boolean>)=>void;onAction:(s:string)=>void;onSave:()=>Promise<void>;tenantName:string;pmsConnected:boolean}) {
+function HotelSettings({toggles,setToggles,onAction,onSave,tenantName,pmsConnected,settings,onSettingsChange}:{toggles:Record<string,boolean>;setToggles:(v:Record<string,boolean>)=>void;onAction:(s:string)=>void;onSave:()=>Promise<void>;tenantName:string;pmsConnected:boolean;settings:Partial<TenantSettings>;onSettingsChange:(s:Partial<TenantSettings>)=>void}) {
   const [saving,setSaving]=useState(false);
   const save=async()=>{setSaving(true);try{await onSave();onAction("Hotel settings saved.");}catch(err){onAction(err instanceof ApiError?err.message:"Could not save hotel settings.");}finally{setSaving(false);}};
-  return <><div className="gps-success-banner"><CheckCircle2 size={18}/><div><b>{tenantName} settings</b><small>Workspace configuration is stored in the profiling database.</small></div></div><div className="gps-grid-two"><Panel title="Hotel Information"><InfoRows rows={[["Hotel Name",tenantName],["Hotel Code","—"],["Location","—"],["Timezone","—"],["PMS Provider",pmsConnected?"Connected":"Not connected"]]}/><button className="gps-outline gps-full" onClick={()=>onAction("Hotel information editor opened.")}><Pencil size={14}/> Edit Hotel Information</button></Panel><Panel title="Integration Preferences">{["Auto sync","Guest profile matching","Data retention"].map(t=><div className="gps-setting-row" key={t}><div><b>{t}</b><small>Configure {t.toLowerCase()} for this hotel.</small></div><button className={`gps-switch ${toggles[t]?"on":""}`} onClick={()=>setToggles({...toggles,[t]:!toggles[t]})}><i/></button></div>)}</Panel></div><Panel title="System Defaults"><div className="gps-form-grid"><label>Default language<select className="gps-input"><option>English (United States)</option><option>English (United Kingdom)</option></select></label><label>Timezone<select className="gps-input"><option>Africa/Lagos (WAT)</option><option>UTC</option></select></label><label>Search matching<select className="gps-input"><option>Phone, email and name</option><option>Phone only</option></select></label><label>Sync frequency<select className="gps-input"><option>Every 15 minutes</option><option>Every 30 minutes</option><option>Hourly</option></select></label></div><div className="gps-form-actions"><button className="gps-primary" onClick={save} disabled={saving}><Save size={14}/> {saving?"Saving…":"Save Settings"}</button></div></Panel></>;
+  return <><div className="gps-success-banner"><CheckCircle2 size={18}/><div><b>{tenantName} settings</b><small>Workspace configuration is stored in the profiling database.</small></div></div><div className="gps-grid-two"><Panel title="Hotel Information"><InfoRows rows={[["Hotel Name",tenantName],["Hotel Code","—"],["Location","—"],["Timezone","—"],["PMS Provider",pmsConnected?"Connected":"Not connected"]]}/><button className="gps-outline gps-full" onClick={()=>onAction("Hotel information editor opened.")}><Pencil size={14}/> Edit Hotel Information</button></Panel><Panel title="Integration Preferences">{["Auto sync","Guest profile matching"].map(t=><div className="gps-setting-row" key={t}><div><b>{t}</b><small>Configure {t.toLowerCase()} for this hotel.</small></div><button className={`gps-switch ${toggles[t]?"on":""}`} onClick={()=>setToggles({...toggles,[t]:!toggles[t]})}><i/></button></div>)}<div className="gps-setting-row"><div><b>Data retention</b><small>How long guest records are kept.</small></div><select className="gps-input" style={{maxWidth:150}} value={settings.dataRetentionDays ?? 365} onChange={(e)=>onSettingsChange({...settings, dataRetentionDays: Number(e.target.value) as TenantSettings["dataRetentionDays"]})}><option value={90}>90 days</option><option value={365}>1 year</option><option value={1095}>3 years</option><option value={2555}>7 years</option></select></div></Panel></div><Panel title="System Defaults"><div className="gps-form-grid"><label>Default language<select className="gps-input" value={settings.defaultLanguage ?? "en-US"} onChange={(e)=>onSettingsChange({...settings, defaultLanguage: e.target.value as TenantSettings["defaultLanguage"]})}><option value="en-US">English (United States)</option><option value="en-GB">English (United Kingdom)</option></select></label><label>Timezone<select className="gps-input" value={settings.timezone ?? "Africa/Lagos"} onChange={(e)=>onSettingsChange({...settings, timezone: e.target.value as TenantSettings["timezone"]})}><option value="Africa/Lagos">Africa/Lagos (WAT)</option><option value="UTC">UTC</option></select></label><label>Search matching<select className="gps-input" value={settings.matchingSensitivity ?? "balanced"} onChange={(e)=>onSettingsChange({...settings, matchingSensitivity: e.target.value as TenantSettings["matchingSensitivity"]})}><option value="strict">Strict — exact fields only</option><option value="balanced">Balanced — phone, email and name</option><option value="loose">Loose — include similarity</option></select></label><label>Sync frequency<select className="gps-input" value={settings.syncFrequencyMinutes ?? 15} onChange={(e)=>onSettingsChange({...settings, syncFrequencyMinutes: Number(e.target.value) as TenantSettings["syncFrequencyMinutes"]})}><option value={15}>Every 15 minutes</option><option value={30}>Every 30 minutes</option><option value={60}>Hourly</option></select></label></div><div className="gps-form-actions"><button className="gps-primary" onClick={save} disabled={saving}><Save size={14}/> {saving?"Saving…":"Save Settings"}</button></div></Panel></>;
 }
 function Registration({form,setForm,onAction,tenantName,matches}:{form:{name:string;email:string;phone:string;room:string};setForm:(v:{name:string;email:string;phone:string;room:string})=>void;onAction:(s:string)=>void;tenantName:string;matches:GuestLike[]}) {
   const now = new Date();

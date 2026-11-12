@@ -15,6 +15,7 @@ export type {
   AuditAction,
   UserRole,
   Tenant,
+  TenantSettings,
   User,
   Guest,
   CommPrefs,

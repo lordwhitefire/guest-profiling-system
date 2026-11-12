@@ -363,6 +363,39 @@ export function useStats(): UseStatsResult {
   return { stats, loading, error, refetch: () => setTick((t) => t + 1) };
 }
 
+// ── useGuestActivity — Analytics chart ────────────────────────────────────
+
+export interface UseGuestActivityResult {
+  points: Array<{ date: string; count: number }>;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useGuestActivity(days = 30): UseGuestActivityResult {
+  const [points, setPoints] = useState<Array<{ date: string; count: number }>>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.getGuestActivity(days)
+      .then((r) => { if (!cancelled) { setPoints(r.points); setError(null); } })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof ApiError ? err.message : "Failed to load activity.");
+          setPoints([]);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [days, tick]);
+
+  return { points, loading, error, refetch: () => setTick((t) => t + 1) };
+}
+
 // ── useAuditLogs — audit-logs screen ───────────────────────────────────────
 
 export interface UseAuditLogsResult {

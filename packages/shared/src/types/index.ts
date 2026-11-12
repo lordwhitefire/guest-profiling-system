@@ -57,6 +57,20 @@ export interface Tenant {
   deletedAt: Date | null;
 }
 
+// Per-tenant settings stored in the tenants.settings JSONB column.
+export interface TenantSettings {
+  emailNotifications: boolean;
+  autoSync: boolean;
+  multiFactorAuth: boolean;
+  guestProfileMatching: boolean;
+  dataRetentionDays: number;
+  defaultLanguage: "en-US" | "en-GB";
+  timezone: "Africa/Lagos" | "UTC";
+  dateFormat: "DD/MM/YYYY" | "MM/DD/YYYY";
+  matchingSensitivity: "strict" | "balanced" | "loose";
+  syncFrequencyMinutes: 15 | 30 | 60;
+}
+
 export interface User {
   userId: string;
   tenantId: string;

@@ -6,33 +6,66 @@
 // the column lazily via CREATE TABLE IF NOT EXISTS-style migration on first
 // request. In production this would be a proper migration.
 //
-// Settings shape:
+// Settings shape (packages/shared/src/types/index.ts):
 //   { emailNotifications, autoSync, multiFactorAuth,
-//     guestProfileMatching, dataRetentionDays }
+//     guestProfileMatching, dataRetentionDays,
+//     defaultLanguage, timezone, dateFormat,
+//     matchingSensitivity, syncFrequencyMinutes }
 
 import { NextResponse, type NextRequest } from "next/server";
-import { getDb, resolveTenantScope } from "@gps/shared";
+import { getDb, resolveTenantScope, type TenantSettings } from "@gps/shared";
 import { authenticate } from "@/src/server/auth-helpers";
 import { ok, forbidden, badRequest, serverError } from "@/src/server/response";
 import { writeAuditLog } from "@/src/server/audit/log";
 
 export const runtime = "nodejs";
 
-export interface TenantSettings {
-  emailNotifications: boolean;
-  autoSync: boolean;
-  multiFactorAuth: boolean;
-  guestProfileMatching: boolean;
-  dataRetentionDays: number;
-}
+type BooleanKey = "emailNotifications" | "autoSync" | "multiFactorAuth" | "guestProfileMatching";
 
-const DEFAULT_SETTINGS: TenantSettings = {
+export const DEFAULT_SETTINGS: TenantSettings = {
   emailNotifications: true,
   autoSync: true,
   multiFactorAuth: false,
   guestProfileMatching: true,
   dataRetentionDays: 365,
+  defaultLanguage: "en-US",
+  timezone: "Africa/Lagos",
+  dateFormat: "DD/MM/YYYY",
+  matchingSensitivity: "balanced",
+  syncFrequencyMinutes: 15,
 };
+
+const ALLOWED = {
+  defaultLanguage: ["en-US", "en-GB"],
+  timezone: ["Africa/Lagos", "UTC"],
+  dateFormat: ["DD/MM/YYYY", "MM/DD/YYYY"],
+  matchingSensitivity: ["strict", "balanced", "loose"],
+  syncFrequencyMinutes: [15, 30, 60],
+  dataRetentionDays: [90, 365, 1095, 2555],
+} as const;
+
+/**
+ * Keep only settings keys we know, with values we accept. Anything else is
+ * dropped rather than stored — a PUT never corrupts the settings blob.
+ * Exported for unit tests (no database needed).
+ */
+export function sanitizeSettingsUpdate(body: unknown): Partial<TenantSettings> {
+  if (typeof body !== "object" || body === null) return {};
+  const input = body as Record<string, unknown>;
+  const out: Record<string, unknown> = {};
+
+  for (const key of ["emailNotifications", "autoSync", "multiFactorAuth", "guestProfileMatching"] as BooleanKey[]) {
+    if (typeof input[key] === "boolean") out[key] = input[key];
+  }
+  for (const key of Object.keys(ALLOWED) as Array<keyof typeof ALLOWED>) {
+    const value = input[key as string];
+    const allowed = ALLOWED[key] as readonly (string | number)[];
+    if (typeof value === "string" || typeof value === "number") {
+      if ((allowed as readonly (string | number)[]).includes(value)) out[key as string] = value;
+    }
+  }
+  return out as Partial<TenantSettings>;
+}
 
 const INIT_SQL = `
   ALTER TABLE tenants ADD COLUMN IF NOT EXISTS settings JSONB NOT NULL DEFAULT '{}'::jsonb;
@@ -91,12 +124,13 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
   if (scope.kind === "denied") return forbidden(scope.reason);
   if (scope.kind !== "single-tenant") return forbidden("Chain-level scope not supported in v1.");
 
-  let body: Partial<TenantSettings>;
+  let raw: unknown;
   try {
-    body = await request.json();
+    raw = await request.json();
   } catch {
     return badRequest("BAD_REQUEST", "Invalid JSON body.");
   }
+  const body = sanitizeSettingsUpdate(raw);
 
   const db = getDb();
   try {
