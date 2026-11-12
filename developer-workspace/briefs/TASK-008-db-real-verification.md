@@ -18,7 +18,7 @@ them). Everything below is in scope for this task.
 | 9 | Persist Hotel Settings "System Defaults": matching sensitivity, sync frequency, data retention | done |
 | 10 | Unit tests for 7–9 (settings sanitizer, daily series) | done |
 | 11 | Real extension test: load unpacked extension in the system Chrome, click Prepare Registration end-to-end | needs owner to load extension |
-| 12 | Correct `openspec/tasks-registry.md` and `PROGRESS.md` — statuses and test counts to the truth | in progress |
+| 12 | Correct `openspec/tasks-registry.md` and `PROGRESS.md` — statuses and test counts to the truth | done |
 
 ## Order of execution
 
