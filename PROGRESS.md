@@ -20,9 +20,10 @@
 | TASK-005b | done (verified) | Workspace UI wired to real guest API |
 | TASK-005c | done (verified) | All admin screens wired to real endpoints; no mock data remains |
 | TASK-006 | done (verified) | FormFilla browser extension (Card 5 algorithm); 68 tests |
-| TASK-007 | done (verified) | Patch stack + fixes: search wiring, pg_trgm tier, extension bridge, real-data screens, working forms |
+| TASK-007 | done (code) | Patch stack + fixes: search wiring, pg_trgm tier, extension bridge, real-data screens, working forms |
+| TASK-008 | in_progress | Migration runner + persisted settings + real analytics chart done. Blocked: local DB creation/seeding needs the postgres password. |
 
-**Total tests workspace-wide: 326 passing, 0 failing, 1 skipped**
+**Total tests workspace-wide: 333 passing, 0 failing, 1 skipped**
 
 ## Decisions captured (no longer Pending)
 
