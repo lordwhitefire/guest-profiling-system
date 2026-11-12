@@ -12,7 +12,7 @@ them). Everything below is in scope for this task.
 | 3 | Create `gps` database + apply `001_initial_schema.sql` | done (10 tables, pg_trgm indexes present) |
 | 4 | Seed source PMS fixture and run `pnpm seed:source` | done (207 read, 206 inserted, 1 duplicate skipped) |
 | 5 | `gps` holds real guests | done (first-load bulk import; worker cursor set) |
-| 6 | Verify live: search incl. pg_trgm typo case | done (SQL: 'zainba' matches 'Zainab' at 0.40, LIKE 0); browser + write paths need a login user |
+| 6 | Verify live: search incl. pg_trgm typo case | done (SQL: 'zainba' matches 'Zainab' at 0.40, LIKE 0); browser + write paths ready (admin and receptionist accounts created in `gps`) |
 | 7 | Persist Analytics reporting: `GET /api/analytics/activity` + real chart | done |
 | 8 | Persist Settings General fields: default language, timezone, date format | done |
 | 9 | Persist Hotel Settings "System Defaults": matching sensitivity, sync frequency, data retention | done |
