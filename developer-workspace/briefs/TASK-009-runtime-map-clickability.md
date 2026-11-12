@@ -20,8 +20,8 @@ Every element a user would reasonably try to interact with:
 
 | # | Item | Status |
 |---|------|--------|
-| 1 | Write the inventory map: every route, every supposed-clickable element, its selector, label, and expected outcome | pending |
-| 2 | Build the production app (`pnpm build`) and serve it with `next start` (runtime-parity forbids a dev URL) | pending |
+| 1 | Write the inventory map: every route, every supposed-clickable element, its selector, label, and expected outcome | in_progress — method + live probe done (`developer-workspace/parity/clickability/findings.md`); full 20-route row map next |
+| 2 | Build the production app (`pnpm build`) and serve it with `next start` (runtime-parity forbids a dev URL) | done — production on `:3100` |
 | 3 | Capture the runtime baseline map of the production build with `runtime-parity` (all routes/states, auth included) | pending |
 | 4 | Click every mapped control on the production build; record PASS / FAIL / NOT RUN with evidence (route, DOM, network, toast) | pending |
 | 5 | Clickability verdict: list every dead control and every fake action (toast-only where work is claimed) | pending |
