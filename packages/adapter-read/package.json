@@ -8,8 +8,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test:unit": "vitest run",
-    "start": "node --experimental-vm-modules ./src/worker.ts",
-    "seed:source": "node --experimental-vm-modules ./src/seeding/seed-from-source.ts"
+    "start": "tsx ./src/worker.ts",
+    "seed:source": "tsx ./src/seeding/seed-from-source.ts"
   },
   "dependencies": {
     "@gps/shared": "workspace:*",
@@ -17,8 +17,9 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
+    "eslint": "^9.5.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.4.5",
-    "vitest": "^1.6.0",
-    "eslint": "^9.5.0"
+    "vitest": "^1.6.0"
   }
 }

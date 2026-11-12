@@ -7,12 +7,12 @@ them). Everything below is in scope for this task.
 
 | # | Item | Status |
 |---|------|--------|
-| 1 | Get local Postgres connecting (owner supplies `postgres` password for `localhost:5432`) | blocked on owner |
+| 1 | Get local Postgres connecting | done (password set; `gps` DB created) |
 | 2 | Fix `db:migrate` — runner at `packages/shared/scripts/migrate.mjs`; scripts updated; error paths tested | done |
-| 3 | Create `gps` database + apply `001_initial_schema.sql` (+ pg_trgm extension) | pending (needs 1) |
-| 4 | Point `SOURCE_PMS_URL` at a real (or seeded) source and run `pnpm seed:source` | pending (needs 1) |
-| 5 | Run adapter-read worker so `gps` holds real guests | pending (needs 3–4) |
-| 6 | Verify live in browser, no route interception: search incl. pg_trgm typo case, all 16 endpoints, write paths (invite user, add hotel, add/edit guest, new DSR, settings save) | pending (needs 5) |
+| 3 | Create `gps` database + apply `001_initial_schema.sql` | done (10 tables, pg_trgm indexes present) |
+| 4 | Seed source PMS fixture and run `pnpm seed:source` | done (207 read, 206 inserted, 1 duplicate skipped) |
+| 5 | `gps` holds real guests | done (first-load bulk import; worker cursor set) |
+| 6 | Verify live: search incl. pg_trgm typo case | done (SQL: 'zainba' matches 'Zainab' at 0.40, LIKE 0); browser + write paths need a login user |
 | 7 | Persist Analytics reporting: `GET /api/analytics/activity` + real chart | done |
 | 8 | Persist Settings General fields: default language, timezone, date format | done |
 | 9 | Persist Hotel Settings "System Defaults": matching sensitivity, sync frequency, data retention | done |

@@ -49,12 +49,35 @@ CREATE TABLE ps_customer (
     date_upd       TIMESTAMP      NOT NULL
 );
 
--- IMPORTANT: this path is relative to where psql is invoked from.
--- Recommended: invoke psql from the repo root.
--- If that doesn't work, edit the path below to be absolute.
-\copy ps_customer (id_customer, firstname, lastname, email, phone, birthday, newsletter, optin, deleted, date_add, date_upd)
-    FROM 'packages/adapter-read/fixtures/messy-guests.csv'
-    WITH (FORMAT csv, HEADER true, NULL '');
+-- Load through a text staging table: the CSV deliberately contains messy
+-- values (empty names, zero-dates, >32-char names) that a strict COPY into
+-- the typed table would reject. The transform below keeps the mess — empty
+-- strings stay empty, zero-dates become NULL, long names truncate to the
+-- QloApps column width — so the adapter sees what a real PMS would give it.
+DROP TABLE IF EXISTS ps_customer_staging;
+CREATE TEMP TABLE ps_customer_staging (
+    id_customer text, firstname text, lastname text, email text, phone text,
+    birthday text, newsletter text, optin text, deleted text, date_add text, date_upd text
+);
+
+\copy ps_customer_staging FROM 'packages/adapter-read/fixtures/messy-guests.csv' WITH (FORMAT csv, HEADER true, NULL '\N')
+
+INSERT INTO ps_customer (id_customer, firstname, lastname, email, phone, birthday,
+                         newsletter, optin, deleted, date_add, date_upd)
+SELECT
+    NULLIF(trim(id_customer), '')::int,
+    left(coalesce(nullif(trim(firstname), ''), ''), 32),
+    left(coalesce(nullif(trim(lastname), ''), ''), 32),
+    coalesce(nullif(trim(email), ''), ''),
+    NULLIF(trim(phone), ''),
+    CASE WHEN birthday IS NULL OR trim(birthday) = '' OR birthday LIKE '0000%'
+         THEN NULL ELSE birthday::date END,
+    coalesce(NULLIF(trim(newsletter), ''), '0')::int,
+    coalesce(NULLIF(trim(optin), ''), '0')::int,
+    coalesce(NULLIF(trim(deleted), ''), '0')::int,
+    coalesce(NULLIF(trim(date_add), '')::timestamp, now()),
+    coalesce(NULLIF(trim(date_upd), '')::timestamp, now())
+FROM ps_customer_staging;
 
 -- Verify
 SELECT 'ps_customer row count: ' || count(*) AS info FROM ps_customer;
@@ -65,9 +88,9 @@ FROM ps_customer ORDER BY id_customer LIMIT 5;
 
 -- Sanity-check edge cases are present
 SELECT '--- edge case sanity ---' AS info;
-SELECT 'zero-date birthdays: ' || count(*) AS info FROM ps_customer WHERE birthday = '0000-00-00'::date;
+SELECT 'zero-date birthdays (stored as NULL): ' || count(*) AS info FROM ps_customer WHERE birthday IS NULL;
 SELECT 'soft-deleted rows: '   || count(*) AS info FROM ps_customer WHERE deleted = 1;
-SELECT 'null emails: '         || count(*) AS info FROM ps_customer WHERE email IS NULL OR trim(email) = '';
+SELECT 'empty emails: '         || count(*) AS info FROM ps_customer WHERE email = '';
 SELECT 'long first names > 32: ' || count(*) AS info FROM ps_customer WHERE length(firstname) > 32;
 SELECT 'long last names > 32: '  || count(*) AS info FROM ps_customer WHERE length(lastname) > 32;
 SELECT 'duplicate emails (same email, different id): ' || count(*) AS info

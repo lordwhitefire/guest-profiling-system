@@ -115,8 +115,10 @@ export async function bulkImport(
           AND source_ref = ${mapped.source_ref}
       `;
 
-      // Insert the new/updated row
-      await target`
+      // Insert the new/updated row. Duplicate emails exist in real PMS data;
+      // the unique (tenant_id, email) constraint wins and the row is skipped
+      // rather than aborting the whole import.
+      const inserted = await target`
         INSERT INTO guests
           (tenant_id, source_ref, first_name, last_name, email, phone,
            date_of_birth, preferences, comm_prefs, guest_phase,
@@ -135,8 +137,11 @@ export async function bulkImport(
            ${mapped.deleted_at},
            ${mapped.created_at},
            ${mapped.updated_at})
+        ON CONFLICT (tenant_id, email) DO NOTHING
+        RETURNING guest_id
       `;
-      rowsInserted++;
+      if (inserted.length > 0) rowsInserted++;
+      else rowsSkipped++;
     }
 
     rowsRead += chunkRows.length;
