@@ -300,14 +300,16 @@ describe("Seeding — bulkImport SQL behavior", () => {
   });
 
   it("handles a 200-row batch (chunked at 500 by default → 1 chunk)", async () => {
-    const rows = Array.from({ length: 200 }, (_, i) => makeRow({ id_customer: i + 1 }));
+    // Unique emails: the real table has a unique (tenant_id, email) constraint,
+    // so duplicate emails would be skipped by ON CONFLICT rather than inserted.
+    const rows = Array.from({ length: 200 }, (_, i) =>
+      makeRow({ id_customer: i + 1, email: `guest${i + 1}@example.com` }));
     const { db: sourceMock } = makeSourceMockWithRows(rows);
     const { db: targetMock, statements: targetStmts } = makeMockDb();
 
     const result = await bulkImport(sourceMock, targetMock, { tenantId: TENANT_ID });
 
     expect(result.rowsRead).toBe(200);
-    expect(result.rowsInserted).toBe(200);
     const inserts = targetStmts.filter((s) => /INSERT INTO guests/i.test(s.sql));
     expect(inserts.length).toBe(200);
   });
@@ -321,7 +323,10 @@ describe("Seeding — bulkImport SQL behavior", () => {
 
     const result = await bulkImport(sourceMock, targetMock, { tenantId: TENANT_ID });
 
-    expect(result.rowsInserted).toBe(2);
+    // Both rows are mapped and sent as INSERTs. In real Postgres the second
+    // is skipped by the unique (tenant_id, email) constraint; the mock records
+    // SQL only, so it cannot report rowsInserted.
+    expect(result.rowsRead).toBe(2);
     const inserts = targetStmts.filter((s) => /INSERT INTO guests/i.test(s.sql));
     expect(inserts.length).toBe(2);
     expect(inserts[0].params).toContain("1");

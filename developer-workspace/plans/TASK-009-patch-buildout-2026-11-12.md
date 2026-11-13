@@ -59,6 +59,7 @@ All nine steps are implemented and verified on the production build.
 - Full click pass: 159 PASS, 0 DEAD, 0 FAKE, 36 NOT RUN, 24 NATIVE (219 unique rows); one targeted re-run covers the visit-history select (PASS), giving effective 160 PASS, 35 NOT RUN.
 - Two-hotel E2E: Grand Vista row 1010, Lakeside row 1009; each syncs to one clean profile with one link; loop guest still has 2 visits.
 - Remaining: owner must load the extension for the real form-fill test; room/check-in/check-out cannot be persisted without a forbidden source-schema change.
+- CI: fixed the failing adapter-read seeding tests; E2E now builds and runs the production server with dummy build-time env (including `ARGON2_PEPPER`). Local lint, typecheck, unit and Playwright smoke all pass.
 
 See `reports/TASK-009-status-2026-11-13.md`.
 

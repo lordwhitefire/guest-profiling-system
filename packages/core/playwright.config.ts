@@ -21,9 +21,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm dev",
+    // CI and local both verify the production build: build once, then start.
+    command: "pnpm --filter @gps/core build && pnpm --filter @gps/core start",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
+    timeout: 120_000,
   },
 });

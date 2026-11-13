@@ -49,6 +49,14 @@ jobs:
     name: E2E tests (Playwright)
     runs-on: ubuntu-latest
     needs: unit-tests
+    env:
+      # The smoke suite does not touch the database, but Next evaluates the
+      # server modules at build time. Dummy values keep the build deterministic;
+      # no real connection is opened.
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci
+      JWT_SECRET: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      FIELD_ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      ARGON2_PEPPER: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
