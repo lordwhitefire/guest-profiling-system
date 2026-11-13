@@ -82,6 +82,7 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
         guestId: guest.guestId,
         firstName: guest.firstName,
         lastName: guest.lastName,
+        fullName: [guest.firstName, guest.lastName].filter(Boolean).join(" ") || null,
         email: guest.email,
         phone: guest.phone,
         dateOfBirth: guest.dateOfBirth ? isoDay(guest.dateOfBirth) : null,

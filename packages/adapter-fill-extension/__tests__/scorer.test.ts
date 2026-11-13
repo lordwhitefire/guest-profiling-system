@@ -291,3 +291,38 @@ describe("scorer — scoreAllPairs", () => {
     expect(candidates[0]!.needsConfirmation).toBe(false);
   });
 });
+
+describe("scorer — full name", () => {
+  const fullNameRule: Rule = {
+    exactPhrases: ["full name", "fullname", "guest name", "customer name", "your name", "name"],
+    regexPatterns: ["^full[_-]?name$", "^guest[_-]?name$", "^customer[_-]?name$", "\\bfull\\s+name\\b"],
+    autocompleteTokens: ["name"],
+    allowedTypes: ["text", null],
+    negativePatterns: ["first", "last", "surname", "family", "company", "hotel", "user", "property"],
+  };
+  const lastNameRule: Rule = {
+    exactPhrases: ["last name", "surname", "family name", "lastname", "l name"],
+    regexPatterns: ["^last[_-]?name$", "^surname$", "^family[_-]?name$", "^l[_-]?name$", "\\blast\\s+name\\b"],
+    autocompleteTokens: ["family-name"],
+    allowedTypes: ["text", null],
+    negativePatterns: ["first", "given", "forename"],
+  };
+
+  it("prefers fullName over lastName for a 'Full Name' field", () => {
+    const field = makeField({
+      raw: { label: "Full Name", placeholder: null, name: null, id: null, legend: null },
+      normalized: {
+        label: { phrase: "full name", tokens: ["full", "name"] },
+        placeholder: { phrase: "", tokens: [] },
+        name: { phrase: "", tokens: [] },
+        id: { phrase: "", tokens: [] },
+        legend: { phrase: "", tokens: [] },
+      },
+    });
+    const full = scorePair(field, "fullName", fullNameRule);
+    const last = scorePair(field, "lastName", lastNameRule);
+    expect(full).toBeGreaterThan(last);
+    expect(full).toBeGreaterThanOrEqual(LOW_THRESHOLD);
+    expect(scoreAllPairs([field], { fullName: fullNameRule, lastName: lastNameRule })[0]!.key).toBe("fullName");
+  });
+});

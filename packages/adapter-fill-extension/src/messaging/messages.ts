@@ -94,6 +94,7 @@ export interface StoreGuestPayload {
     guestId: string;
     firstName: string | null;
     lastName: string | null;
+    fullName: string | null;
     email: string | null;
     phone: string | null;
     dateOfBirth: string | null;

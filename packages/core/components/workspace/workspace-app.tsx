@@ -525,6 +525,7 @@ function GuestProfile({guest,onAction,onEdit,logs}:{guest:GuestLike;onAction:(s:
         guestId: ("guestId" in guest ? guest.guestId : "unknown") as string,
         firstName: raw?.firstName ?? guest.name.split(" ")[0] ?? null,
         lastName: raw?.lastName ?? (guest.name.split(" ").slice(1).join(" ") || null),
+        fullName: [raw?.firstName ?? guest.name.split(" ")[0] ?? null, raw?.lastName ?? (guest.name.split(" ").slice(1).join(" ") || null)].filter(Boolean).join(" ") || null,
         email: guest.email === "—" ? null : guest.email,
         phone: guest.phone === "—" ? null : guest.phone,
         dateOfBirth: isoDate(raw?.dateOfBirth),

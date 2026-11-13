@@ -5,6 +5,14 @@
     "scoring_formula": "exact phrase +35, regex +20, fuzzy similarity × 15 if > 0.6, autocomplete +45, block context +15, negative −40. Source weights: label 1.0, placeholder 0.9, name 0.8, id 0.7, legend 0.6. Take max across sources."
   },
 
+  "fullName": {
+    "exactPhrases": ["full name", "fullname", "guest name", "customer name", "your name", "name"],
+    "regexPatterns": ["^full[_-]?name$", "^guest[_-]?name$", "^customer[_-]?name$", "\\bfull\\s+name\\b"],
+    "autocompleteTokens": ["name"],
+    "allowedTypes": ["text", null],
+    "negativePatterns": ["first", "last", "surname", "family", "company", "hotel", "user", "property"]
+  },
+
   "firstName": {
     "exactPhrases": ["first name", "given name", "forename", "firstname", "f name"],
     "regexPatterns": ["^first[_-]?name$", "^given[_-]?name$", "^forename$", "^f[_-]?name$", "\\bfirst\\s+name\\b"],
