@@ -67,6 +67,26 @@ export function sanitizeSettingsUpdate(body: unknown): Partial<TenantSettings> {
   return out as Partial<TenantSettings>;
 }
 
+
+/**
+ * The settings column has historically been written by more than one code
+ * path. Some rows contain a JSON string instead of a JSON object, and an old
+ * bug spread a string into numeric keys. Keep only the known settings keys so
+ * a corrupt blob cannot break the Settings screen.
+ */
+export function normalizeStoredSettings(value: unknown): Partial<TenantSettings> {
+  let parsed = value;
+  if (typeof parsed === "string") {
+    try {
+      parsed = JSON.parse(parsed);
+    } catch {
+      return {};
+    }
+  }
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+  return sanitizeSettingsUpdate(parsed);
+}
+
 const INIT_SQL = `
   ALTER TABLE tenants ADD COLUMN IF NOT EXISTS settings JSONB NOT NULL DEFAULT '{}'::jsonb;
 `;
@@ -95,12 +115,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const rows = await db`
       SELECT settings FROM tenants WHERE tenant_id = ${scope.tenantId}
     `;
-    const row = rows[0] as { settings: Record<string, unknown> | null } | undefined;
-    const stored = row?.settings ?? {};
+    const row = rows[0] as { settings: unknown } | undefined;
+    const stored = normalizeStoredSettings(row?.settings);
     // Merge with defaults so missing fields get sensible values
     const settings: TenantSettings = {
       ...DEFAULT_SETTINGS,
-      ...(stored as Partial<TenantSettings>),
+      ...stored,
     };
     return ok(settings);
   } catch (err) {
@@ -139,7 +159,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     const currentRows = await db`
       SELECT settings FROM tenants WHERE tenant_id = ${scope.tenantId}
     `;
-    const current = (currentRows[0] as { settings: Record<string, unknown> | null })?.settings ?? {};
+    const current = normalizeStoredSettings((currentRows[0] as { settings: unknown } | undefined)?.settings);
     const merged = { ...DEFAULT_SETTINGS, ...current, ...body };
     await db`
       UPDATE tenants SET settings = ${JSON.stringify(merged)}::jsonb

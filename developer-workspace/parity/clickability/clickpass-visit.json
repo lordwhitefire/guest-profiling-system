@@ -1,0 +1,52 @@
+{
+  "counts": {
+    "PASS": 2
+  },
+  "results": [
+    {
+      "id": "page-19",
+      "route": "/workspace/visit-history",
+      "scope": "page",
+      "label": "Export History",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "PASS",
+      "reason": "download: visit-history-1e0c63b9-dde5-4beb-a126-d21bc7b26023-2026-11-13.csv",
+      "urlBefore": "/workspace/visit-history",
+      "urlAfter": "/workspace/visit-history",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/export/visit-history?guestId=1e0c63b9-dde5-4beb-a126-d21bc7b26023"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/export/visit-history?guestId=1e0c63b9-dde5-4beb-a126-d21bc7b26023",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [
+        "visit-history-1e0c63b9-dde5-4beb-a126-d21bc7b26023-2026-11-13.csv"
+      ]
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/visit-history",
+      "scope": "page",
+      "label": "All time 2026",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed All time -> 2026 (state change; Save still required)",
+      "valueBefore": "All time",
+      "valueAfter": "2026"
+    }
+  ]
+}

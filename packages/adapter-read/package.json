@@ -4,6 +4,9 @@
   "private": true,
   "description": "Read-side sync adapter — SSLR-pattern replication from source PMS to our DB. TASK-002.",
   "type": "module",
+  "exports": {
+    "./encryption": "./src/encryption.ts"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

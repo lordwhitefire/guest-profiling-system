@@ -142,6 +142,21 @@ export interface Reservation {
   deletedAt: Date | null;
 }
 
+// One raw source row linked to a guest profile. Visits are derived by
+// grouping these rows; the hotel source database has no visit table.
+export interface GuestVisit {
+  visitId: string;
+  guestId: string;
+  tenantId: string;
+  sourceTable: string;
+  sourceRowId: string;
+  occurredAt: Date | null;
+  linkedAt: Date;
+  email: string | null;
+  phone: string | null;
+  payload: Record<string, unknown> | null;
+}
+
 export interface GuestIdentityDocument {
   documentId: string;
   guestId: string;

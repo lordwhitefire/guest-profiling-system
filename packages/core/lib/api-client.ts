@@ -7,7 +7,7 @@
 //   - Throws ApiError with code + message + details on failure
 //   - Returns just the `data` payload on success (caller doesn't see envelope)
 
-import type { Guest, Reservation, TenantSettings, ApiResponse } from "@gps/shared";
+import type { Guest, Reservation, GuestVisit, TenantSettings, ApiResponse } from "@gps/shared";
 
 // Re-exported so existing imports (`@/lib/api-client`) keep working.
 export type { TenantSettings };
@@ -94,6 +94,14 @@ async function apiFetchRaw<T>(path: string, init?: RequestInit): Promise<ApiResp
   return body;
 }
 
+export interface MeResponse {
+  userId: string;
+  email: string;
+  groups: string[];
+  activeTenantId: string;
+  activeTenantName: string;
+}
+
 export interface LoyaltyResponse {
   tier: string;
   pointsBalance: number;
@@ -119,6 +127,8 @@ export const api = {
 
   logout: () =>
     apiFetch<never>("/api/auth/logout", { method: "POST" }),
+
+  getMe: (): Promise<MeResponse> => apiFetch<MeResponse>("/api/auth/me"),
 
   // Guest search (Feature F1 — live search)
   searchGuests: (q: string): Promise<Guest[]> =>
@@ -158,6 +168,10 @@ export const api = {
   // Linked spokes
   getReservations: (id: string, limit = 5): Promise<Reservation[]> =>
     apiFetch<Reservation[]>(`/api/guests/${id}/reservations?limit=${limit}`),
+
+  // Derived visits — one raw source row per visit, grouped by the clean profile.
+  getVisits: (id: string, limit = 100): Promise<GuestVisit[]> =>
+    apiFetch<GuestVisit[]>(`/api/guests/${id}/visits?limit=${limit}`),
 
   getLoyalty: (id: string): Promise<LoyaltyResponse> =>
     apiFetch<LoyaltyResponse>(`/api/guests/${id}/loyalty`),
@@ -212,6 +226,13 @@ export const api = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, groups }),
+    }),
+
+  updateUser: (userId: string, payload: { email?: string; groups?: string[]; active?: boolean }) =>
+    apiFetch<User>(`/api/users/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     }),
 
   // Sync status (PMS Integration screen)

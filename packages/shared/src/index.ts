@@ -20,6 +20,7 @@ export type {
   Guest,
   CommPrefs,
   Reservation,
+  GuestVisit,
   GuestIdentityDocument,
   LoyaltyProfile,
   AuditLog,

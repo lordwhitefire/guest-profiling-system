@@ -79,6 +79,10 @@ SELECT
     coalesce(NULLIF(trim(date_upd), '')::timestamp, now())
 FROM ps_customer_staging;
 
+-- The fixture inserts explicit id_customer values; move the sequence past
+-- them or the first registration will collide with ps_customer_pkey.
+SELECT setval('ps_customer_id_customer_seq', (SELECT MAX(id_customer) FROM ps_customer));
+
 -- Verify
 SELECT 'ps_customer row count: ' || count(*) AS info FROM ps_customer;
 SELECT 'ps_customer sample (first 5):' AS info;

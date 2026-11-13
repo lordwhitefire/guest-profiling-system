@@ -1,0 +1,755 @@
+{
+  "counts": {
+    "PASS": 18,
+    "NOT RUN": 2
+  },
+  "results": [
+    {
+      "id": "page-0",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Guest Profiling System",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/dashboard",
+      "verdict": "PASS",
+      "reason": "self-link: already on /workspace/dashboard",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-1",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Overview",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/dashboard",
+      "verdict": "PASS",
+      "reason": "self-link: already on /workspace/dashboard",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-2",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Guest Search",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/guest-search",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/guest-search",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-3",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Guest Directory",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/directory",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/directory",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/auth/me",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-4",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Guest History",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/visit-history",
+      "verdict": "PASS",
+      "reason": "network: GET /api/sync-status 200; GET /api/settings 200",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/sync-status",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/settings",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-5",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Registration",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/registration",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/registration",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/registration",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80"
+        },
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        }
+      ],
+      "responses": [
+        {
+          "url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/auth/me",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-6",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Administration",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/analytics",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/analytics",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/analytics",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-7",
+      "route": "shell",
+      "scope": "shell",
+      "label": "PMS Integration",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/pms-sync",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/pms-sync",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/pms-sync",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/auth/me",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-8",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Tenants",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/tenants",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/tenants",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/tenants",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/auth/me",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-9",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Users & Roles",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/users",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/users",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/users",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        }
+      ],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-10",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Data Requests",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/data-requests",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/data-requests",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/data-requests",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        }
+      ],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-11",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Audit Logs",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/audit-logs",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/audit-logs",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/audit-logs",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/auth/me",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-12",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Settings",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/settings",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/settings",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/settings",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "url": "/api/tenants"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-13",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Grand Vista Hotel Hotel workspace",
+      "tag": "div",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/tenants/mine"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/tenants/mine",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-14",
+      "route": "shell",
+      "scope": "shell",
+      "label": "AD Admin Administrator",
+      "tag": "div",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-15",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Search guests, properties, users...",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-16",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Download Report",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "PASS",
+      "reason": "network: GET /api/health 200; GET /api/sync-status 200",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Report export is being prepared."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/settings",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-17",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Notifications",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open notifications",
+      "verdict": "PASS",
+      "reason": "opens a popover",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "shell",
+      "scope": "shell",
+      "label": "AD",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-13",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Current hotel Hotel workspace",
+      "tag": "div",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "NOT RUN",
+      "reason": "not found in live DOM"
+    }
+  ]
+}

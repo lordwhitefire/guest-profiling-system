@@ -163,10 +163,24 @@ const browser = await attach();
 const rows = [];
 const routeSummary = [];
 try {
-  const { ref: page } = await takeTabs(browser, ["ref"]);
-  const login = async () =>
-    page.request.post(`${BASE}/api/auth/login`, { data: { email: "admin@grandvista.test", password: "Admin123!" } });
-  if ((await login()).status() !== 200) throw new Error("login failed");
+  const { ref: page } = await takeTabs(browser, ["ref"], { recreate: true });
+  const login = async () => {
+    let lastError = "";
+    for (let attempt = 0; attempt < 4; attempt++) {
+      try {
+        const res = await page.request.post(`${BASE}/api/auth/login`, {
+          data: { email: "admin@grandvista.test", password: "Admin123!" },
+        });
+        if (res.status() === 200) return res;
+        lastError = `HTTP ${res.status()}`;
+      } catch (err) {
+        lastError = err instanceof Error ? err.message : String(err);
+      }
+      await page.waitForTimeout(500 * (attempt + 1));
+    }
+    throw new Error(`login failed: ${lastError}`);
+  };
+  await login();
 
   // Resolve a real guest id for the profile page.
   const g = await page.request.get(`${BASE}/api/guests?limit=1`);
@@ -194,7 +208,17 @@ try {
     } else {
       await login();
     }
+    // The guest-profile and visit-history screens render the selected guest
+    // from sessionStorage. Select a real guest so those controls are captured.
+    if (guestId && (route.url === "/workspace/guest-profile" || route.url === "/workspace/visit-history")) {
+      await page.evaluate((id) => sessionStorage.setItem("gps-selected-guest-id", id), guestId);
+    }
     await page.goto(`${BASE}${route.url}`, { waitUntil: "domcontentloaded" });
+    // The profile screen waits on the guest list before it can render the
+    // selected guest; wait for the profile itself rather than a fixed delay.
+    if (route.url === "/workspace/guest-profile") {
+      await page.waitForSelector(".gps-profile-hero", { timeout: 8000 }).catch(() => {});
+    }
     await page.waitForTimeout(1100);
     const finalUrl = new URL(page.url()).pathname;
     const baseRows = await page.evaluate(COLLECT, { scope: "page", rootSelector: null });
@@ -221,8 +245,10 @@ try {
           statusOverride: hs.length || el.hasAttribute("href") ? "WIRED" : "DEAD (contract)",
         });
       };
-      add(".gps-hotel-badge", "Grand Vista Hotel + chevron", "open the hotel switcher");
-      add(".gps-sidebar-user", "Admin Operator + three dots", "open the user menu");
+      const hotelLabel = (document.querySelector(".gps-hotel-badge")?.innerText || "Hotel + chevron").replace(/\s+/g, " ").trim();
+      const userLabel = (document.querySelector(".gps-sidebar-user")?.innerText || "Account + menu").replace(/\s+/g, " ").trim();
+      add(".gps-hotel-badge", hotelLabel, "open the hotel switcher");
+      add(".gps-sidebar-user", userLabel, "open the user menu");
       return out;
     }).catch(() => []);
     for (const r of contract) {

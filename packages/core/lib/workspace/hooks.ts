@@ -21,12 +21,50 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, ApiError } from "@/lib/api-client";
-import type { Guest, Reservation } from "@gps/shared";
+import { api, ApiError, type MeResponse } from "@/lib/api-client";
+import type { Guest, GuestVisit, Reservation } from "@gps/shared";
 import { toWorkspaceGuest, toWorkspaceGuests, type WorkspaceGuest } from "./adapters";
 
 const DEBOUNCE_MS = 200;
 const MIN_QUERY_LENGTH = 2;
+
+// ── useMe — current user + active hotel ────────────────────────────────────
+
+export interface UseMeResult {
+  me: MeResponse | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useMe(): UseMeResult {
+  const [me, setMe] = useState<MeResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.getMe()
+      .then((value) => {
+        if (cancelled) return;
+        setMe(value);
+        setError(null);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err instanceof ApiError ? err.message : "Failed to load account.");
+        setMe(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [tick]);
+
+  return { me, loading, error, refetch: () => setTick((t) => t + 1) };
+}
 
 // ── useGuestSearch ─────────────────────────────────────────────────────────
 // Live-filter search. Mirrors the behavior of the existing
@@ -49,7 +87,7 @@ export interface UseGuestSearchResult {
  * hook only reacts to it. Passing the query in is what makes typing fire a
  * request — an internal state copy would never see the caller's updates.
  */
-export function useGuestSearch(query: string): UseGuestSearchResult {
+export function useGuestSearch(query: string, hotelName = "Current hotel"): UseGuestSearchResult {
   const [guests, setGuests] = useState<WorkspaceGuest[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +114,7 @@ export function useGuestSearch(query: string): UseGuestSearchResult {
       try {
         const results = await api.searchGuests(q);
         if (requestId === requestIdRef.current) {
-          setGuests(toWorkspaceGuests(results));
+          setGuests(toWorkspaceGuests(results, hotelName));
         }
       } catch (err) {
         if (requestId === requestIdRef.current) {
@@ -93,7 +131,7 @@ export function useGuestSearch(query: string): UseGuestSearchResult {
     return () => {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-  }, [query, refetchTick]);
+  }, [query, refetchTick, hotelName]);
 
   const refetch = useCallback(() => setRefetchTick((t) => t + 1), []);
 
@@ -114,7 +152,7 @@ export interface UseGuestDirectoryResult {
   refetch: () => void;
 }
 
-export function useGuestDirectory(initialPage = 1, limit = 20): UseGuestDirectoryResult {
+export function useGuestDirectory(initialPage = 1, limit = 20, hotelName = "Current hotel"): UseGuestDirectoryResult {
   const [page, setPage] = useState(initialPage);
   const [guests, setGuests] = useState<WorkspaceGuest[]>([]);
   const [total, setTotal] = useState(0);
@@ -130,7 +168,7 @@ export function useGuestDirectory(initialPage = 1, limit = 20): UseGuestDirector
     api.listGuests(page, limit)
       .then((result) => {
         if (cancelled) return;
-        setGuests(toWorkspaceGuests(result.guests));
+        setGuests(toWorkspaceGuests(result.guests, hotelName));
         setTotal(result.total);
       })
       .catch((err) => {
@@ -144,7 +182,7 @@ export function useGuestDirectory(initialPage = 1, limit = 20): UseGuestDirector
       });
 
     return () => { cancelled = true; };
-  }, [page, limit, refetchTick]);
+  }, [page, limit, refetchTick, hotelName]);
 
   const refetch = useCallback(() => setRefetchTick((t) => t + 1), []);
 
@@ -161,7 +199,7 @@ export interface UseGuestResult {
   refetch: () => void;
 }
 
-export function useGuest(guestId: string | null): UseGuestResult {
+export function useGuest(guestId: string | null, hotelName = "Current hotel"): UseGuestResult {
   const [guest, setGuest] = useState<WorkspaceGuest | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -181,7 +219,7 @@ export function useGuest(guestId: string | null): UseGuestResult {
 
     api.getGuest(guestId)
       .then((g: Guest) => {
-        if (!cancelled) setGuest(toWorkspaceGuest(g));
+        if (!cancelled) setGuest(toWorkspaceGuest(g, hotelName));
       })
       .catch((err) => {
         if (!cancelled) {
@@ -194,7 +232,7 @@ export function useGuest(guestId: string | null): UseGuestResult {
       });
 
     return () => { cancelled = true; };
-  }, [guestId, refetchTick]);
+  }, [guestId, refetchTick, hotelName]);
 
   const refetch = useCallback(() => setRefetchTick((t) => t + 1), []);
   return { guest, loading, error, refetch };
@@ -256,6 +294,51 @@ export function useReservations(guestId: string | null, limit = 20): UseReservat
 
   const refetch = useCallback(() => setRefetchTick((t) => t + 1), []);
   return { reservations, loading, error, refetch };
+}
+
+// ── useGuestVisits — Visit History screen ──────────────────────────────────
+// Visits are derived from guest_profile_links: one link = one raw source row
+// = one visit. The source database stores no visit table.
+
+export interface UseGuestVisitsResult {
+  visits: GuestVisit[];
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export function useGuestVisits(guestId: string | null, limit = 100): UseGuestVisitsResult {
+  const [visits, setVisits] = useState<GuestVisit[]>([]);
+  const [loading, setLoading] = useState(!!guestId);
+  const [error, setError] = useState<string | null>(null);
+  const [refetchTick, setRefetchTick] = useState(0);
+
+  useEffect(() => {
+    if (!guestId) {
+      setVisits([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    api.getVisits(guestId, limit)
+      .then((rows) => { if (!cancelled) setVisits(rows); })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof ApiError ? err.message : "Failed to load visit history.");
+          setVisits([]);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
+  }, [guestId, limit, refetchTick]);
+
+  const refetch = useCallback(() => setRefetchTick((t) => t + 1), []);
+  return { visits, loading, error, refetch };
 }
 
 // ── useHealth — Analytics system-health panel ──────────────────────────────

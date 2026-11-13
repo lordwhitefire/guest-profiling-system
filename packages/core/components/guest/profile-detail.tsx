@@ -9,7 +9,7 @@
 //   3. Preferences (JSONB as key-value pairs)
 //   4. Reservations (last 5, sorted by check_in DESC)
 //   5. Loyalty (tier, points, total stays)
-//   6. Action: Fill form button (disabled placeholder — TASK-006 enables it)
+//   6. Action: send the guest to the FormFilla browser extension
 //
 // NEVER displays identity_doc_* (Card 2 §4.4 — sensitive-field stripping
 // already done at the API layer; this component does not even attempt to
@@ -24,9 +24,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { storeGuestInExtension } from "@/lib/extension-bridge";
 
 export interface ProfileDetailProps {
   guest: Guest;
+}
+
+// Server-fetched JSON gives dates as ISO strings, while client-side API data
+// can give Date objects. Format both without assuming a method exists.
+function isoDay(value: unknown): string {
+  if (!value) return "";
+  const date = value instanceof Date ? value : new Date(String(value));
+  return Number.isNaN(date.getTime()) ? String(value) : date.toISOString().slice(0, 10);
 }
 
 export function ProfileDetail({ guest }: ProfileDetailProps) {
@@ -65,6 +74,36 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
   const fullName = [guest.firstName, guest.lastName].filter(Boolean).join(" ") || "Unknown guest";
   const initials = `${(guest.firstName ?? "?")[0] ?? "?"}${(guest.lastName ?? "?")[0] ?? "?"}`;
 
+  // Send this guest to the FormFilla extension. Delivery is confirmed by the
+  // extension's content script; without it we say so instead of claiming success.
+  const fillRegistrationForm = async () => {
+    const delivered = await storeGuestInExtension({
+      guest: {
+        guestId: guest.guestId,
+        firstName: guest.firstName,
+        lastName: guest.lastName,
+        email: guest.email,
+        phone: guest.phone,
+        dateOfBirth: guest.dateOfBirth ? isoDay(guest.dateOfBirth) : null,
+        nationality: guest.nationality,
+        addressLine1: guest.addressLine1,
+        addressLine2: guest.addressLine2,
+        city: guest.city,
+        state: guest.state,
+        postalCode: guest.postalCode,
+        country: guest.country,
+        company: null,
+        notes: null,
+      },
+      storedAt: Date.now(),
+    });
+    if (delivered) {
+      toast.success("Guest prepared. Open the hotel's registration form and click the extension icon.");
+    } else {
+      toast.error("Extension not detected. Install and enable the Guest Profiling extension, then try again.");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* 1. Header */}
@@ -87,7 +126,7 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
               )}
               {guest.lastStayDate && (
                 <span className="text-sm text-ink-500">
-                  Last stay: {guest.lastStayDate.toISOString().slice(0, 10)}
+                  Last stay: {isoDay(guest.lastStayDate)}
                 </span>
               )}
             </div>
@@ -143,7 +182,7 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
           {guest.dateOfBirth && (
             <div className="flex gap-3">
               <dt className="w-20 text-ink-500">DOB</dt>
-              <dd>{guest.dateOfBirth.toISOString().slice(0, 10)}</dd>
+              <dd>{isoDay(guest.dateOfBirth)}</dd>
             </div>
           )}
           {guest.nationality && (
@@ -188,7 +227,7 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-ink-900">
-                    {r.checkIn.toISOString().slice(0, 10)} → {r.checkOut.toISOString().slice(0, 10)}
+                    {isoDay(r.checkIn)} → {isoDay(r.checkOut)}
                   </div>
                   <div className="text-xs text-ink-500">
                     {r.roomType ?? "Room type N/A"}
@@ -237,13 +276,12 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
         )}
       </Card>
 
-      {/* 6. Action — Fill form (placeholder; TASK-006 enables it) */}
+      {/* 6. Action — send this guest to the browser extension */}
       <div className="flex justify-end">
         <Button
           variant="primary"
-          disabled
-          onClick={() => toast.info("Form fill will be available after TASK-006.")}
-          title="Browser extension form-fill — TASK-006"
+          onClick={fillRegistrationForm}
+          title="Send this guest to the Guest Profiling browser extension"
         >
           Fill registration form
         </Button>

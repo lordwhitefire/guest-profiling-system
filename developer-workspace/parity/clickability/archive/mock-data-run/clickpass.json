@@ -1,0 +1,5173 @@
+{
+  "counts": {
+    "PASS": 122,
+    "DEAD": 17,
+    "FAKE": 45,
+    "NATIVE": 24,
+    "NOT RUN": 43
+  },
+  "results": [
+    {
+      "id": "page-0",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Guest Profiling System",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/dashboard",
+      "verdict": "PASS",
+      "reason": "self-link: already on /workspace/dashboard",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-1",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Overview",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/dashboard",
+      "verdict": "PASS",
+      "reason": "self-link: already on /workspace/dashboard",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-2",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Guest Search",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/guest-search",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/guest-search",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        },
+        {
+          "method": "GET",
+          "url": "/api/audit-logs?page=1&limit=20"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-3",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Guest Directory",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/directory",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/directory",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        },
+        {
+          "method": "GET",
+          "url": "/api/audit-logs?page=1&limit=20"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-4",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Guest History",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/visit-history",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=1 200",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-5",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Registration",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/registration",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-6",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Administration",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/analytics",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/analytics",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/analytics",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        },
+        {
+          "method": "GET",
+          "url": "/api/audit-logs?page=1&limit=20"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-7",
+      "route": "shell",
+      "scope": "shell",
+      "label": "PMS Integration",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/pms-sync",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-8",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Tenants",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/tenants",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-9",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Users & Roles",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/users",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-10",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Data Requests",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/data-requests",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-11",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Audit Logs",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/audit-logs",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-12",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Settings",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /workspace/settings",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-13",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Search guests, properties, users...",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-14",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Download Report",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=20 200; GET /api/guests?page=1&limit=1 200",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Report export is being prepared."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-15",
+      "route": "shell",
+      "scope": "shell",
+      "label": "Notifications",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open notifications",
+      "verdict": "PASS",
+      "reason": "opens a popover",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-16",
+      "route": "shell",
+      "scope": "shell",
+      "label": "AO",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "route": "shell",
+      "scope": "contract",
+      "label": "Grand Vista Hotel + chevron",
+      "tag": "div",
+      "type": "",
+      "mapStatus": "DEAD (contract)",
+      "expected": "open the hotel switcher",
+      "verdict": "DEAD",
+      "reason": "no role, handler, focus, route, popover or toast"
+    },
+    {
+      "route": "shell",
+      "scope": "contract",
+      "label": "Admin Operator + three dots",
+      "tag": "div",
+      "type": "",
+      "mapStatus": "DEAD (contract)",
+      "expected": "open the user menu",
+      "verdict": "DEAD",
+      "reason": "no role, handler, focus, route, popover or toast"
+    },
+    {
+      "id": "notifications-0",
+      "route": "shell",
+      "scope": "notifications",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close the popover",
+      "verdict": "PASS",
+      "reason": "popover closes"
+    },
+    {
+      "id": "page-0",
+      "route": "/design-system",
+      "scope": "page",
+      "label": "Primary",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "STATIC (demo)",
+      "expected": "perform the labelled action",
+      "verdict": "NOT RUN",
+      "reason": "design-system demo"
+    },
+    {
+      "id": "page-1",
+      "route": "/design-system",
+      "scope": "page",
+      "label": "Secondary",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "STATIC (demo)",
+      "expected": "perform the labelled action",
+      "verdict": "NOT RUN",
+      "reason": "design-system demo"
+    },
+    {
+      "id": "page-2",
+      "route": "/design-system",
+      "scope": "page",
+      "label": "Ghost",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "STATIC (demo)",
+      "expected": "perform the labelled action",
+      "verdict": "NOT RUN",
+      "reason": "design-system demo"
+    },
+    {
+      "id": "page-3",
+      "route": "/design-system",
+      "scope": "page",
+      "label": "Destructive",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "STATIC (demo)",
+      "expected": "perform the labelled action",
+      "verdict": "NOT RUN",
+      "reason": "design-system demo"
+    },
+    {
+      "id": "page-4",
+      "route": "/design-system",
+      "scope": "page",
+      "label": "you@example.com",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "INPUT",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-5",
+      "route": "/design-system",
+      "scope": "page",
+      "label": "+234 800 000 0000",
+      "tag": "input",
+      "type": "tel",
+      "mapStatus": "INPUT",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-6",
+      "route": "/design-system",
+      "scope": "page",
+      "label": "Not editable",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "DISABLED",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "disabled"
+    },
+    {
+      "id": "page-17",
+      "route": "/search",
+      "scope": "page",
+      "label": "Retry",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/search",
+      "scope": "page",
+      "label": "Enter guest name, phone number or email...",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-19",
+      "route": "/search",
+      "scope": "page",
+      "label": "Search",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Guest search refreshed.",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [
+        "Guest search refreshed."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-20",
+      "route": "/search",
+      "scope": "page",
+      "label": "Clear search",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "network: GET /api/tenants 200; GET /api/data-requests?page=1&limit=20 200",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-21",
+      "route": "/search",
+      "scope": "page",
+      "label": "AK Returning Adebola Kamal adebola.kamal@email.com +234 803 456 7890 5 visits La",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-22",
+      "route": "/search",
+      "scope": "page",
+      "label": "SK VIP Sarah Kamal sarah.kamal@email.com +234 812 345 6789 3 visits Last: 08 Nov",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-23",
+      "route": "/search",
+      "scope": "page",
+      "label": "MJ Returning Michael Johnson m.johnson@email.com +234 701 222 9011 8 visits Last",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-24",
+      "route": "/search",
+      "scope": "page",
+      "label": "FB New Fatima Bello fatima.bello@email.com +234 809 765 4321 2 visits Last: 02 N",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-25",
+      "route": "/search",
+      "scope": "page",
+      "label": "DO Returning David Okafor david.okafor@email.com +234 806 111 2233 4 visits Last",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-26",
+      "route": "/search",
+      "scope": "page",
+      "label": "GW VIP Grace Williams grace.w@email.com +234 814 987 6543 6 visits Last: 25 Oct ",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "Search for a guest",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/guest-search",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/guest-search"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/workspace/guest-search",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "Quick Search",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/guest-search; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds6vfv-18\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/guest-search"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/workspace/guest-search",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View all",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/directory; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds75ck-19\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/directory"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/workspace/directory",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Jennifer Adeyemi",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "NOT RUN",
+      "reason": "not found in live DOM",
+      "retryAttempted": "clickpass-retry-dashboard.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "not found in live DOM",
+      "flaggedUnmatched": true
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Arjun Okafor",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Arjun Okafor's profile opened.",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Arjun Okafor's profile opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Ngozi Garcia",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Ngozi Garcia's profile opened.",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Ngozi Garcia's profile opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Chukwuemeka Mohammed",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "NOT RUN",
+      "reason": "not found in live DOM",
+      "retryAttempted": "clickpass-retry-dashboard.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "not found in live DOM",
+      "flaggedUnmatched": true
+    },
+    {
+      "id": "page-24",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View all",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/audit-logs; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwds827i-24\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/audit-logs",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/audit-logs"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/audit-logs",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdqwe16-24\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button cla",
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "page-25",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Sync Details",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Opening PMS synchronisation details.",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Opening PMS synchronisation details."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "page-26",
+      "route": "/workspace/dashboard",
+      "scope": "page",
+      "label": "View Quick Guide",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "network: GET /api/data-requests?page=1&limit=20 200; GET /api/users?page=1&limit=100 200",
+      "urlBefore": "/workspace/dashboard",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [
+        "Quick guide opened."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "Retry",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "Enter guest name, phone number or email...",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "Search",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Guest search refreshed.",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [
+        "Guest search refreshed."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "Clear search",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "AK Returning Adebola Kamal adebola.kamal@email.com +234 803 456 7890 5 visits La",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "SK VIP Sarah Kamal sarah.kamal@email.com +234 812 345 6789 3 visits Last: 08 Nov",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "MJ Returning Michael Johnson m.johnson@email.com +234 701 222 9011 8 visits Last",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-24",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "FB New Fatima Bello fatima.bello@email.com +234 809 765 4321 2 visits Last: 02 N",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-25",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "DO Returning David Okafor david.okafor@email.com +234 806 111 2233 4 visits Last",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-26",
+      "route": "/workspace/guest-search",
+      "scope": "page",
+      "label": "GW VIP Grace Williams grace.w@email.com +234 814 987 6543 6 visits Last: 25 Oct ",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-search",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Add Guest",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Export",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "FAKE",
+      "reason": "toast only: Guest directory exported.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Guest directory exported."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Search guest name, email or phone...",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "editable input"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "All VIP Returning New",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "row list changed (20 -> 0)",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Filters",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "network: GET /api/data-requests?page=1&limit=20 200; GET /api/analytics/activity?days=30 200",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select all",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Jennifer Adeyemi",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "not found in live DOM",
+      "flaggedUnmatched": true
+    },
+    {
+      "id": "page-24",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-25",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Jennifer Adeyemi.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Jennifer Adeyemi."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-26",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Arjun Okafor",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-27",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-28",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Arjun Okafor.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Arjun Okafor."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-29",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Ngozi Garcia",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-30",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-31",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Ngozi Garcia.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Ngozi Garcia."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-32",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Chukwuemeka Mohammed",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-33",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-34",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Chukwuemeka Mohammed.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Chukwuemeka Mohammed."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-35",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Wei Williams",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-36",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-37",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Wei Williams.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Wei Williams."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-38",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Linda Kumar",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-39",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-40",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Linda Kumar.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Linda Kumar."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-41",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Aisha Bello",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-42",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-43",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Aisha Bello.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Aisha Bello."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "not found in live DOM",
+      "flaggedUnmatched": true
+    },
+    {
+      "id": "page-44",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select David Dauda",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "not found in live DOM",
+      "flaggedUnmatched": true
+    },
+    {
+      "id": "page-45",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-46",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing David Dauda.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing David Dauda."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-47",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select John Al-Hassan",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-48",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-49",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing John Al-Hassan.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing John Al-Hassan."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-50",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Michael Johnson",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-51",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-52",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Michael Johnson.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Michael Johnson."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-53",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Chidi Dauda",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-54",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-55",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Chidi Dauda.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Chidi Dauda."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-56",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Zainab Adeleke",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-57",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-58",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Zainab Adeleke.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Zainab Adeleke."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-59",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Obinna Sani",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-60",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-61",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Obinna Sani.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Obinna Sani."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-62",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Kunle Patel",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-63",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-64",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Kunle Patel.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Kunle Patel."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-65",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Funke",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-66",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-67",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Funke.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Funke."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-68",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Emeka Yusuf",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-69",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-70",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Emeka Yusuf.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Emeka Yusuf."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-71",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Adaeze Yamamoto",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-72",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-73",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Adaeze Yamamoto.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Adaeze Yamamoto."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-74",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select James Adeleke",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-75",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-76",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing James Adeleke.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing James Adeleke."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-77",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Edge ZeroDate",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-78",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-79",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Edge ZeroDate.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Edge ZeroDate."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-80",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Seyi Davis",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true,
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-81",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-82",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing Seyi Davis.",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [
+        "Editing Seyi Davis."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-83",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "DISABLED",
+      "expected": "open a menu",
+      "verdict": "NOT RUN",
+      "reason": "disabled",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "disabled"
+    },
+    {
+      "id": "page-84",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "1",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "DEAD (no handler)",
+      "expected": "perform the labelled action",
+      "verdict": "PASS",
+      "reason": "already active: 1",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-85",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "2",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "screen/state changed",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-86",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "3",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "screen/state changed",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-87",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Edit Profile",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Prepare Registration",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "NOT RUN",
+      "reason": "extension bridge not loaded: Extension not detected. Install and enable the Guest Profiling extension, then try again.",
+      "toasts": [
+        "Extension not detected. Install and enable the Guest Profiling extension, then try again."
+      ],
+      "clickErr": "",
+      "retryAttempted": "clickpass-retry-guestprofile.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "extension bridge not loaded: Extension not detected. Install and enable the Guest Profiling extension, then try again."
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Overview",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=1 200; GET /api/users?page=1&limit=100 200",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [
+        "Overview tab selected."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Visit History",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Visit History tab selected.",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [
+        "Visit History tab selected."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Preferences",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=1 200",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [
+        "Preferences tab selected."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/guest-profile",
+      "scope": "page",
+      "label": "Activity",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Activity tab selected.",
+      "urlBefore": "/workspace/guest-profile",
+      "urlAfter": "/workspace/guest-profile",
+      "toasts": [
+        "Activity tab selected."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/visit-history",
+      "scope": "page",
+      "label": "Export History",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "FAKE",
+      "reason": "toast only: Visit history exported.",
+      "urlBefore": "/workspace/visit-history",
+      "urlAfter": "/workspace/visit-history",
+      "toasts": [
+        "Visit history exported."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-visit-history.json"
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/visit-history",
+      "scope": "page",
+      "label": "All time 2026 2025",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "NATIVE (no effect)",
+      "expected": "change the selected option",
+      "verdict": "NATIVE",
+      "reason": "select changed All time -> 2026; no data effect",
+      "valueBefore": "All time",
+      "valueAfter": "2026",
+      "retrySource": "clickpass-retry-visit-history.json"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/visit-history",
+      "scope": "page",
+      "label": "Refresh",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "PASS",
+      "reason": "screen/state changed",
+      "urlBefore": "/workspace/visit-history",
+      "urlAfter": "/workspace/visit-history",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/40f3ebf4-0b08-4e49-8e30-4999d01e7081/reservations?limit=20"
+        }
+      ],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-visit-history.json"
+    },
+    {
+      "id": "page-0",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "Hotel PMS",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Hotel PMS home opened.",
+      "toasts": [
+        "Hotel PMS home opened."
+      ],
+      "clickErr": ""
+    },
+    {
+      "id": "page-1",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "Enter guest full name",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-2",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "guest@email.com",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-3",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "+234 000 000 0000",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-4",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "Select room type Deluxe Room Executive Suite Standard Room",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "room select changed  -> Deluxe Room",
+      "valueBefore": "",
+      "valueAfter": "Deluxe Room"
+    },
+    {
+      "id": "page-5",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "date",
+      "mapStatus": "INPUT",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-6",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "date",
+      "mapStatus": "INPUT",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-7",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "confirmation checkbox toggles; not connected to submit",
+      "checkedBefore": true,
+      "checkedAfter": false
+    },
+    {
+      "id": "page-8",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "form fields reset",
+      "clickErr": ""
+    },
+    {
+      "id": "page-9",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "Complete Registration",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Guest details prepared. Complete registration in the hotel PMS.",
+      "toasts": [
+        "Guest details prepared. Complete registration in the hotel PMS."
+      ]
+    },
+    {
+      "id": "page-10",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "JA Jennifer Adeyemi 440301844093",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "prefills Jennifer Adeyemi / jennifer38@yahoo.com; fixed suggestion, no live search",
+      "toasts": [
+        "Jennifer Adeyemi details filled into the registration form."
+      ]
+    },
+    {
+      "id": "page-11",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "AO Arjun Okafor 911352343236",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "prefills Arjun Okafor / arjun_okafor@icloud.com; fixed suggestion, no live search",
+      "toasts": [
+        "Arjun Okafor details filled into the registration form."
+      ]
+    },
+    {
+      "id": "page-12",
+      "route": "/workspace/registration",
+      "scope": "page",
+      "label": "NG Ngozi Garcia 2343448512366",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "prefills Ngozi Garcia / ngozi.garcia@yahoo.com; fixed suggestion, no live search",
+      "toasts": [
+        "Ngozi Garcia details filled into the registration form."
+      ]
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/pms-sync",
+      "scope": "page",
+      "label": "Sync Now",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=20 200; GET /api/users?page=1&limit=100 200",
+      "urlBefore": "/workspace/pms-sync",
+      "urlAfter": "/workspace/pms-sync",
+      "toasts": [
+        "A new synchronisation has been queued."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-pms-sync.json"
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/pms-sync",
+      "scope": "page",
+      "label": "Retry",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "NOT RUN",
+      "reason": "not found in live DOM",
+      "retryAttempted": "clickpass-retry-pms-sync.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "not found in live DOM",
+      "flaggedUnmatched": true
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/pms-sync",
+      "scope": "page",
+      "label": "Test Connection",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=20 200; GET /api/data-requests?page=1&limit=20 200",
+      "urlBefore": "/workspace/pms-sync",
+      "urlAfter": "/workspace/pms-sync",
+      "toasts": [
+        "Connection test successful."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/data-requests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-pms-sync.json"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/pms-sync",
+      "scope": "page",
+      "label": "Refresh",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the operation",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/pms-sync",
+      "urlAfter": "/workspace/pms-sync",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/sync-status"
+        }
+      ],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-pms-sync.json"
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/data-requests",
+      "scope": "page",
+      "label": "New Request",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/data-requests",
+      "urlAfter": "/workspace/data-requests",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/data-requests",
+      "scope": "page",
+      "label": "New Request",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/data-requests",
+      "urlAfter": "/workspace/data-requests",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/audit-logs",
+      "scope": "page",
+      "label": "Export",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "FAKE",
+      "reason": "toast only: Audit log export started.",
+      "urlBefore": "/workspace/audit-logs",
+      "urlAfter": "/workspace/audit-logs",
+      "toasts": [
+        "Audit log export started."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/audit-logs",
+      "scope": "page",
+      "label": "Export Logs",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "FAKE",
+      "reason": "toast only: Audit logs export started.",
+      "urlBefore": "/workspace/audit-logs",
+      "urlAfter": "/workspace/audit-logs",
+      "toasts": [
+        "Audit logs export started."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "Invite User",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "Invite User",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing receptionist@grandvista.test.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Editing receptionist@grandvista.test."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retryAttempted": "clickpass-retry-users.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "not found in live DOM",
+      "flaggedUnmatched": true
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Editing admin@grandvista.test.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Editing admin@grandvista.test."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "View permissions",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Administrator permissions opened.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Administrator permissions opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "View permissions",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Regional Manager permissions opened.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Regional Manager permissions opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/users",
+      "scope": "page",
+      "label": "View permissions",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Receptionist permissions opened.",
+      "urlBefore": "/workspace/users",
+      "urlAfter": "/workspace/users",
+      "toasts": [
+        "Receptionist permissions opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/tenants",
+      "scope": "page",
+      "label": "Add Hotel",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/tenants",
+      "urlAfter": "/workspace/tenants",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-tenants.json"
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/tenants",
+      "scope": "page",
+      "label": "Add tenant",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/tenants",
+      "urlAfter": "/workspace/tenants",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "retrySource": "clickpass-retry-tenants.json"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/tenants",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a menu",
+      "verdict": "FAKE",
+      "reason": "toast only: Grand Vista Hotel workspace opened.",
+      "urlBefore": "/workspace/tenants",
+      "urlAfter": "/workspace/tenants",
+      "toasts": [
+        "Grand Vista Hotel workspace opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": [],
+      "retrySource": "clickpass-retry-tenants.json"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/tenants",
+      "scope": "page",
+      "label": "Manage Hotel Settings",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/hotel-settings",
+      "urlBefore": "/workspace/tenants",
+      "urlAfter": "/workspace/hotel-settings",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/hotel-settings"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/hotel-settings",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrlpkb-19\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button cla",
+      "retrySource": "clickpass-retry-tenants.json"
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "Save Defaults",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "persist the change",
+      "verdict": "FAKE",
+      "reason": "toast only: Settings saved successfully.",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [
+        "Settings saved successfully."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Settings notice dismissed.",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [
+        "Settings notice dismissed."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "General",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "already active: General",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "Notifications",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open notifications",
+      "verdict": "PASS",
+      "reason": "network: GET /api/guests?page=1&limit=20 200; GET /api/guests?page=1&limit=1 200",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "Security",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "screen/state changed",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "Integrations",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "screen/state changed",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "Account",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "screen/state changed",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-24",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "INPUT",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-25",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "English (United States) English (United Kingdom)",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed en-US -> en-GB (state change; Save still required)",
+      "valueBefore": "en-US",
+      "valueAfter": "en-GB"
+    },
+    {
+      "id": "page-26",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "Africa/Lagos (WAT) UTC",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed Africa/Lagos -> UTC (state change; Save still required)",
+      "valueBefore": "Africa/Lagos",
+      "valueAfter": "UTC"
+    },
+    {
+      "id": "page-27",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "DD/MM/YYYY MM/DD/YYYY",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed DD/MM/YYYY -> MM/DD/YYYY (state change; Save still required)",
+      "valueBefore": "DD/MM/YYYY",
+      "valueAfter": "MM/DD/YYYY"
+    },
+    {
+      "id": "page-28",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "DEAD",
+      "reason": "request failed: GET /api/sync-status 500",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [
+        "Changes discarded."
+      ],
+      "requests": [],
+      "responses": [
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-29",
+      "route": "/workspace/settings",
+      "scope": "page",
+      "label": "Save Changes",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "persist the change",
+      "verdict": "PASS",
+      "reason": "network: GET /api/users?page=1&limit=100 200; GET /api/health 200",
+      "urlBefore": "/workspace/settings",
+      "urlAfter": "/workspace/settings",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "PUT",
+          "url": "/api/settings"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "Edit Hotel Information",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "FAKE",
+      "reason": "toast only: Hotel information editor opened.",
+      "urlBefore": "/workspace/hotel-settings",
+      "urlAfter": "/workspace/hotel-settings",
+      "toasts": [
+        "Hotel information editor opened."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "switch state \"gps-switch \" -> \"gps-switch on\""
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "switch state \"gps-switch \" -> \"gps-switch on\""
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "90 days 1 year 3 years 7 years",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed 365 -> 90 (state change; Save still required)",
+      "valueBefore": "365",
+      "valueAfter": "90"
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "English (United States) English (United Kingdom)",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed en-US -> en-GB (state change; Save still required)",
+      "valueBefore": "en-US",
+      "valueAfter": "en-GB"
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "Africa/Lagos (WAT) UTC",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed Africa/Lagos -> UTC (state change; Save still required)",
+      "valueBefore": "Africa/Lagos",
+      "valueAfter": "UTC"
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "Strict — exact fields only Balanced — phone, email and name Loose — include simi",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed balanced -> strict (state change; Save still required)",
+      "valueBefore": "balanced",
+      "valueAfter": "strict"
+    },
+    {
+      "id": "page-24",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "Every 15 minutes Every 30 minutes Hourly",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed 15 -> 30 (state change; Save still required)",
+      "valueBefore": "15",
+      "valueAfter": "30"
+    },
+    {
+      "id": "page-25",
+      "route": "/workspace/hotel-settings",
+      "scope": "page",
+      "label": "Save Settings",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "persist the change",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "urlBefore": "/workspace/hotel-settings",
+      "urlAfter": "/workspace/hotel-settings",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "PUT",
+          "url": "/api/settings"
+        }
+      ],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/analytics",
+      "scope": "page",
+      "label": "Last 30 days",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "NATIVE (no effect)",
+      "expected": "change the selected option",
+      "verdict": "NOT RUN",
+      "reason": "single option; cannot change",
+      "valueBefore": "Last 30 days",
+      "optionValues": [
+        "Last 30 days"
+      ]
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/analytics",
+      "scope": "page",
+      "label": "Guest Directory",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/directory; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrq4gz-18\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/analytics",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/directory"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/directory",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrq4gz-18\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button dat"
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/analytics",
+      "scope": "page",
+      "label": "PMS Integration",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/pms-sync; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrqdr8-19\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/analytics",
+      "urlAfter": "/workspace/pms-sync",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/pms-sync"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/pms-sync",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrqdr8-19\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button dat"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/analytics",
+      "scope": "page",
+      "label": "User Management",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/users",
+      "urlBefore": "/workspace/analytics",
+      "urlAfter": "/workspace/users",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/users"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/users",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/analytics",
+      "scope": "page",
+      "label": "System Settings",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/settings",
+      "urlBefore": "/workspace/analytics",
+      "urlAfter": "/workspace/settings",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/settings"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/settings",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-17",
+      "route": "/workspace/error",
+      "scope": "page",
+      "label": "Copy",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Error reference copied.",
+      "urlBefore": "/workspace/error",
+      "urlAfter": "/workspace/error",
+      "toasts": [
+        "Error reference copied."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-18",
+      "route": "/workspace/error",
+      "scope": "page",
+      "label": "Try Again",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "FAKE",
+      "reason": "toast only: Retrying your request...",
+      "urlBefore": "/workspace/error",
+      "urlAfter": "/workspace/error",
+      "toasts": [
+        "Retrying your request..."
+      ],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-19",
+      "route": "/workspace/error",
+      "scope": "page",
+      "label": "Go to Guest Search",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/guest-search; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrrmjv-19\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/error",
+      "urlAfter": "/workspace/guest-search",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/guest-search"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/guest-search",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrrmjv-19\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button cla"
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/error",
+      "scope": "page",
+      "label": "Return to Dashboard",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "navigation: /workspace/dashboard; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrs1h9-20\"]')\u001b[22m\n\u001b",
+      "urlBefore": "/workspace/error",
+      "urlAfter": "/workspace/dashboard",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/workspace/dashboard"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=20"
+        },
+        {
+          "method": "GET",
+          "url": "/api/guests?page=1&limit=1"
+        },
+        {
+          "method": "GET",
+          "url": "/api/stats"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/workspace/dashboard",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrs1h9-20\"]')\u001b[22m\n\u001b[2m    - locator resolved to <button cla"
+    },
+    {
+      "id": "page-0",
+      "route": "/profile/40f3ebf4-0b08-4e49-8e30-4999d01e7081",
+      "scope": "page",
+      "label": "Back to search",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to /search",
+      "verdict": "PASS",
+      "reason": "navigation: /search",
+      "urlBefore": "/profile/40f3ebf4-0b08-4e49-8e30-4999d01e7081",
+      "urlAfter": "/search",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-0",
+      "route": "/login",
+      "scope": "page",
+      "label": "you@hotel.com",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-1",
+      "route": "/login",
+      "scope": "page",
+      "label": "Enter your password",
+      "tag": "input",
+      "type": "password",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-2",
+      "route": "/login",
+      "scope": "page",
+      "label": "Show password",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "password field type password -> text"
+    },
+    {
+      "id": "page-3",
+      "route": "/login",
+      "scope": "page",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "WIRED (handler)",
+      "expected": "toggle selection",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": true,
+      "checkedAfter": false
+    },
+    {
+      "id": "page-4",
+      "route": "/login",
+      "scope": "page",
+      "label": "Forgot password?",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/login",
+      "urlAfter": "/login",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-5",
+      "route": "/login",
+      "scope": "page",
+      "label": "Sign In →",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (form submit)",
+      "expected": "perform the labelled action",
+      "verdict": "PASS",
+      "reason": "login request submitted and rejected: 401",
+      "responses": [
+        {
+          "url": "/api/auth/login",
+          "status": 401,
+          "method": "POST"
+        }
+      ]
+    },
+    {
+      "id": "page-6",
+      "route": "/login",
+      "scope": "page",
+      "label": "Secure Sign-In · Your data is safe with us",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "error/notice shown: Single sign-on is not configured for this workspace.",
+      "urlBefore": "/login",
+      "urlAfter": "/login",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-7",
+      "route": "/login",
+      "scope": "page",
+      "label": "Terms of Service",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to #",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/login",
+      "urlAfter": "/login",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-8",
+      "route": "/login",
+      "scope": "page",
+      "label": "Privacy Policy",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to #",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/login",
+      "urlAfter": "/login",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "login-help-0",
+      "route": "/login",
+      "scope": "login-help",
+      "label": "×",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close the panel",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "login-help-1",
+      "route": "/login",
+      "scope": "login-help",
+      "label": "Contact hotel administrator",
+      "tag": "a",
+      "type": "",
+      "mapStatus": "WIRED (href)",
+      "expected": "navigate to mailto:admin@grandvista.com",
+      "verdict": "DEAD",
+      "reason": "no state, route, network or download change",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "guest-view-0",
+      "route": "/workspace/guest-search",
+      "scope": "guest-view",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close the panel",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "guest-view-1",
+      "route": "/workspace/guest-search",
+      "scope": "guest-view",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close the panel",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "guest-view-2",
+      "route": "/workspace/guest-search",
+      "scope": "guest-view",
+      "label": "Open Full Profile",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "perform the labelled action",
+      "verdict": "PASS",
+      "reason": "closes the modal; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrtttv-2\"]')\u001b[22m\n\u001b[",
+      "toasts": [],
+      "responses": [
+        {
+          "url": "/api/settings",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/guest-profile",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=20",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrtttv-2\"]')\u001b[22m\n\u001b["
+    },
+    {
+      "id": "add-guest-0",
+      "route": "/workspace/directory",
+      "scope": "add-guest",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [
+        {
+          "url": "/api/health",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/analytics/activity?days=30",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "add-guest-1",
+      "route": "/workspace/directory",
+      "scope": "add-guest",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "editable input"
+    },
+    {
+      "id": "add-guest-2",
+      "route": "/workspace/directory",
+      "scope": "add-guest",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "editable input"
+    },
+    {
+      "id": "add-guest-3",
+      "route": "/workspace/directory",
+      "scope": "add-guest",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "editable input"
+    },
+    {
+      "id": "add-guest-4",
+      "route": "/workspace/directory",
+      "scope": "add-guest",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "could not open add-guest: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole("
+    },
+    {
+      "id": "add-guest-5",
+      "route": "/workspace/directory",
+      "scope": "add-guest",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "add-guest-6",
+      "route": "/workspace/directory",
+      "scope": "add-guest",
+      "label": "Save",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (form submit)",
+      "expected": "persist the change",
+      "verdict": "NOT RUN",
+      "reason": "submitting creates a record; tested in phase 4 with disposable data",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "submitting creates a record; tested in phase 4 with disposable data"
+    },
+    {
+      "id": "directory-view-0",
+      "route": "/workspace/directory",
+      "scope": "directory-view",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close the panel",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "could not open directory-view: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('."
+    },
+    {
+      "id": "directory-view-1",
+      "route": "/workspace/directory",
+      "scope": "directory-view",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close the panel",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retryAttempted": "clickpass-retry-directory.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "could not open directory-view: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('."
+    },
+    {
+      "id": "directory-view-2",
+      "route": "/workspace/directory",
+      "scope": "directory-view",
+      "label": "Open Full Profile",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "perform the labelled action",
+      "verdict": "PASS",
+      "reason": "closes the modal; clickErr: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdswc6b-2\"]')\u001b[22m\n\u001b[",
+      "toasts": [],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/sync-status",
+          "status": 500,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/guest-profile",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "clickErr": "locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-click-id=\"cp-mwdrw8zn-2\"]')\u001b[22m\n\u001b[",
+      "retrySource": "clickpass-retry-directory.json"
+    },
+    {
+      "id": "new-request-0",
+      "route": "/workspace/data-requests",
+      "scope": "new-request",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "new-request-1",
+      "route": "/workspace/data-requests",
+      "scope": "new-request",
+      "label": "guest@example.com",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "new-request-2",
+      "route": "/workspace/data-requests",
+      "scope": "new-request",
+      "label": "Data Access Data Export Correction Deletion",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed ACCESS -> EXPORT (state change)",
+      "valueBefore": "ACCESS",
+      "valueAfter": "EXPORT"
+    },
+    {
+      "id": "new-request-3",
+      "route": "/workspace/data-requests",
+      "scope": "new-request",
+      "label": "What should be done?",
+      "tag": "textarea",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "new-request-4",
+      "route": "/workspace/data-requests",
+      "scope": "new-request",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": ""
+    },
+    {
+      "id": "new-request-5",
+      "route": "/workspace/data-requests",
+      "scope": "new-request",
+      "label": "Save",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (form submit)",
+      "expected": "persist the change",
+      "verdict": "NOT RUN",
+      "reason": "submitting creates a record; tested in phase 4 with disposable data"
+    },
+    {
+      "id": "invite-user-0",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [
+        {
+          "url": "/api/stats",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "invite-user-1",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "name@hotel.com",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retryAttempted": "clickpass-retry-users.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "editable input"
+    },
+    {
+      "id": "invite-user-2",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "At least 8 characters",
+      "tag": "input",
+      "type": "password",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retryAttempted": "clickpass-retry-users.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "editable input"
+    },
+    {
+      "id": "invite-user-3",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "Receptionist Hotel Manager Administrator",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "select changed Receptionist -> RegionalManager (state change)",
+      "valueBefore": "Receptionist",
+      "valueAfter": "RegionalManager",
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "invite-user-4",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-users.json"
+    },
+    {
+      "id": "invite-user-5",
+      "route": "/workspace/users",
+      "scope": "invite-user",
+      "label": "Save",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (form submit)",
+      "expected": "persist the change",
+      "verdict": "NOT RUN",
+      "reason": "submitting creates a record; tested in phase 4 with disposable data",
+      "retryAttempted": "clickpass-retry-users.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "submitting creates a record; tested in phase 4 with disposable data"
+    },
+    {
+      "id": "add-hotel-0",
+      "route": "/workspace/tenants",
+      "scope": "add-hotel",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-tenants.json"
+    },
+    {
+      "id": "add-hotel-1",
+      "route": "/workspace/tenants",
+      "scope": "add-hotel",
+      "label": "e.g. Lakeside Suites",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retryAttempted": "clickpass-retry-tenants.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "editable input"
+    },
+    {
+      "id": "add-hotel-2",
+      "route": "/workspace/tenants",
+      "scope": "add-hotel",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-tenants.json"
+    },
+    {
+      "id": "add-hotel-3",
+      "route": "/workspace/tenants",
+      "scope": "add-hotel",
+      "label": "Save",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (form submit)",
+      "expected": "persist the change",
+      "verdict": "NOT RUN",
+      "reason": "submitting creates a record; tested in phase 4 with disposable data",
+      "retryAttempted": "clickpass-retry-tenants.json",
+      "retryVerdict": "NOT RUN",
+      "retryReason": "submitting creates a record; tested in phase 4 with disposable data"
+    },
+    {
+      "id": "account-menu-0",
+      "route": "/workspace/dashboard",
+      "scope": "account-menu",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close or reset",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "account-menu-1",
+      "route": "/workspace/dashboard",
+      "scope": "account-menu",
+      "label": "Account settings",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [
+        {
+          "url": "/api/users?page=1&limit=100",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/tenants",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/workspace/settings",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "/api/guests?page=1&limit=1",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "account-menu-2",
+      "route": "/workspace/dashboard",
+      "scope": "account-menu",
+      "label": "Sign out",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "end the session",
+      "verdict": "FAKE",
+      "reason": "navigates to /login but session cookie survives",
+      "urlAfter": "http://localhost:3100/workspace/dashboard",
+      "retrySource": "clickpass-retry-dashboard.json"
+    },
+    {
+      "id": "guest-edit-0",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "Close",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "close the panel",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "guest-edit-1",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "guest-edit-2",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "guest-edit-3",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "email",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "guest-edit-4",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "(icon)",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input",
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "guest-edit-5",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "Cancel",
+      "tag": "button",
+      "type": "button",
+      "mapStatus": "WIRED (handler)",
+      "expected": "perform the labelled action",
+      "verdict": "PASS",
+      "reason": "closes the modal",
+      "toasts": [],
+      "responses": [],
+      "clickErr": "",
+      "retrySource": "clickpass-retry-guestprofile.json"
+    },
+    {
+      "id": "guest-edit-6",
+      "route": "/workspace/guest-profile",
+      "scope": "guest-edit",
+      "label": "Save",
+      "tag": "button",
+      "type": "submit",
+      "mapStatus": "WIRED (handler)",
+      "expected": "perform the labelled action",
+      "verdict": "NOT RUN",
+      "reason": "submitting creates a record; tested in phase 4 with disposable data",
+      "retrySource": "clickpass-retry-guestprofile.json"
+    }
+  ]
+}

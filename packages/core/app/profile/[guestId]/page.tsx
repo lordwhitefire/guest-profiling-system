@@ -6,9 +6,16 @@
 // links (e.g., from a notification email or a browser bookmark).
 //
 // Server-rendered: the page fetches the guest from the API on first render
-// (using server-side fetch), then hydrates on the client.
+// using server-side fetch, forwarding the incoming request's cookies
+// (including the httpOnly gps-jwt cookie) so the API authenticates the
+// server-side call as the logged-in user.
+//
+// TASK-009 fix: previously the fetch did not forward cookies, so the API
+// returned 401 and the page only rendered "Back to search". Now we copy
+// the Cookie header from the incoming request to the fetch.
 
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import type { Guest, ApiResponse } from "@gps/shared";
 import { ProfileDetail } from "@/components/guest/profile-detail";
 import Link from "next/link";
@@ -23,17 +30,28 @@ interface PageProps {
 export default async function ProfilePage({ params }: PageProps) {
   const { guestId } = await params;
 
-  // Server-side fetch. The httpOnly cookie is forwarded from the incoming
-  // request automatically when we use the same origin.
-  // NOTE: in production, we'd configure fetch to forward cookies; for now,
-  // this page works when accessed from a logged-in session because the
-  // browser sends the cookie automatically on the document request.
+  // Forward the caller's cookies to our own API. The base URL comes from
+  // configuration (or the local server port), never from the Host header:
+  // forwarding cookies to a Host-derived URL would be an SSRF/cookie leak.
+  const cookieStore = await cookies();
+  const base =
+    process.env.NEXT_PUBLIC_APP_URL ??
+    `http://127.0.0.1:${process.env.PORT ?? "3000"}`;
+
+  const cookieHeader = cookieStore
+    .getAll()
+    .map(c => `${c.name}=${c.value}`)
+    .join("; ");
+
   let guest: Guest | null = null;
   let error: string | null = null;
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/api/guests/${guestId}`, {
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch(`${base}/api/guests/${guestId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+      },
       cache: "no-store",
     });
     if (res.status === 404) {

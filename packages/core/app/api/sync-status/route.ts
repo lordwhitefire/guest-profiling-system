@@ -18,7 +18,7 @@ import { ok, forbidden, serverError } from "@/src/server/response";
 export const runtime = "nodejs";
 
 export interface SyncStatusResponse {
-  states: SyncState[];
+  states: Array<Omit<SyncState, "lastSeenXmin"> & { lastSeenXmin: string }>;
   recentEvents: Array<{
     logId: string;
     action: string;
@@ -64,10 +64,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       `,
     ]);
 
-    const states: SyncState[] = stateRows.map((r: Record<string, unknown>) => ({
+    const states: SyncStatusResponse["states"] = stateRows.map((r: Record<string, unknown>) => ({
       tenantId: String(r.tenant_id),
       tableName: String(r.table_name),
-      lastSeenXmin: BigInt(String(r.last_seen_xmin)),
+      lastSeenXmin: String(r.last_seen_xmin),
       whereClause: r.where_clause as string | null,
       updatedAt: new Date(r.updated_at as string),
     }));

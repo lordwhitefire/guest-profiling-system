@@ -30,12 +30,16 @@ Every element a user would reasonably try to interact with:
 
 ### Phase 1 — Audit (no code changes)
 
-1. Map every route and state. **Done:** 20 routes + 5 modal/popover states, 236 rows
-   (`developer-workspace/parity/clickability/map.md` + `map.json`).
+1. Map every route and state. **Done:** 20 shell rows + 231 page/state rows = **251 rows**
+   (`developer-workspace/parity/clickability/map.md` + `map.json`). The map was repaired after
+   the state-capture script wrongly collapsed repeated row-action buttons.
 2. Serve the production build. **Done:** `:3100`.
 3. Click every mapped row on the production build; record PASS / DEAD / FAKE / NOT RUN with
-   route, DOM, network and toast evidence.
-4. Produce the fix list: dead controls, fake (toast-only) actions, wrong behaviours.
+   route, DOM, network and toast evidence. **In progress:** full pass processed 245/251 rows
+   (122 PASS, 37 FAKE, 17 DEAD, 23 NATIVE, 46 NOT RUN); 7 retry files captured but not merged;
+   7 rows still unmatched.
+4. Produce the fix list: dead controls, fake (toast-only) actions, wrong behaviours. **Pending:**
+   raw findings are recorded; the list is not final until the audit merge is reconciled.
 
 ### Phase 2 — Two-hotel foundation
 
@@ -77,32 +81,55 @@ Every element a user would reasonably try to interact with:
 21. `runtime-parity` baseline and gate. Record PASS / FAIL with the first split.
 22. Save the honest report; update this tracker, TASK-008, the registry and PROGRESS.
 
+## Current status — 2026-11-12
+
+- **Phase 1 is not complete.** The repaired map has 251 rows. The full click pass processed
+  245/251: 122 PASS, 37 FAKE, 17 DEAD, 23 NATIVE, 46 NOT RUN. Seven targeted retry files were
+  captured, but they are **not merged**. Seven rows remain unmatched. The shell-nav PASS/DEAD
+  conflict is not reconciled.
+- **The external merged audit data is rejected.** A proposed 2026-11-13 patch included a
+  `clickpass.json` merge, but its merge key is `route::scope::label` with no control id or
+  occurrence. That collapses all repeated `(icon)` row actions and shuffles verdicts. Its
+  “49 unmatched rows” is not trustworthy.
+- **Phases 2–5 are not started.** There is still one tenant, one source DB fixture, no live
+  registration search, no raw-row write loop, no working switcher, and no real verification.
+- **The external patch was reviewed, not applied.** The patch at
+  `/home/lordwhitefire/Downloads/TASK-009-incremental-2026-11-13.patch` applies with
+  `git apply --check`, but it is not shippable: missing core dependencies and wrong encryption
+  imports break the build; membership seeding uses the wrong admin email; the seeded empty
+  connection is selected before the real one; registration only supports `guests_raw`; and
+  repeated sync can create duplicate profiles for contactless rows.
+- **No product code was changed.** Audit artifacts are committed at `4a58795`; this tracker
+  update is local and uncommitted.
+
 ## Tracker
 
 | # | Item | Status |
 |---|------|--------|
-| 1 | Inventory map: every route, state and supposed-clickable row | done — 20 routes + 5 states, 236 rows |
+| 1 | Inventory map: every route, state and supposed-clickable row | done — 251 rows (20 shell + 231 page/state) |
 | 2 | Production build served | done — `:3100` |
-| 3 | Click every mapped row; PASS / DEAD / FAKE / NOT RUN | in progress |
-| 4 | Fix list: dead controls, fake actions, wrong behaviours | pending |
-| 5 | Two messy source DBs + seed | pending |
-| 6 | Two tenants + source links + read-only adapter connections | pending |
-| 7 | Multi-hotel membership, switch endpoint, JWT, working switcher | pending |
+| 3 | Click every mapped row; PASS / DEAD / FAKE / NOT RUN | in progress — 245/251 processed; retries not merged; 7 unmatched |
+| 4 | Fix list: dead controls, fake actions, wrong behaviours | pending — raw findings recorded; not final |
+| 5 | Two messy source DBs + seed | pending — external patch only added Lakeside tenant scaffolding |
+| 6 | Two tenants + source links + read-only adapter connections | pending — external patch rejected (no real source link; empty seeded connection) |
+| 7 | Multi-hotel membership, switch endpoint, JWT, working switcher | pending — external patch rejected (wrong admin email; no memberships created) |
 | 8 | Per-hotel registration branding | pending |
-| 9 | Registration live search + prefill | pending |
-| 10 | Register writes one raw row to the hotel's messy DB | pending |
-| 11 | Adapter grouping + visit count + last stay (clean DB only) | pending |
-| 12 | Idempotent re-sync, two-hotel isolation | pending |
-| 13 | Shell controls: user menu, logout, switcher | pending |
+| 9 | Registration live search + prefill | pending — external patch did not add live search |
+| 10 | Register writes one raw row to the hotel's messy DB | pending — external patch only supports `guests_raw`, not Grand Vista's `ps_customer` |
+| 11 | Adapter grouping + visit count + last stay (clean DB only) | pending — external patch not buildable; duplicate-profile bug |
+| 12 | Idempotent re-sync, two-hotel isolation | pending — external sync creates profiles before link check |
+| 13 | Shell controls: user menu, logout, switcher | pending — external patch partially wired; badge still hardcoded |
 | 14 | Directory checkboxes, select-all, pagination, bulk action | pending |
 | 15 | Visit History and Analytics filters | pending |
-| 16 | Real CSV exports | pending |
-| 17 | Sync Now / Test Connection real checks | pending |
+| 16 | Real CSV exports | pending — export endpoints drafted externally; buttons not wired |
+| 17 | Sync Now / Test Connection real checks | pending — external Sync Now is broken; Test Connection still not wired |
 | 18 | Profile tabs and remaining toast-only actions | pending |
 | 19 | Full click pass again | pending |
 | 20 | Full two-hotel loop on production | pending |
 | 21 | runtime-parity baseline + gate | pending |
-| 22 | Report + tracker/registry/PROGRESS updates | pending |
+| 22 | Report + tracker/registry/PROGRESS updates | in progress — this tracker and status report updated |
+
+**External patch review:** `TASK-009-incremental-2026-11-13.patch` was reviewed and **not applied**. See `developer-workspace/reports/TASK-009-status-2026-11-12.md` §3 for the blockers.
 
 ## Rules
 

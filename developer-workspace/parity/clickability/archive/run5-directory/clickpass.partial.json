@@ -1,0 +1,1210 @@
+{
+  "counts": {
+    "PASS": 40,
+    "NOT RUN": 1,
+    "NATIVE": 19
+  },
+  "results": [
+    {
+      "id": "page-19",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Add Guest",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open a form",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-20",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Export",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "produce a file",
+      "verdict": "PASS",
+      "reason": "download: directory-11111111-1111-1111-1111-111111111111-2026-11-13.csv",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/export/directory"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/export/directory",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": [
+        "directory-11111111-1111-1111-1111-111111111111-2026-11-13.csv"
+      ]
+    },
+    {
+      "id": "page-21",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Search guest name, email or phone...",
+      "tag": "input",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "enter/edit a value",
+      "verdict": "NOT RUN",
+      "reason": "editable input"
+    },
+    {
+      "id": "page-22",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "All VIP Returning New",
+      "tag": "select",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "change the selected option",
+      "verdict": "PASS",
+      "reason": "row list changed (20 -> 0)",
+      "rowsBefore": 20,
+      "rowsAfter": 0
+    },
+    {
+      "id": "page-23",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Filters",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "filter VIP -> All, query -> \"\"",
+      "filterAfter": "All",
+      "queryAfter": ""
+    },
+    {
+      "id": "page-24",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select all",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-25",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Loop Tester Two",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-26",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Loop Tester Two",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-27",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Loop Tester Two",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Loop%20Tester%20Two"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Loop%20Tester%20Two",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-28",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Funke",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-29",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Funke",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-30",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Funke",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Funke"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Funke",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-31",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Omar Al-Hassan",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-32",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Omar Al-Hassan",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-33",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Omar Al-Hassan",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Omar%20Al-Hassan"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Omar%20Al-Hassan",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-34",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Khan",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-35",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Khan",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-36",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Khan",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Khan"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Khan",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-37",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Ibrahim Davis",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-38",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Ibrahim Davis",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-39",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Ibrahim Davis",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Ibrahim%20Davis"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Ibrahim%20Davis",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-40",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Yuki Mohammed",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-41",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Yuki Mohammed",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-42",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Yuki Mohammed",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Yuki%20Mohammed"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Yuki%20Mohammed",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-43",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Jennifer Adeyemi",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-44",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Jennifer Adeyemi",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-45",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Jennifer Adeyemi",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Jennifer%20Adeyemi"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Jennifer%20Adeyemi",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-46",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Arjun Okafor",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-47",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Arjun Okafor",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-48",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Arjun Okafor",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Arjun%20Okafor"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Arjun%20Okafor",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-49",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Ngozi Garcia",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-50",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Ngozi Garcia",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-51",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Ngozi Garcia",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Ngozi%20Garcia"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Ngozi%20Garcia",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-52",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Chukwuemeka Mohammed",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-53",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Chukwuemeka Mohammed",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-54",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Chukwuemeka Mohammed",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Chukwuemeka%20Mohammed"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Chukwuemeka%20Mohammed",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-55",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Wei Williams",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-56",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Wei Williams",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-57",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Wei Williams",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Wei%20Williams"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Wei%20Williams",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-58",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Linda Kumar",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-59",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Linda Kumar",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-60",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Linda Kumar",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Linda%20Kumar"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Linda%20Kumar",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-61",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Aisha Bello",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-62",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Aisha Bello",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open notifications",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-63",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Aisha Bello",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Aisha%20Bello"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Aisha%20Bello",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-64",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select David Dauda",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-65",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View David Dauda",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-66",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit David Dauda",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=David%20Dauda"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=David%20Dauda",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-67",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select John Al-Hassan",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-68",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View John Al-Hassan",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-69",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit John Al-Hassan",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=John%20Al-Hassan"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=John%20Al-Hassan",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-70",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Michael Johnson",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-71",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Michael Johnson",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-72",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Michael Johnson",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Michael%20Johnson"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Michael%20Johnson",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-73",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Chidi Dauda",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-74",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Chidi Dauda",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-75",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Chidi Dauda",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Chidi%20Dauda"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Chidi%20Dauda",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    },
+    {
+      "id": "page-76",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Select Zainab Adeleke",
+      "tag": "input",
+      "type": "checkbox",
+      "mapStatus": "NATIVE (no state wiring)",
+      "expected": "enter/edit a value",
+      "verdict": "NATIVE",
+      "reason": "checkbox toggles visually; no app state",
+      "checkedBefore": false,
+      "checkedAfter": true
+    },
+    {
+      "id": "page-77",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "View Zainab Adeleke",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "run the handler",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [],
+      "responses": [],
+      "downloads": []
+    },
+    {
+      "id": "page-78",
+      "route": "/workspace/directory",
+      "scope": "page",
+      "label": "Edit Zainab Adeleke",
+      "tag": "button",
+      "type": "",
+      "mapStatus": "WIRED (handler)",
+      "expected": "open an editor",
+      "verdict": "PASS",
+      "reason": "opens a modal",
+      "urlBefore": "/workspace/directory",
+      "urlAfter": "/workspace/directory",
+      "toasts": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "/api/guests/search?q=Zainab%20Adeleke"
+        }
+      ],
+      "responses": [
+        {
+          "url": "/api/guests/search?q=Zainab%20Adeleke",
+          "status": 200,
+          "method": "GET"
+        }
+      ],
+      "downloads": []
+    }
+  ]
+}

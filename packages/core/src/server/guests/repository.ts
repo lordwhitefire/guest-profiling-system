@@ -9,6 +9,7 @@ import type { Db } from "@gps/shared";
 import type {
   Guest,
   Reservation,
+  GuestVisit,
   LoyaltyProfile,
   GuestPhase,
   CommPrefs,
@@ -75,6 +76,17 @@ interface ReservationRow {
   created_at: Date;
   updated_at: Date;
   deleted_at: Date | null;
+}
+
+interface GuestVisitRow {
+  link_id: string;
+  guest_id: string;
+  tenant_id: string;
+  source_table: string;
+  source_row_id: string;
+  source_created_at: Date | null;
+  linked_at: Date;
+  source_payload: Record<string, unknown> | null;
 }
 
 interface LoyaltyRow {
@@ -155,6 +167,38 @@ function rowToReservation(row: ReservationRow): Reservation {
   };
 }
 
+// The raw payload was seeded as JSON.stringify(...) into jsonb, so it can be
+// stored as a JSON string rather than an object. Unwrap up to two layers.
+function parseVisitPayload(value: unknown): Record<string, unknown> | null {
+  let current = value;
+  for (let i = 0; i < 2 && typeof current === "string"; i += 1) {
+    try {
+      current = JSON.parse(current);
+    } catch {
+      return null;
+    }
+  }
+  return current && typeof current === "object" && !Array.isArray(current)
+    ? (current as Record<string, unknown>)
+    : null;
+}
+
+function rowToVisit(row: GuestVisitRow): GuestVisit {
+  const payload = parseVisitPayload(row.source_payload);
+  return {
+    visitId: row.link_id,
+    guestId: row.guest_id,
+    tenantId: row.tenant_id,
+    sourceTable: row.source_table,
+    sourceRowId: row.source_row_id,
+    occurredAt: row.source_created_at,
+    linkedAt: row.linked_at,
+    email: typeof payload?.email === "string" ? payload.email : null,
+    phone: typeof payload?.phone === "string" ? payload.phone : null,
+    payload,
+  };
+}
+
 function rowToLoyalty(row: LoyaltyRow): LoyaltyProfile {
   return {
     loyaltyId: row.loyalty_id,
@@ -217,6 +261,27 @@ export class GuestsRepository {
     return (rows as unknown[] as ReservationRow[]).map(rowToReservation);
   }
 
+  // Visits are derived from the raw rows linked to the clean profile. This is
+  // the grouping the hotel source database does not store: two source rows for
+  // one guest are two visits, and their count is the profile's total_stays.
+  async getVisitsForGuest(
+    guestId: string,
+    tenantId: string,
+    options: { limit?: number } = {},
+  ): Promise<GuestVisit[]> {
+    const limit = Math.min(options.limit ?? 100, 500);
+    const rows = await this.db`
+      SELECT link_id, guest_id, tenant_id, source_table, source_row_id,
+             source_created_at, linked_at, source_payload
+      FROM guest_profile_links
+      WHERE guest_id = ${guestId}
+        AND tenant_id = ${tenantId}
+      ORDER BY COALESCE(source_created_at, linked_at) DESC, link_id DESC
+      LIMIT ${limit}
+    `;
+    return (rows as unknown[] as GuestVisitRow[]).map(rowToVisit);
+  }
+
   async getLoyaltyForGuest(guestId: string): Promise<LoyaltyProfile | null> {
     const rows = await this.db`
       SELECT * FROM loyalty_profiles
@@ -243,7 +308,7 @@ export class GuestsRepository {
         SELECT * FROM guests
         WHERE tenant_id = ${tenantId}
           AND deleted_at IS NULL
-        ORDER BY created_at DESC
+        ORDER BY created_at DESC, guest_id ASC
         LIMIT ${limit} OFFSET ${offset}
       `,
     ]);
