@@ -9,6 +9,8 @@
 **Phase 2 (Form-fill)**: ✅ DONE — TASK-006
 **Phase 3 (Multiple PMS adapters)**: PENDING (deferred to v2)
 
+**Blueprint:** full 80-area checklist complete — `developer-workspace/blueprint/checklist.md` (36 Decided / 21 Pending / 23 Skip).
+
 ## Where the demo stands
 
 - Local production build on `:3100`; clean database `gps`; two messy source databases `pms` and `pms_lakeside`.
