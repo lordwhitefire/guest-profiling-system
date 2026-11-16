@@ -497,6 +497,12 @@ These 17 questions are extras, not part of the 80 areas. They fill the known gap
 
 ## 11. Verification and maintenance
 
+**Task list and checks**
+
+- `tasks.md` — 29 ordered tasks: 10 before the local demo, 7 before the public URL, 12 after the demo. Each has an acceptance check.
+- `verification.md` — one concrete check for every one of the 80 areas, with a pass condition, task link, and result slot.
+- `check-blueprint.mjs` — structural checker: 80 areas exactly once, status counts, Pending coverage, task structure, and task references. Run `node developer-workspace/blueprint/check-blueprint.mjs`.
+
 **How this checklist was produced**
 
 1. Read the Blueprint skill and its four references (`areas.md`, `build-layers.md`, `engine.md`, `project-ring.md`).
@@ -507,9 +513,11 @@ These 17 questions are extras, not part of the 80 areas. They fill the known gap
 **How to keep it current**
 
 - Update this file whenever an area moves from Pending to Decided, or a Skip is reopened.
+- Update the matching row in `verification.md` with the result and evidence, and the task status in `tasks.md`.
 - Add the date and the evidence path to the row you change.
 - Keep `PROGRESS.md` as the short status; this file is the full Blueprint snapshot.
-- The next review should happen after Render deployment and after the data-consistency fix, because those two change several rows at once (18, 58, 49, D8, 17, 19, 66, 70, 80).
+- Run `node developer-workspace/blueprint/check-blueprint.mjs` after every edit; it must print PASS.
+- The next review should happen after Render deployment and after the data-consistency fix, because those two change several rows at once (18, 58, 49, D8, 17, 19, 66, 70, 80). BP-29 is the final 80-area re-run.
 
 **What this checklist does not claim**
 

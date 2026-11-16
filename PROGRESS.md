@@ -1,6 +1,6 @@
 # PROGRESS — Guest Profiling System
 
-**Updated:** 2026-11-15
+**Updated:** 2026-11-16
 
 ## Current state
 
@@ -10,6 +10,7 @@
 **Phase 3 (Multiple PMS adapters)**: PENDING (deferred to v2)
 
 **Blueprint:** full 80-area checklist complete — `developer-workspace/blueprint/checklist.md` (36 Decided / 21 Pending / 23 Skip).
+**Blueprint work:** 29 ordered tasks in `developer-workspace/blueprint/tasks.md`; one check per area in `developer-workspace/blueprint/verification.md`; coverage checker `node developer-workspace/blueprint/check-blueprint.mjs` prints PASS. Next gate: **BP-01** (make visit counts consistent).
 
 ## Where the demo stands
 
