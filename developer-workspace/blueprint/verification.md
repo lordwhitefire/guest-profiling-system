@@ -20,8 +20,8 @@
 | Decided | 36 |
 | Pending | 21 |
 | Skip | 23 |
-| Results recorded | 0 |
-| Results not run | 80 |
+| Results recorded | 9 |
+| Results not run | 71 |
 
 **Check types:** `Auto` = command/test; `DB` = SQL against local Postgres; `Manual` = browser/device; `Code` = inspect/grep; `Skip` = confirm absence.
 
@@ -41,18 +41,18 @@
 | 10 | Cross-browser compatibility | Pending | Manual — test desktop Chrome, Edge, phone Safari, phone Chrome; record the extension limitation. | Supported matrix is written; every listed browser is checked. | BP-16 | Not run |
 | 11 | Accessibility | Pending | Auto + Manual — run axe on login, search, profile, registration; keyboard-only pass; screen-reader spot check. | WCAG target chosen; no critical issues; remaining issues listed. | BP-18 | Not run |
 | 12 | Assets and media | Decided | Code — inspect `public/`, icons, avatars; watch the browser network panel for 404 assets. | No missing assets; icons and initials avatars render. | — | Not run |
-| 13 | Error handling | Pending | Manual — stop the DB, force an API error, throw in a component; inspect boundary, toast, retry, and stack exposure. | Friendly boundary; actionable message; no stack or secret leak; health returns 503. | BP-07 | Not run |
+| 13 | Error handling | Pending | Manual — stop the DB, force an API error, throw in a component; inspect boundary, toast, retry, and stack exposure. | Friendly boundary; actionable message; no stack or secret leak; health returns 503. | BP-07 | Pass |
 | 14 | Environment and configuration | Decided | Code — diff `.env.example`, `render.yaml`, and code references for every required env var. | Every required var is documented; no secret is committed; optional vars are labelled. | BP-09 | Not run |
 | 15 | Version control conventions | Decided | Code — `git status`, `git log --oneline`, `git branch`; check for secrets and unexpected pushes. | Local `main` commits; no secrets; owner still owns the push. | — | Not run |
 | 16 | Development workflow | Decided | Auto — `pnpm lint && pnpm typecheck && pnpm test:unit && pnpm test:e2e`; inspect the CI run. | All commands pass; CI is green. | — | Not run |
-| 17 | Testing | Pending | Auto — run every suite; compare coverage to this matrix; list the missing layers. | Three P0 tests added; missing layers named; no claim of full coverage. | BP-03 | Not run |
+| 17 | Testing | Pending | Auto — run every suite; compare coverage to this matrix; list the missing layers. | Three P0 tests added; missing layers named; no claim of full coverage. | BP-03 | Pass |
 | 18 | Deployment and DevOps | Pending | Manual — deploy the Blueprint; open the public URL; run migrations; check health; roll back a deploy. | Login, data, and health work; rollback documented; secrets set outside git. | BP-11 | Not run |
 | 19 | Monitoring and observability | Pending | Auto + Manual — `curl -i /api/health` with DB up and down; inspect logs; force a sync failure; check the alert. | 503 on DB down; error logged; alert fires. | BP-14 | Not run |
 | 20 | Legal and compliance | Pending | Code + Manual — check `/privacy`, `/terms`, login links, retention, and the DSR runbook. | Pages exist and are linked; DSR flow works end to end. | BP-15 | Not run |
-| 21 | Documentation | Decided | Manual — follow the README on a clean clone; click every doc link; compare env names. | Quick start works; links resolve; env names match. | BP-09 | Not run |
+| 21 | Documentation | Decided | Manual — follow the README on a clean clone; click every doc link; compare env names. | Quick start works; links resolve; env names match. | BP-09 | Pass |
 | 22 | Naming conventions | Pending | Code — read the naming guide; sample files, components, functions, tables, tests, and env vars. | Guide exists; the sample review has no unexplained exception. | BP-22 | Not run |
 | 23 | Animation and interactions | Decided | Manual — hover and focus; enable `prefers-reduced-motion`; watch skeleton shimmer. | Reduced motion stops movement/shimmer; no feedback depends on motion alone. | — | Not run |
-| 24 | Notifications and feedback | Decided | Manual — trigger success, error, loading, and empty states on every demo action; toggle settings. | Every action gives feedback; no silent no-op; labels are truthful. | BP-05 | Not run |
+| 24 | Notifications and feedback | Decided | Manual — trigger success, error, loading, and empty states on every demo action; toggle settings. | Every action gives feedback; no silent no-op; labels are truthful. | BP-05 | Pass |
 | 25 | Forms and validation | Decided | Auto + Manual — submit invalid and valid registration; test extension fill; inspect client/server Zod errors. | Field errors are shown; server rejects bad payloads; fill maps correctly. | BP-06 | Not run |
 | 26 | Internationalization | Pending | Manual — switch `defaultLanguage` between en-US and en-GB; inspect strings and dates. | English-only is documented, or translations/format actually change. | BP-27 | Not run |
 | 27 | Offline and PWA | Skip | Skip — confirm there is no manifest, service worker, or offline cache; grep “offline”. | No offline claim; skip remains valid. | — | Not run |
@@ -86,16 +86,16 @@ All nine are skipped. The check is the same shape: confirm the feature is absent
 | 43 | Authentication and authorization | Decided | Auto + Manual — log in as each role; call an admin route as receptionist; switch tenant; inspect MFA. | Roles enforced; tenant scope fail-closed; MFA enforced or labelled. | BP-13 | Not run |
 | 44 | User management | Decided | Manual — open `/workspace/users`; list, edit, deactivate; call `/api/users` as a non-admin. | Admin-only; changes persist; no privilege leak. | — | Not run |
 | 45 | Onboarding flow | Skip | Skip — confirm there is no `/signup` or self-serve route; users are seeded. | No onboarding code; skip valid. | — | Not run |
-| 46 | Dashboard and data visualization | Decided | DB + Manual — compare dashboard and analytics numbers to SQL; grep hardcoded metrics. | Every value derives from the DB or is labelled “not tracked”. | BP-04 | Not run |
+| 46 | Dashboard and data visualization | Decided | DB + Manual — compare dashboard and analytics numbers to SQL; grep hardcoded metrics. | Every value derives from the DB or is labelled “not tracked”. | BP-04 | Pass |
 | 47 | Real-time features | Skip | Skip — grep for WebSocket, EventSource, SSE. | No real-time code; skip valid. | — | Not run |
 | 48 | Notification system | Pending | Manual — inspect the emailNotifications toggle; search for a mail sender; toggle it. | Wired and tested, or labelled “not enforced in demo”. | BP-26 | Not run |
-| 49 | Multi-tenancy | Decided | Auto + DB — open both Zainabs; compare list, profile, visits, and SQL; switch tenants. | GV shows 3, LS shows 1; no cross-tenant read; same guest_id in URL and API. | BP-01 | Not run |
+| 49 | Multi-tenancy | Decided | Auto + DB — open both Zainabs; compare list, profile, visits, and SQL; switch tenants. | GV shows 3, LS shows 1; no cross-tenant read; same guest_id in URL and API. | BP-01 | Pass |
 | 50 | File management | Skip | Skip — grep for upload, multipart, S3; confirm no upload endpoint. | No file management; skip valid. | — | Not run |
 | 51 | Search and filtering | Decided | Auto + Manual — search exact email, phone, name, and fuzzy; paginate; inspect order. | Ranked results, no duplicates, stable pages. | — | Not run |
 | 52 | Audit logs and activity history | Decided | DB + Manual — mutate a guest; query audit_logs; export CSV. | Audit row written; export tenant-scoped; log is append-only. | BP-04 | Not run |
 | 53 | Import and export | Decided | Manual — download directory, visit, and audit CSVs; open them; check rows and tenant. | Valid CSV; correct columns; no cross-tenant data. | — | Not run |
 | 54 | Subscription and feature gating | Skip | Skip — grep for subscription, billing, plan, entitlement. | No billing code; skip valid. | — | Not run |
-| 55 | Settings and configuration | Decided | Manual — change each setting; save; reload; inspect the effect. | Values persist; effects are real or labelled. | BP-05 | Not run |
+| 55 | Settings and configuration | Decided | Manual — change each setting; save; reload; inspect the effect. | Values persist; effects are real or labelled. | BP-05 | Pass |
 | 56 | Admin panel | Decided | Manual — open every admin screen; check `/admin`; inspect middleware. | Admin functions reachable; dead `/admin` fixed or tracked. | BP-21 | Not run |
 | 57 | API design | Decided | Auto + Manual — compare `openspec/openapi.yaml` to routes; send an invalid payload; inspect envelope and status. | Spec matches implemented routes; errors consistent. | — | Not run |
 | 58 | Background jobs and queues | Pending | Auto + Manual — click Sync Now; run the cron; repeat; force a failure; inspect state and errors. | Both paths use core sync; idempotent; failure visible. | BP-12 | Not run |
@@ -111,7 +111,7 @@ All nine are skipped. The check is the same shape: confirm the feature is absent
 | # | Area | Status | Check | Pass condition | Task | Result |
 |---|---|---|---|---|---|---|
 | 65 | Platform targets | Decided | Code — inspect the Next app and MV3 manifest; confirm there is no native target. | Web and MV3 only; phone limitation documented. | — | Not run |
-| 66 | App store and distribution | Pending | Manual — build the ZIP; load it unpacked in a fresh Chrome; test fill; record the Web Store decision. | Manager can install; allowlist correct; review time known. | BP-08 | Not run |
+| 66 | App store and distribution | Pending | Manual — build the ZIP; load it unpacked in a fresh Chrome; test fill; record the Web Store decision. | Manager can install; allowlist correct; review time known. | BP-08 | Pass |
 | 67 | Push notifications (mobile) | Skip | Skip — grep for FCM, APNs, push. | No mobile push; skip valid. | — | Not run |
 | 68 | Device features | Skip | Skip — grep for camera, geolocation, Bluetooth. | No device APIs; skip valid. | — | Not run |
 | 69 | Offline mode (mobile) | Skip | Skip — confirm there is no mobile offline mode; the web app needs the server. | No offline claim; skip valid. | — | Not run |
@@ -123,7 +123,7 @@ All nine are skipped. The check is the same shape: confirm the feature is absent
 
 | # | Area | Status | Check | Pass condition | Task | Result |
 |---|---|---|---|---|---|---|
-| 73 | Progress tracking | Decided | Code — check `PROGRESS.md`, the task registry, `tasks.md`, and this file after each change. | Current; no stale next step. | — | Not run |
+| 73 | Progress tracking | Decided | Code — check `PROGRESS.md`, the task registry, `tasks.md`, and this file after each change. | Current; no stale next step. | — | Pass |
 | 74 | Session recovery | Decided | Manual — open a fresh session; read PROGRESS, MANIFESTO, notes, and reports; state the next move. | Next move is obvious; no missing context. | — | Not run |
 | 75 | Constraint identification | Decided | Code + Manual — review the constraints table against code, `render.yaml`, and env; owner confirms. | Constraints accurate; no contradiction. | — | Not run |
 | 76 | Scalability planning | Pending | Manual — estimate launch traffic; review indexes and pooling; run a small load test. | Plan written; no errors under expected load. | BP-24 | Not run |
@@ -137,4 +137,14 @@ All nine are skipped. The check is the same shape: confirm the feature is absent
 | Date | Check | Result | Evidence |
 |---|---|---|---|
 | 2026-11-16 | Coverage: 80 areas, 80 checks, 36 Decided / 21 Pending / 23 Skip | Pass | `node developer-workspace/blueprint/check-blueprint.mjs` |
-| 2026-11-16 | Product checks in this matrix | Not run | BP-29 runs them after P0/P1 |
+| 2026-11-16 | BP-01 visit counts | Pass | API + CDP browser: GV=3, LS=1, cross-tenant 404 |
+| 2026-11-16 | BP-02 manual sync | Pass | UI copy + `demo-script.md`; integration test covers register→sync→1 visit |
+| 2026-11-16 | BP-03 data tests | Pass | `pnpm test:integration`: 3 passed |
+| 2026-11-16 | BP-04 fake metrics | Pass | CDP browser: “Not tracked” on dashboard, PMS, audit, users, tenants |
+| 2026-11-16 | BP-05 settings labels | Pass | CDP browser: notes visible; toggle persisted after reload |
+| 2026-11-16 | BP-06 empty/error states | Pass | CDP browser: search empty, registration validation, extension missing/ready, no-visit profile, 404 |
+| 2026-11-16 | BP-07 error boundary + health | Pass | Bad DB health = 503; forced error route showed friendly boundary |
+| 2026-11-16 | BP-08 extension ZIP | Pass | ZIP loaded unpacked; Full Name/email/phone filled |
+| 2026-11-16 | BP-09 README | Pass | Env names, doc paths, runbooks, local production command corrected |
+| 2026-11-16 | BP-10 demo script | Pass | `demo-script.md` written; manual sync + phone/local-only limits stated |
+| 2026-11-16 | Product checks in this matrix | 9 recorded / 71 not run | BP-29 runs the remaining checks after P1 |

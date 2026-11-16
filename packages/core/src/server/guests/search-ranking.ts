@@ -61,7 +61,13 @@ export function buildSearchSql(
   // Note: we cast id_customer-like source_ref to varchar for the phone match
   // since QloApps stores id_customer as int; our guests.source_ref is varchar.
   const sql = `
-    SELECT * FROM (
+    SELECT d.*, (
+      SELECT count(*)::int
+      FROM guest_profile_links l
+      WHERE l.guest_id = d.guest_id
+        AND l.tenant_id = d.tenant_id
+    ) AS visit_count
+    FROM (
       -- Keep one row per guest, at the best (lowest) rank.
       SELECT DISTINCT ON (guest_id) *
       FROM (
@@ -123,7 +129,7 @@ export function buildSearchSql(
         )
       ) ranked
       ORDER BY guest_id, rank ASC
-    ) deduped
+    ) d
     ORDER BY rank ASC, last_stay_date DESC NULLS LAST
     LIMIT ${SEARCH_MAX_RESULTS}
   `;

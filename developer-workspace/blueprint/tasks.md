@@ -29,7 +29,7 @@
 ### BP-01 — Make visit counts consistent
 
 - **Areas:** 49, D8, 17
-- **Status:** Open
+- **Status:** Done
 - **What:** `/profile/[guestId]` and every visit display must use the same `guest_id` **and** `tenant_id` as the row clicked, and read visits from `guest_profile_links`. Remove the legacy `reservations`/`loyalty_profiles` path from the visit display.
 - **Acceptance check:** Grand Vista Zainab shows **3** on the directory, dashboard, profile, and visit history; Lakeside Zainab shows **1**; opening one never shows the other. The same guest ID is used in the URL and the API.
 - **Evidence:** browser + SQL; add the cross-screen test in BP-03.
@@ -37,7 +37,7 @@
 ### BP-02 — Decide and document the sync behaviour
 
 - **Areas:** 58, 32
-- **Status:** Open
+- **Status:** Done
 - **What:** Choose **manual Sync Now** or **auto-sync after registration** for the demo. Recommendation: manual Sync Now, shown in the demo script. Write the choice in the demo script and the UI copy.
 - **Acceptance check:** The demo script matches the product. If manual: register → click **Sync Now** → visit appears once. If auto: register → visit appears without a click. Re-running sync does not duplicate the visit.
 - **Evidence:** demo script + browser.
@@ -45,7 +45,7 @@
 ### BP-03 — Add three focused data tests
 
 - **Areas:** 17, 49, D8
-- **Status:** Open
+- **Status:** Done
 - **What:** Add a local-Postgres integration suite (no downloads/testcontainers) with three tests:
   1. Same guest shows the same count on directory, profile, and visits.
   2. Registration → sync → visit count increments once.
@@ -56,7 +56,7 @@
 ### BP-04 — Remove the fake zero metrics
 
 - **Areas:** 46, 52, 24
-- **Status:** Open
+- **Status:** Done
 - **What:** `syncErrors: 0`, “Pending Invites: 0”, and audit “Errors: 0” are hardcoded. Derive them from real data, or display “Not tracked” with a short reason.
 - **Acceptance check:** `grep` finds no hardcoded zero metric in the workspace/API. With a sync error or no invite system, the screen says so; it never claims `0` without evidence.
 - **Evidence:** code + browser.
@@ -64,7 +64,7 @@
 ### BP-05 — Label or wire the decorative settings
 
 - **Areas:** 24, 48, 55
-- **Status:** Open
+- **Status:** Done
 - **What:** MFA, email notifications, and auto-sync toggles currently store values but do nothing. Either wire the behaviour, or show “Not enforced in demo” next to the toggle. Do not leave a silent no-op.
 - **Acceptance check:** Toggling each setting produces a visible, truthful effect or explanation. Reloading keeps the saved value.
 - **Evidence:** browser + `/api/settings`.
@@ -72,7 +72,7 @@
 ### BP-06 — Fix the demo-path empty and error states
 
 - **Areas:** 13, 24, 25
-- **Status:** Open
+- **Status:** Done
 - **What:** Cover the states the demo will actually hit: search with no results; a profile with no visits; sync before seeding; extension not installed; registration failure; API/DB failure.
 - **Acceptance check:** Each state shows a plain message and the next action. No blank panel, no silent failure, no raw stack trace.
 - **Evidence:** browser walkthrough.
@@ -80,7 +80,7 @@
 ### BP-07 — Add an error boundary and a real health check
 
 - **Areas:** 13, 19
-- **Status:** Open
+- **Status:** Done
 - **What:** Add a friendly `error.tsx`/`global-error.tsx`; make `/api/health` run a short DB check and return 503 when the DB is unavailable. Do not leak secrets or stack traces.
 - **Acceptance check:** Stopping the DB makes `/api/health` return 503; forcing a component error shows the friendly screen. With the DB up, both return healthy.
 - **Evidence:** `curl` output + browser.
@@ -88,7 +88,7 @@
 ### BP-08 — Build the extension ZIP and install note
 
 - **Areas:** 66, 70, 80
-- **Status:** Open
+- **Status:** Done
 - **What:** Build a versioned ZIP of `packages/adapter-fill-extension`; write a one-page “Load unpacked” note for the manager's Chrome. The Render URL in `externally_connectable` waits for BP-11.
 - **Acceptance check:** A fresh Chrome profile loads the ZIP, opens the local registration form, and fills Full Name, email, and phone from a selected profile.
 - **Evidence:** ZIP + install note + browser.
@@ -96,7 +96,7 @@
 ### BP-09 — Fix the README quick start
 
 - **Areas:** 21
-- **Status:** Open
+- **Status:** Done
 - **What:** Correct `ARGON2_SECRET` → `ARGON2_PEPPER`; point to `openspec/ARCHITECTURE.md` and `openspec/openapi.yaml`; make the runbook list match the three files that exist; state the local production-build command.
 - **Acceptance check:** A clean-clone reader can follow the README to install, migrate, build, and start without a broken link or wrong env name.
 - **Evidence:** README + link check.
@@ -104,7 +104,7 @@
 ### BP-10 — Write and dry-run the local demo script
 
 - **Areas:** 32, 75
-- **Status:** Open
+- **Status:** Done
 - **What:** One page: login → search → open profile → register → **Sync Now** (if BP-02 is manual) → show visit history → extension fill. Include the phone limitation and the local-only URL.
 - **Acceptance check:** A full dry run passes every step on the production build; the presenter can follow it without improvising.
 - **Evidence:** script + dry-run notes.

@@ -68,7 +68,14 @@ export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   error?: { code: string; message: string; details?: unknown };
-  metadata?: { page?: number; limit?: number; total?: number };
+  metadata?: {
+    page?: number;
+    limit?: number;
+    total?: number;
+    /** Derived visit bounds, returned by the guest visits endpoint. */
+    firstVisitAt?: string | null;
+    lastVisitAt?: string | null;
+  };
 }
 
 export const SENSITIVE_GUEST_FIELDS = [

@@ -14,7 +14,6 @@ export const runtime = "nodejs";
 interface LoyaltyResponse {
   tier: string;
   pointsBalance: number;
-  totalStays: number;
 }
 
 export async function GET(
@@ -48,7 +47,7 @@ export async function GET(
       throw err;
     }
 
-    const loyalty = await repo.getLoyaltyForGuest(guestId);
+    const loyalty = await repo.getLoyaltyForGuest(guestId, claims.tenant_id);
     if (!loyalty) {
       return notFound("Guest has no loyalty profile.");
     }
@@ -56,7 +55,6 @@ export async function GET(
     const response: LoyaltyResponse = {
       tier: loyalty.tier,
       pointsBalance: loyalty.pointsBalance,
-      totalStays: loyalty.totalStays,
     };
     return ok(response);
   } catch (err) {

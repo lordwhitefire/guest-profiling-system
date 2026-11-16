@@ -7,9 +7,10 @@
 //   1. Header (avatar, name, phase badge, last stay date)
 //   2. Contact (email mailto, phone tel, address)
 //   3. Preferences (JSONB as key-value pairs)
-//   4. Reservations (last 5, sorted by check_in DESC)
-//   5. Loyalty (tier, points, total stays)
-//   6. Action: send the guest to the FormFilla browser extension
+//   4. Visit history (derived from guest_profile_links; one link = one visit)
+//   5. Reservations (last 5, sorted by check_in DESC)
+//   6. Loyalty (tier and points; not used for visit count)
+//   7. Action: send the guest to the FormFilla browser extension
 //
 // NEVER displays identity_doc_* (Card 2 §4.4 — sensitive-field stripping
 // already done at the API layer; this component does not even attempt to
@@ -17,7 +18,7 @@
 
 import { useEffect, useState } from "react";
 import { api, ApiError, type LoyaltyResponse } from "@/lib/api-client";
-import type { Guest, Reservation } from "@gps/shared";
+import type { Guest, GuestVisit, Reservation } from "@gps/shared";
 import { Avatar } from "./avatar";
 import { PhaseBadge } from "./phase-badge";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,12 @@ import { storeGuestInExtension } from "@/lib/extension-bridge";
 
 export interface ProfileDetailProps {
   guest: Guest;
+  /** Derived visits fetched by the standalone profile page. */
+  visits?: GuestVisit[];
+  /** Global derived count, which can exceed the fetched page size. */
+  visitTotal?: number;
+  /** Non-fatal visit-history load error; the rest of the profile still renders. */
+  visitsError?: string | null;
 }
 
 // Server-fetched JSON gives dates as ISO strings, while client-side API data
@@ -38,7 +45,12 @@ function isoDay(value: unknown): string {
   return Number.isNaN(date.getTime()) ? String(value) : date.toISOString().slice(0, 10);
 }
 
-export function ProfileDetail({ guest }: ProfileDetailProps) {
+export function ProfileDetail({
+  guest,
+  visits = [],
+  visitTotal,
+  visitsError = null,
+}: ProfileDetailProps) {
   const [reservations, setReservations] = useState<Reservation[] | null>(null);
   const [loyalty, setLoyalty] = useState<LoyaltyResponse | null>(null);
   const [loadingSpokes, setLoadingSpokes] = useState(true);
@@ -73,6 +85,7 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
 
   const fullName = [guest.firstName, guest.lastName].filter(Boolean).join(" ") || "Unknown guest";
   const initials = `${(guest.firstName ?? "?")[0] ?? "?"}${(guest.lastName ?? "?")[0] ?? "?"}`;
+  const totalVisits = visitTotal ?? guest.totalStays;
 
   // Send this guest to the FormFilla extension. Delivery is confirmed by the
   // extension's content script; without it we say so instead of claiming success.
@@ -122,6 +135,9 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
             </h2>
             <div className="mt-1 flex items-center gap-3 flex-wrap">
               <PhaseBadge phase={guest.guestPhase} />
+              <span className="text-sm text-ink-500">
+                {totalVisits} visit{totalVisits === 1 ? "" : "s"}
+              </span>
               {guest.vipLevel !== "NONE" && (
                 <Badge variant="default">{guest.vipLevel}</Badge>
               )}
@@ -195,7 +211,55 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
         </dl>
       </Card>
 
-      {/* 3. Preferences */}
+      {/* 3. Visit history — derived from guest_profile_links */}
+      <Card>
+        <h3 className="font-heading text-lg font-semibold text-ink-900 mb-1">
+          Visit history
+        </h3>
+        <p className="text-sm text-ink-500 mb-3">
+          Derived from {totalVisits} raw hotel row{totalVisits === 1 ? "" : "s"}. The hotel
+          database has no visit table; each linked row is one visit.
+        </p>
+        {visitsError ? (
+          <p className="text-sm text-ink-500">
+            Could not load the full visit list. {visitsError}
+          </p>
+        ) : visits.length === 0 ? (
+          <p className="text-sm text-ink-500">No visits recorded.</p>
+        ) : (
+          <>
+            <ul className="space-y-2">
+              {visits.map((visit) => (
+                <li
+                  key={visit.visitId}
+                  className="flex items-center justify-between gap-3 py-2 border-b border-ink-100 last:border-b-0"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-ink-900">
+                      {isoDay(visit.occurredAt ?? visit.linkedAt)}
+                    </div>
+                    <div className="text-xs text-ink-500">
+                      {visit.sourceTable} #{visit.sourceRowId}
+                    </div>
+                  </div>
+                  {visit.email && (
+                    <span className="text-xs text-ink-500 truncate max-w-[12rem]">
+                      {visit.email}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+            {visits.length < totalVisits && (
+              <p className="text-xs text-ink-500 mt-3">
+                Showing {visits.length} of {totalVisits} visits.
+              </p>
+            )}
+          </>
+        )}
+      </Card>
+
+      {/* 4. Preferences */}
       {guest.preferences && Object.keys(guest.preferences).length > 0 && (
         <Card>
           <h3 className="font-heading text-lg font-semibold text-ink-900 mb-3">
@@ -212,11 +276,14 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
         </Card>
       )}
 
-      {/* 4. Reservations */}
+      {/* 5. Reservations */}
       <Card>
         <h3 className="font-heading text-lg font-semibold text-ink-900 mb-3">
           Recent reservations
         </h3>
+        <p className="text-xs text-ink-500 mb-3">
+          Reservations are a separate record; the visit count above comes from derived raw links.
+        </p>
         {loadingSpokes ? (
           <ReservationsSkeleton />
         ) : reservations && reservations.length > 0 ? (
@@ -253,7 +320,7 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
         )}
       </Card>
 
-      {/* 5. Loyalty */}
+      {/* 6. Loyalty */}
       <Card>
         <h3 className="font-heading text-lg font-semibold text-ink-900 mb-3">
           Loyalty
@@ -268,16 +335,13 @@ export function ProfileDetail({ guest }: ProfileDetailProps) {
             <div className="text-sm text-ink-600">
               <span className="font-medium text-ink-900">{loyalty.pointsBalance}</span> points
             </div>
-            <div className="text-sm text-ink-600">
-              <span className="font-medium text-ink-900">{loyalty.totalStays}</span> total stays
-            </div>
           </div>
         ) : (
           <p className="text-sm text-ink-500">No loyalty profile.</p>
         )}
       </Card>
 
-      {/* 6. Action — send this guest to the browser extension */}
+      {/* 7. Action — send this guest to the browser extension */}
       <div className="flex justify-end">
         <Button
           variant="primary"

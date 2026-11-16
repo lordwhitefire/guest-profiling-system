@@ -15,6 +15,7 @@
 import type { Db } from "@gps/shared";
 import type { Throttle } from "./throttle.js";
 import type { MappedGuest, SourceMapping } from "./mappings/types.js";
+import { jsonParam } from "./json-param.js";
 
 export interface UpdateRange {
   fullTable: boolean;
@@ -191,8 +192,8 @@ export class UpdateSync {
           VALUES
             (${this.tenantId}, ${r.source_ref}, ${r.first_name}, ${r.last_name},
              ${r.email}, ${r.phone}, ${r.date_of_birth},
-             ${JSON.stringify(r.preferences)}::jsonb,
-             ${JSON.stringify(r.comm_prefs)}::jsonb,
+             ${jsonParam(this.target, r.preferences) as never}::jsonb,
+             ${jsonParam(this.target, r.comm_prefs) as never}::jsonb,
              ${r.deleted_at}, ${r.created_at}, ${r.updated_at})
         `;
       }

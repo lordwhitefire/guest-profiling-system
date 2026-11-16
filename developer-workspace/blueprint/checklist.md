@@ -29,7 +29,7 @@
 
 ### What this means in one paragraph
 
-The product is built and the core demo flow exists: two hotels, a clean profile database, derived visit history, a working registration write, and a Chrome extension that fills the hotel form. The **decided** areas are the product shape, stack, data model, tenancy, search, audit, settings, auth, and the extension's fill behaviour. The **pending** areas are not missing features — they are the unglamorous parts that decide whether the demo survives contact with the internet: Render deployment, the cron/sync path, data consistency across screens, real-Postgres and cross-screen tests, security hardening, monitoring/backup, legal pages, and the extension distribution path for the manager. The **skipped** areas are commerce, native mobile, offline, real-time, collaboration, webhooks, and other things this product does not do.
+The product is built and the core demo flow exists: two hotels, a clean profile database, derived visit history, a working registration write, and a Chrome extension that fills the hotel form. The **decided** areas are the product shape, stack, data model, tenancy, search, audit, settings, auth, and the extension's fill behaviour. The **pending** areas are the unglamorous parts that decide whether the demo survives contact with the internet: Render deployment, the cron/sync path, security hardening, monitoring/backup, legal pages, accessibility/performance, and the extension distribution path for the manager. The **skipped** areas are commerce, native mobile, offline, real-time, collaboration, webhooks, and other things this product does not do.
 
 ---
 
@@ -38,18 +38,18 @@ The product is built and the core demo flow exists: two hotels, a clean profile 
 ### Before the demo (must)
 
 1. **Render deployment** (areas 18, 58; Engine 5). `render.yaml` is declared but not deployed. The cron worker runs the old `adapter-read` path, not the core sync used by **Sync Now**. The extension's `externally_connectable` does not include the Render URL. Without these three, the “everything online” demo does not work.
-2. **Manager's extension install** (areas 66, 70). ZIP + Load unpacked works now; Chrome Web Store (unlisted) gives a clean link but adds review time. The extension cannot be installed from a plain web link. Phones cannot run extensions at all — the form-fill demo needs a laptop.
-3. **Visit-count consistency** (areas 49, D8; issue `TASK-009-data-consistency.md`). The list shows Grand Vista Zainab with 3 visits; the profile page can show the Lakeside Zainab with 1. The profile page must use the same `guest_id` + `tenant_id` as the clicked row and derive visits from `guest_profile_links`, not legacy `reservations`/`loyalty_profiles`.
+2. **Manager's extension install** (areas 66, 70). ZIP built at `packages/adapter-fill-extension/gps-fill-extension-v0.1.0.zip`; install note at `developer-workspace/blueprint/extension-install.md`. The everyday Chrome install is still an owner step. Chrome Web Store (unlisted) gives a clean link but adds review time. Phones cannot run extensions at all.
+3. **Visit-count consistency** (areas 49, D8; issue `TASK-009-data-consistency.md`). **DONE (BP-01):** list, profile, and visit history now use the same `guest_id` + `tenant_id` and derive visits from `guest_profile_links`. GV Zainab = 3; LS Zainab = 1; cross-tenant read = 404.
 4. **Minimum security for a public URL** (areas 28, 63, 77). At minimum: strong secrets, HTTPS, login rate limiting, and no real guest PII in the demo. The known gaps are field encryption is a XOR placeholder, no CSRF token (sameSite only), no rate limiting, no RLS, and MFA is UI-only.
 5. **Phone/browser check** (areas 09, 10). The manager may open the app on a phone. Chrome is the demo browser; phone Safari is unverified. Decide the supported device/browser pair and test it.
 
 ### After the demo (should)
 
-6. **Test strategy** (area 17): real-Postgres integration, registration → sync → visit count, cross-screen consistency, tenant isolation, extension-in-browser, accessibility, performance, security.
-7. **Operations** (areas 19, 31): DB health probe, structured logs, error tracking, sync-error table/alerting, backup retention and a restore test.
+6. **Test strategy** (area 17): **3 P0 local-Postgres tests added (BP-03).** Remaining: extension-in-browser E2E, accessibility, performance, security.
+7. **Operations** (areas 19, 31): DB health probe **done (BP-07)**; structured logs, error tracking, sync-error table/alerting, backup retention and a restore test remain.
 8. **Legal** (area 20): privacy policy, terms, retention policy, DSR procedure; the login page's legal links are `href="#"`.
 9. **Accessibility and performance** (areas 11, 08, 30): choose WCAG target, run an audit, set speed/bundle budgets.
-10. **Docs, naming, handoff** (areas 21, 22, 33): fix README drift, write naming conventions, write a handoff/support note.
+10. **Docs, naming, handoff** (areas 21, 22, 33): README **fixed (BP-09)**; naming conventions and handoff/support note remain.
 11. **Internationalization/timezone** (areas 26, 62): English-only is acceptable for the demo, but the stored timezone/date-format settings are not applied consistently — dates are hardcoded `en-GB`/UTC in several screens.
 
 ### Accepted for v1 (Skip)

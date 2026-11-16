@@ -22,7 +22,8 @@ export interface TenantStats {
   totalNew: number;
   totalThisMonth: number;
   lastSyncAt: string | null;
-  syncErrors: number;
+  /** null = no sync-error tracking exists yet; never render this as zero. */
+  syncErrors: number | null;
   auditEvents24h: number;
 }
 
@@ -60,17 +61,23 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         WHERE tenant_id = ${tenantId} AND deleted_at IS NULL
           AND vip_level != 'NONE'
       `,
-      // Returning guests (total_stays >= 2)
+      // Returning guests (derived link count >= 2)
       db`
-        SELECT count(*)::int AS n FROM guests
-        WHERE tenant_id = ${tenantId} AND deleted_at IS NULL
-          AND total_stays >= 2
+        SELECT count(*)::int AS n FROM guests g
+        WHERE g.tenant_id = ${tenantId} AND g.deleted_at IS NULL
+          AND (
+            SELECT count(*) FROM guest_profile_links l
+            WHERE l.guest_id = g.guest_id AND l.tenant_id = g.tenant_id
+          ) >= 2
       `,
-      // New guests (total_stays <= 1)
+      // New guests (derived link count <= 1)
       db`
-        SELECT count(*)::int AS n FROM guests
-        WHERE tenant_id = ${tenantId} AND deleted_at IS NULL
-          AND total_stays <= 1
+        SELECT count(*)::int AS n FROM guests g
+        WHERE g.tenant_id = ${tenantId} AND g.deleted_at IS NULL
+          AND (
+            SELECT count(*) FROM guest_profile_links l
+            WHERE l.guest_id = g.guest_id AND l.tenant_id = g.tenant_id
+          ) <= 1
       `,
       // New this month
       db`
@@ -104,7 +111,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       totalNew: (newRows[0] as unknown as { n: number }).n,
       totalThisMonth: (thisMonthRows[0] as unknown as { n: number }).n,
       lastSyncAt: lastSyncRow ? new Date(lastSyncRow.updated_at).toISOString() : null,
-      syncErrors: 0,  // v1: no error tracking table; would need a separate sync_errors table
+      // No sync_errors table exists. null means "not tracked"; the UI must
+      // not render it as a reassuring zero.
+      syncErrors: null,
       auditEvents24h: (audit24hRows[0] as unknown as { n: number }).n,
     };
 

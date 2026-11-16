@@ -302,6 +302,10 @@ export function useReservations(guestId: string | null, limit = 20): UseReservat
 
 export interface UseGuestVisitsResult {
   visits: GuestVisit[];
+  /** Global derived count from guest_profile_links, not just the loaded page. */
+  total: number;
+  firstVisitAt: string | null;
+  lastVisitAt: string | null;
   loading: boolean;
   error: string | null;
   refetch: () => void;
@@ -309,6 +313,9 @@ export interface UseGuestVisitsResult {
 
 export function useGuestVisits(guestId: string | null, limit = 100): UseGuestVisitsResult {
   const [visits, setVisits] = useState<GuestVisit[]>([]);
+  const [total, setTotal] = useState(0);
+  const [firstVisitAt, setFirstVisitAt] = useState<string | null>(null);
+  const [lastVisitAt, setLastVisitAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(!!guestId);
   const [error, setError] = useState<string | null>(null);
   const [refetchTick, setRefetchTick] = useState(0);
@@ -316,6 +323,9 @@ export function useGuestVisits(guestId: string | null, limit = 100): UseGuestVis
   useEffect(() => {
     if (!guestId) {
       setVisits([]);
+      setTotal(0);
+      setFirstVisitAt(null);
+      setLastVisitAt(null);
       setLoading(false);
       setError(null);
       return;
@@ -325,11 +335,20 @@ export function useGuestVisits(guestId: string | null, limit = 100): UseGuestVis
     setError(null);
 
     api.getVisits(guestId, limit)
-      .then((rows) => { if (!cancelled) setVisits(rows); })
+      .then((result) => {
+        if (cancelled) return;
+        setVisits(result.visits);
+        setTotal(result.total);
+        setFirstVisitAt(result.firstVisitAt);
+        setLastVisitAt(result.lastVisitAt);
+      })
       .catch((err) => {
         if (!cancelled) {
           setError(err instanceof ApiError ? err.message : "Failed to load visit history.");
           setVisits([]);
+          setTotal(0);
+          setFirstVisitAt(null);
+          setLastVisitAt(null);
         }
       })
       .finally(() => { if (!cancelled) setLoading(false); });
@@ -338,20 +357,20 @@ export function useGuestVisits(guestId: string | null, limit = 100): UseGuestVis
   }, [guestId, limit, refetchTick]);
 
   const refetch = useCallback(() => setRefetchTick((t) => t + 1), []);
-  return { visits, loading, error, refetch };
+  return { visits, total, firstVisitAt, lastVisitAt, loading, error, refetch };
 }
 
 // ── useHealth — Analytics system-health panel ──────────────────────────────
 
 export interface UseHealthResult {
-  health: { status: string; uptime: number; timestamp: string } | null;
+  health: { status: string; uptime: number; timestamp: string; database?: string } | null;
   loading: boolean;
   error: string | null;
   refetch: () => void;
 }
 
 export function useHealth(): UseHealthResult {
-  const [health, setHealth] = useState<{ status: string; uptime: number; timestamp: string } | null>(null);
+  const [health, setHealth] = useState<{ status: string; uptime: number; timestamp: string; database?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);

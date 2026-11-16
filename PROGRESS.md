@@ -10,17 +10,19 @@
 **Phase 3 (Multiple PMS adapters)**: PENDING (deferred to v2)
 
 **Blueprint:** full 80-area checklist complete — `developer-workspace/blueprint/checklist.md` (36 Decided / 21 Pending / 23 Skip).
-**Blueprint work:** 29 ordered tasks in `developer-workspace/blueprint/tasks.md`; one check per area in `developer-workspace/blueprint/verification.md`; coverage checker `node developer-workspace/blueprint/check-blueprint.mjs` prints PASS. Next gate: **BP-01** (make visit counts consistent).
+**Blueprint work:** P0 **BP-01 … BP-10 are done** — visit counts, manual-sync decision, local-Postgres integration tests, fake metrics, settings labels, empty/error states, error boundary + DB health, extension ZIP, README, demo script. Next gate: **BP-11** (Render), deferred pending owner credentials.
+**Live tracker:** `developer-workspace/blueprint/TRACKER.md` — updated after every task.
 
 ## Where the demo stands
 
 - Local production build on `:3100`; clean database `gps`; two messy source databases `pms` and `pms_lakeside`.
 - Two hotels: Grand Vista and Lakeside; real memberships and active-tenant switch.
 - Registration writes one raw row to the active hotel's messy database; sync reads it back into the clean profile database.
-- The Chrome extension is installed in the automation Chrome on `:9222` (profile `google-chrome-automation`, ID `ednclpjlmnijooahfdmmelhfjcooiolb`).
-- Extension fill verified: **Full Name = “Final Check Grand”**, email and phone correct.
-- Click pass on the production build: **160 PASS, 35 NOT RUN, 0 DEAD, 0 FAKE** after the targeted visit-history re-run.
-- GitHub CI passed after the seeding-test fix (commit `50b52ca`). The full-name fix (`4180a86`) is local and not pushed yet.
+- The Chrome extension is installed in the automation Chrome on `:9222` (profile `google-chrome-automation`, ID `ednclpjlmnijooahfdmmelhfjcooiolb`). ZIP: `packages/adapter-fill-extension/gps-fill-extension-v0.1.0.zip`.
+- Extension fill verified through the attached Chrome: **Full Name = “Zainab Wang”**, email and phone correct.
+- Targeted CDP browser checks passed for BP-01, BP-04/05, BP-06, and BP-08. The old 160-control click pass was not rerun after the latest edits.
+- Local tests: **334 unit + 3 local-Postgres integration tests passing**, 1 skipped. `pnpm build` passes with `.env` loaded.
+- CI was green at `50b52ca`; later commits are local and not pushed.
 
 ## Tasks status
 
@@ -39,7 +41,9 @@
 | TASK-008 | done (verified) | Real DB, persisted settings, real analytics chart, live pg_trgm search; remaining work moved to TASK-009 |
 | TASK-009 | done (software scope) | Two hotels, real registration loop, clean DB, click pass, extension bridge/fill, CI. Owner-dependent: install the extension in the everyday Chrome; connect a real hotel PMS when a customer exists. |
 
-**Total tests workspace-wide: 334 passing, 0 failing, 1 skipped**
+**Total tests workspace-wide: 334 unit + 3 local-Postgres integration = 337 passing, 1 skipped.**
+
+**CI:** `.github/workflows/ci.yml` now runs lint + typecheck, production build, unit tests with coverage, local-Postgres integration tests, and Playwright E2E. Integration uses a `postgres:15` service and the existing source fixture; no Render or external service required. Not yet run on GitHub — owner pushes.
 
 ## Decisions captured (no longer Pending)
 
@@ -66,13 +70,13 @@ Per owner directive (2026-11-12):
 
 ## What is still pending external
 
-1. Push the local full-name fix (`4180a86`).
+1. Push the local commits (owner pushes personally).
 2. Deploy to Render:
    - create the clean database and a second messy PMS database;
    - set `JWT_SECRET`, `ARGON2_PEPPER`, `FIELD_ENCRYPTION_KEY`, `DEFAULT_TENANT_ID`;
    - make the messy database reachable from Render.
 3. Fix the `render.yaml` cron worker: it runs `adapter-read` (incremental, one tenant, needs seeded `sync_state`), not the current core sync. Until fixed, use **Sync Now** in the app.
-4. Install the extension in the everyday Chrome: ZIP + Load unpacked, or Chrome Web Store.
+4. Install the extension in the everyday Chrome: ZIP + Load unpacked (`developer-workspace/blueprint/extension-install.md`), or Chrome Web Store later.
 5. Connect a real hotel PMS when a customer is identified.
 6. Room / check-in / check-out remain audit-only: `ps_customer` has no such columns and the source schema must not change.
 

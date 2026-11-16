@@ -45,13 +45,18 @@ export async function GET(
       throw err;
     }
 
-    const visits: GuestVisit[] = await repo.getVisitsForGuest(
-      guestId,
-      claims.tenant_id,
-      { limit },
-    );
+    const [visits, summary] = await Promise.all([
+      repo.getVisitsForGuest(guestId, claims.tenant_id, { limit }),
+      repo.getVisitSummaryForGuest(guestId, claims.tenant_id),
+    ]);
 
-    return ok<GuestVisit[]>(visits, { page: 1, limit, total: visits.length });
+    return ok<GuestVisit[]>(visits, {
+      page: 1,
+      limit,
+      total: summary.total,
+      firstVisitAt: summary.firstVisitAt?.toISOString() ?? null,
+      lastVisitAt: summary.lastVisitAt?.toISOString() ?? null,
+    });
   } catch (err) {
     console.error("[GET /api/guests/{guestId}/visits] Failed:", err);
     return serverError();

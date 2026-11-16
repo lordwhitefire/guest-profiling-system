@@ -19,7 +19,9 @@ if (!key || key.length !== 64) {
 }
 if (!databaseUrl) throw new Error("DATABASE_URL is required.");
 
-const base = "postgres://postgres:choose-a-password@localhost:5432";
+const base =
+  process.env.SOURCE_PMS_BASE_URL ??
+  "postgres://postgres:choose-a-password@localhost:5432";
 
 const fixtures = [
   {

@@ -19,7 +19,7 @@ This repository contains the agent definitions, skills, plain-English plan, and 
 ```bash
 pnpm install
 cp .env.example .env
-# edit .env: set DATABASE_URL, JWT_SECRET, ARGON2_SECRET, SOURCE_PMS_URL
+# edit .env: set DATABASE_URL, JWT_SECRET, ARGON2_PEPPER, SOURCE_PMS_URL
 ```
 
 ### Run migrations
@@ -41,7 +41,20 @@ pnpm dev
 pnpm typecheck    # tsc --noEmit across all packages
 pnpm lint         # ESLint across all packages
 pnpm test:unit    # Vitest + pg-mem
+pnpm test:integration  # local-Postgres integration tests (needs .env loaded)
 pnpm test:e2e     # Playwright smoke test
+```
+
+### Local production build
+
+The demo and the acceptance checks run against a production build, not `pnpm dev`:
+
+```bash
+set -a && . ./.env && set +a
+pnpm build
+PORT=3100 NEXT_PUBLIC_APP_URL=http://127.0.0.1:3100 \
+  pnpm --filter @gps/core exec next start -p 3100
+# → http://127.0.0.1:3100
 ```
 
 ## Repository layout
@@ -53,18 +66,22 @@ pnpm test:e2e     # Playwright smoke test
 │   ├── adapter-read/               SSLR-pattern sync worker (separate process)
 │   ├── adapter-fill-extension/     Chrome MV3 form-fill extension
 │   └── shared/                     Types + Zod schemas + DB migrations + auth utils
-├── openspec/                       OpenSpec task registry + per-task briefs
+├── openspec/                       Architecture, OpenAPI, task registry + briefs
+│   ├── ARCHITECTURE.md
+│   ├── openapi.yaml
 │   ├── tasks-registry.md
 │   └── tasks/TASK-001/{task.md, testing.md}
-├── docs/                           Runbook + OpenAPI spec
-├── ARCHITECTURE.md                 High-level architecture overview
+├── docs/runbook/                   Three local runbooks
+│   ├── demo-end-to-end.md
+│   ├── backup-and-recovery.md
+│   └── extension-form-fill.md
 ├── PROGRESS.md                      Blueprint area 73 (session recovery)
 └── .github/workflows/ci.yml
 ```
 
 ## Architecture
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the high-level architecture. The authoritative specification is the three upstream deliverables (kept outside this repo as Word documents):
+See [openspec/ARCHITECTURE.md](./openspec/ARCHITECTURE.md) for the high-level architecture and [openspec/openapi.yaml](./openspec/openapi.yaml) for the API contract. The authoritative specification is the three upstream deliverables (kept outside this repo as Word documents):
 
 1. **Discovery Report** — five open-source reference repositories whose runtime behavior is relevant
 2. **Behavioral Specification** — reverse-engineered runtime behavior of those five repositories (no source code copied)

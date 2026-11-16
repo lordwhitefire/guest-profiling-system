@@ -29,6 +29,7 @@
 //   real Postgres install.
 
 import type { Db } from "@gps/shared";
+import { jsonParam } from "../json-param.js";
 import { qloappsMapping } from "../mappings/qloapps.js";
 import type { MappedGuest } from "../mappings/types.js";
 
@@ -131,8 +132,8 @@ export async function bulkImport(
            ${mapped.email},
            ${mapped.phone},
            ${mapped.date_of_birth},
-           ${JSON.stringify(mapped.preferences)}::jsonb,
-           ${JSON.stringify(mapped.comm_prefs)}::jsonb,
+           ${jsonParam(target, mapped.preferences) as never}::jsonb,
+           ${jsonParam(target, mapped.comm_prefs) as never}::jsonb,
            'UNKNOWN_CONTACT',
            ${mapped.deleted_at},
            ${mapped.created_at},

@@ -51,6 +51,7 @@ export async function GET(
 
     const reservations: Reservation[] = await repo.getReservationsForGuest(
       guestId,
+      claims.tenant_id,
       { status, page, limit },
     );
 

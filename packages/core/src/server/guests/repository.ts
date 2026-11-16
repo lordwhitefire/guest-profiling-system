@@ -51,6 +51,8 @@ interface GuestRow {
   tags: string[] | null;
   merged_from_ids: string[] | null;
   guest_phase: string;
+  /** Read-time count from guest_profile_links; absent on INSERT ... RETURNING *. */
+  visit_count?: number;
   created_at: Date;
   updated_at: Date;
   deleted_at: Date | null;
@@ -137,7 +139,10 @@ function rowToGuest(row: GuestRow, reservations: Reservation[] = []): Guest {
     preferences: row.preferences ?? {},
     commPrefs,
     vipLevel: row.vip_level as Guest["vipLevel"],
-    totalStays: row.total_stays,
+    // The link table is the source of truth for visits. `total_stays` is a
+    // convenience cache recomputed during sync; read paths prefer the live
+    // count so list, profile, and visit history cannot drift apart.
+    totalStays: row.visit_count ?? row.total_stays,
     totalSpend:
       typeof row.total_spend === "string" ? Number(row.total_spend) : row.total_spend,
     lastStayDate: row.last_stay_date,
@@ -222,19 +227,26 @@ export class GuestsRepository {
 
   async getById(guestId: string, tenantId: string): Promise<Guest | null> {
     const rows = await this.db`
-      SELECT * FROM guests
-      WHERE guest_id = ${guestId}
-        AND tenant_id = ${tenantId}
-        AND deleted_at IS NULL
+      SELECT g.*, (
+        SELECT count(*)::int
+        FROM guest_profile_links l
+        WHERE l.guest_id = g.guest_id
+          AND l.tenant_id = g.tenant_id
+      ) AS visit_count
+      FROM guests g
+      WHERE g.guest_id = ${guestId}
+        AND g.tenant_id = ${tenantId}
+        AND g.deleted_at IS NULL
     `;
     if (rows.length === 0) return null;
     const row = rows[0] as unknown as GuestRow;
-    const reservations = await this.getReservationsForGuest(guestId);
+    const reservations = await this.getReservationsForGuest(guestId, tenantId);
     return rowToGuest(row, reservations);
   }
 
   async getReservationsForGuest(
     guestId: string,
+    tenantId: string,
     options: { status?: string; page?: number; limit?: number } = {},
   ): Promise<Reservation[]> {
     const page = options.page ?? 1;
@@ -246,6 +258,7 @@ export class GuestsRepository {
       ? await this.db`
           SELECT * FROM reservations
           WHERE guest_id = ${guestId}
+            AND tenant_id = ${tenantId}
             AND deleted_at IS NULL
             AND status = ${status}
           ORDER BY check_in DESC
@@ -254,6 +267,7 @@ export class GuestsRepository {
       : await this.db`
           SELECT * FROM reservations
           WHERE guest_id = ${guestId}
+            AND tenant_id = ${tenantId}
             AND deleted_at IS NULL
           ORDER BY check_in DESC
           LIMIT ${limit} OFFSET ${offset}
@@ -282,10 +296,35 @@ export class GuestsRepository {
     return (rows as unknown[] as GuestVisitRow[]).map(rowToVisit);
   }
 
-  async getLoyaltyForGuest(guestId: string): Promise<LoyaltyProfile | null> {
+  async getVisitSummaryForGuest(
+    guestId: string,
+    tenantId: string,
+  ): Promise<{ total: number; firstVisitAt: Date | null; lastVisitAt: Date | null }> {
+    const rows = await this.db`
+      SELECT count(*)::int AS total,
+             MIN(COALESCE(source_created_at, linked_at)) AS first_visit_at,
+             MAX(COALESCE(source_created_at, linked_at)) AS last_visit_at
+      FROM guest_profile_links
+      WHERE guest_id = ${guestId}
+        AND tenant_id = ${tenantId}
+    `;
+    const row = rows[0] as unknown as {
+      total: number;
+      first_visit_at: Date | null;
+      last_visit_at: Date | null;
+    };
+    return {
+      total: row?.total ?? 0,
+      firstVisitAt: row?.first_visit_at ?? null,
+      lastVisitAt: row?.last_visit_at ?? null,
+    };
+  }
+
+  async getLoyaltyForGuest(guestId: string, tenantId: string): Promise<LoyaltyProfile | null> {
     const rows = await this.db`
       SELECT * FROM loyalty_profiles
       WHERE guest_id = ${guestId}
+        AND tenant_id = ${tenantId}
         AND deleted_at IS NULL
       LIMIT 1
     `;
@@ -305,10 +344,16 @@ export class GuestsRepository {
     const [countRows, guestRows] = await Promise.all([
       this.db`SELECT count(*)::int as total FROM guests WHERE tenant_id = ${tenantId} AND deleted_at IS NULL`,
       this.db`
-        SELECT * FROM guests
-        WHERE tenant_id = ${tenantId}
-          AND deleted_at IS NULL
-        ORDER BY created_at DESC, guest_id ASC
+        SELECT g.*, (
+          SELECT count(*)::int
+          FROM guest_profile_links l
+          WHERE l.guest_id = g.guest_id
+            AND l.tenant_id = g.tenant_id
+        ) AS visit_count
+        FROM guests g
+        WHERE g.tenant_id = ${tenantId}
+          AND g.deleted_at IS NULL
+        ORDER BY g.created_at DESC, g.guest_id ASC
         LIMIT ${limit} OFFSET ${offset}
       `,
     ]);
@@ -350,8 +395,8 @@ export class GuestsRepository {
       VALUES
         (${tenantId}, ${input.firstName}, ${input.lastName}, ${input.email},
          ${input.phone ?? null}, ${input.dateOfBirth ? new Date(input.dateOfBirth) : null},
-         ${JSON.stringify(input.preferences ?? {})}::jsonb,
-         ${JSON.stringify(commPrefs)}::jsonb)
+         ${this.db.json((input.preferences ?? {}) as never)}::jsonb,
+         ${this.db.json(commPrefs as never)}::jsonb)
       RETURNING *
     `;
     const row = rows[0] as unknown as GuestRow;
@@ -368,8 +413,8 @@ export class GuestsRepository {
     const params: unknown[] = [];
     let paramIdx = 1;
 
-    const addSet = (col: string, value: unknown) => {
-      sets.push(`${col} = $${paramIdx}`);
+    const addSet = (col: string, value: unknown, cast = "") => {
+      sets.push(`${col} = $${paramIdx}${cast}`);
       params.push(value);
       paramIdx++;
     };
@@ -385,9 +430,9 @@ export class GuestsRepository {
         input.dateOfBirth ? new Date(input.dateOfBirth) : null,
       );
     if (input.preferences !== undefined)
-      addSet("preferences", JSON.stringify(input.preferences));
+      addSet("preferences", this.db.json(input.preferences as never), "::jsonb");
     if (input.commPrefs !== undefined)
-      addSet("comm_prefs", JSON.stringify(input.commPrefs));
+      addSet("comm_prefs", this.db.json(input.commPrefs as never), "::jsonb");
 
     if (sets.length === 0) {
       // Nothing to update — return the current state.
@@ -407,8 +452,8 @@ export class GuestsRepository {
     `;
     const rows = await this.db.unsafe(sql, params as never[]);
     if (rows.length === 0) return null;
-    const row = rows[0] as unknown as GuestRow;
-    const reservations = await this.getReservationsForGuest(guestId);
-    return rowToGuest(row, reservations);
+    // Re-read so the response carries the live link count and tenant-scoped
+    // reservations rather than the cache stored on the row.
+    return this.getById(guestId, tenantId);
   }
 }

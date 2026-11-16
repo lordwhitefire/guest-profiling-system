@@ -105,7 +105,6 @@ export interface MeResponse {
 export interface LoyaltyResponse {
   tier: string;
   pointsBalance: number;
-  totalStays: number;
 }
 
 /** Paged list response — `data` is the page of guests, `metadata.total` is the global count. */
@@ -114,6 +113,16 @@ export interface GuestListResponse {
   page: number;
   limit: number;
   total: number;
+}
+
+/** Derived visits plus the global count/bounds, not just the current page. */
+export interface GuestVisitsResponse {
+  visits: GuestVisit[];
+  page: number;
+  limit: number;
+  total: number;
+  firstVisitAt: string | null;
+  lastVisitAt: string | null;
 }
 
 export const api = {
@@ -170,8 +179,21 @@ export const api = {
     apiFetch<Reservation[]>(`/api/guests/${id}/reservations?limit=${limit}`),
 
   // Derived visits — one raw source row per visit, grouped by the clean profile.
-  getVisits: (id: string, limit = 100): Promise<GuestVisit[]> =>
-    apiFetch<GuestVisit[]>(`/api/guests/${id}/visits?limit=${limit}`),
+  // metadata.total is the global count, so a capped page cannot make the UI
+  // report a smaller number than the guest list or profile page.
+  getVisits: async (id: string, limit = 100): Promise<GuestVisitsResponse> => {
+    const body = await apiFetchRaw<GuestVisit[]>(
+      `/api/guests/${id}/visits?limit=${limit}`,
+    );
+    return {
+      visits: body.data ?? [],
+      page: body.metadata?.page ?? 1,
+      limit: body.metadata?.limit ?? limit,
+      total: body.metadata?.total ?? (body.data?.length ?? 0),
+      firstVisitAt: body.metadata?.firstVisitAt ?? null,
+      lastVisitAt: body.metadata?.lastVisitAt ?? null,
+    };
+  },
 
   getLoyalty: (id: string): Promise<LoyaltyResponse> =>
     apiFetch<LoyaltyResponse>(`/api/guests/${id}/loyalty`),
@@ -265,7 +287,7 @@ export const api = {
     }),
 
   // Health (unauthenticated liveness probe)
-  getHealth: async (): Promise<{ status: string; service: string; timestamp: string; uptime: number }> => {
+  getHealth: async (): Promise<{ status: string; service: string; timestamp: string; uptime: number; database?: string }> => {
     const res = await fetch("/api/health", { credentials: "include" });
     if (!res.ok) throw new ApiError("HEALTH_UNAVAILABLE", `Health check returned ${res.status}.`);
     return res.json();
@@ -294,7 +316,7 @@ export interface TenantStats {
   totalNew: number;
   totalThisMonth: number;
   lastSyncAt: string | null;
-  syncErrors: number;
+  syncErrors: number | null;
   auditEvents24h: number;
 }
 
