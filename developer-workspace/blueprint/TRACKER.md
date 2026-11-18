@@ -1,70 +1,69 @@
 # Build Tracker
 
-**Last updated:** 2026-11-18 13:00 UTC
-**Current phase:** Neon data live and verified — deploy waiting on a push
+**Last updated:** 2026-11-18 13:26 UTC
+**Current phase:** LIVE on Render free tier
 **Rule:** updated after every task.
 
-## Where I am right now
+## The demo is live
 
-| Step | Status | Notes |
-|---|---|---|
-| Render CLI + skills | **Done** | v2.37.0, 22 skills, logged in |
-| Render free Blueprint | **Validates clean** | `{"valid": true}`, no billing needed |
-| Three Neon projects (Frankfurt, PG 18) | **Done** | gps / pms / pms_lakeside |
-| Hotel DBs on Neon | **Done** | real local data: 212 and 210 rows |
-| Clean DB on Neon | **Done** | migrations 001–006 + data |
-| Adapter connections on Neon | **Done** | read + write per hotel |
-| Sync into Neon | **Done** | GV 166 links, LS 164 links |
-| App verified against Neon | **Done** | search, guest, visits, stats all correct |
-| Render deploy | **Blocked on you** | needs `git push` |
-| Neon cron function | **Optional** | demo uses manual Sync Now |
+**https://gps-core.onrender.com**
 
-## Verified on Neon
+| Check | Result |
+|---|---|
+| `GET /api/health` | `200` · `{"status":"ok","database":"ok"}` |
+| Admin login | works |
+| Grand Vista → Zainab Wang | **3** visits |
+| Lakeside → Zainab Wang | **2** visits |
+| `/profile/<guestId>` | `200`, renders visit history |
+| Sync from Render | **1.9 s** (was ~5 min from the laptop) |
 
-| Hotel | Guest | Visits |
-|---|---|---|
-| Grand Vista | Zainab Wang (`31e19df0-…`) | **3** |
-| Lakeside | Zainab Wang (`d9035c0c-…`) | **2** |
+Admin: `admin@grandvista.test` / `Admin123!`
+Receptionist: `receptionist@grandvista.test` / `Reception123!`
 
-Both confirmed through `/api/guests/search`, `/api/guests/{id}` and
-`/api/guests/{id}/visits`. (Lakeside is 2, not 1 — the Lakeside source DB gained a second
-Zainab row on 2026-11-16.)
+## Architecture now
 
-## What I found and fixed
+- **Render free web service** `gps-core` (Frankfurt, 512 MB)
+- **Neon** (Frankfurt, PG 18): `gps`, `pms`, `pms_lakeside`
+- No Render database, no Render cron
+- Manual **Sync Now** for the demo
 
-1. **Two migrations were incomplete** — a fresh database could not be built:
-   - `tenants.settings` updated by `003` but never created → `001` fixed + `005`
-   - `data_requests` table never existed → `006`
-2. **`connect_timeout` 5s → 30s** (Neon cold start measured 6.1s).
-3. **Sync retries** up to 3× on network drops.
-4. **Neon connection rule:** direct endpoint + `options=-c%20search_path%3Dpublic`.
-   The pooler silently drops `search_path` and every query fails.
+## Free-tier behaviour to state out loud
 
-## Performance finding
+- The service **sleeps after 15 minutes idle**; first visit takes ~50 s.
+- 750 instance-hours/month.
+- No backups, no uptime promise.
+- Neon scale-to-zero after 5 min.
 
-Laptop → Frankfurt is **~600 ms per query**. A full sync is ~500 queries ≈ 5 minutes and
-Neon resets long connections. **The sync belongs on Render**, where the same work takes
-seconds. Do not judge sync speed from a local run.
+## Decisions made during the deploy
 
-## Commits (local, unpushed)
+1. **Passwords were reset on Neon** with Render’s `ARGON2_PEPPER`. The local hashes came
+   from the laptop’s pepper, so the copied users could not log in on Render.
+2. **Build command forces dev dependencies**:
+   `pnpm install --frozen-lockfile --prod=false && pnpm --filter @gps/core build`
+   Render sets `NODE_ENV=production`, which made pnpm skip `typescript` and `next build` fail.
+3. **Neon connections use the direct endpoint** with `options=-c%20search_path%3Dpublic`.
+   The pooler silently drops `search_path`.
+4. **Profile page falls back to `RENDER_EXTERNAL_URL`** so no dashboard variable is needed
+   (`4955bce`, committed locally, not yet pushed).
 
-- `7db5f83` migrations + connect timeout + render.yaml
-- `35bc96d` docs
-- `c01a6ff` sync retry
-- `310b5e4` tracker
-- demo-script edits (uncommitted)
+## Commits
 
-## What I need from you
+| Commit | State |
+|---|---|
+| `7db5f83` | pushed |
+| `35bc96d` | pushed |
+| `c01a6ff` | pushed |
+| `310b5e4` | pushed |
+| `5958064` | pushed — **this is what is deployed** |
+| `4955bce` | local, **not pushed** |
 
-**`git push`** — Render deploys from `main`.
+## Remaining
 
-Then I will:
-1. Create the free web service from the Blueprint
-2. Set `DATABASE_URL`, `SOURCE_PMS_URL`, `JWT_SECRET`, `ARGON2_PEPPER`, `FIELD_ENCRYPTION_KEY`
-3. Deploy, then set `NEXT_PUBLIC_APP_URL`
-4. Run the first sync from Render and verify the same counts
-
-Secrets are prepared in `~/.config/gps/render.env` (chmod 600).
+1. **Push `4955bce`** so the `RENDER_EXTERNAL_URL` fallback goes live (optional but correct).
+2. **Neon cron function** if you want automatic sync (optional; demo is manual).
+3. **Extension `externally_connectable`** needs `https://gps-core.onrender.com/*` added for
+   `chrome.runtime.sendMessage`; the content-script bridge already works.
+4. **Custom domain** if you want one (optional).
 
 ## Neon project ids
 
@@ -74,4 +73,4 @@ Secrets are prepared in `~/.config/gps/render.env` (chmod 600).
 | Grand Vista PMS | `frosty-dream-43239778` | `pms` |
 | Lakeside PMS | `super-dawn-79003967` | `pms_lakeside` |
 
-DSNs: `~/.config/gps/neon.env` (chmod 600, not in git).
+DSNs: `~/.config/gps/neon.env` · Render secrets: `~/.config/gps/render.env` (chmod 600)
