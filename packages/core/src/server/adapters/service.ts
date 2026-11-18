@@ -12,6 +12,10 @@ import { decryptConnectionUrl } from "./connection-crypto";
 
 export type ConnectionKind = "read" | "write";
 
+// Remote Postgres (Neon) can cold-start in more than 5 seconds. A short
+// connect_timeout turns that into a false "connection failed".
+const SOURCE_CONNECT_TIMEOUT_SECONDS = 30;
+
 export interface AdapterConnection {
   connectionId: string;
   pmsType: string;
@@ -166,7 +170,7 @@ export async function syncTenant(
   }
 
   const jobId = `adapter-sync-${new Date().toISOString()}`;
-  const source = postgres(conn.dsn, { max: 1, idle_timeout: 5, connect_timeout: 5 });
+  const source = postgres(conn.dsn, { max: 1, idle_timeout: 5, connect_timeout: SOURCE_CONNECT_TIMEOUT_SECONDS });
 
   try {
     const rawRows = await readSourceRows(source, conn.pmsType);
@@ -303,7 +307,7 @@ export async function testAdapterConnection(
   }
 
   const started = Date.now();
-  const source = postgres(conn.dsn, { max: 1, idle_timeout: 5, connect_timeout: 5 });
+  const source = postgres(conn.dsn, { max: 1, idle_timeout: 5, connect_timeout: SOURCE_CONNECT_TIMEOUT_SECONDS });
   try {
     const one = await source`
       SELECT 1 AS ok,
@@ -357,7 +361,7 @@ export async function registerRawRow(
     throw new AdapterError("VALIDATION_ERROR", "email is required.", 400);
   }
 
-  const source = postgres(conn.dsn, { max: 1, idle_timeout: 5, connect_timeout: 5 });
+  const source = postgres(conn.dsn, { max: 1, idle_timeout: 5, connect_timeout: SOURCE_CONNECT_TIMEOUT_SECONDS });
   try {
     const result =
       conn.pmsType === "qloapps"

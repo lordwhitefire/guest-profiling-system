@@ -33,7 +33,8 @@ CREATE TABLE tenants (
     name         VARCHAR(255) NOT NULL,
     created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     updated_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    deleted_at   TIMESTAMPTZ  NULL
+    deleted_at   TIMESTAMPTZ  NULL,
+    settings     JSONB        NOT NULL DEFAULT '{}'::jsonb
 );
 
 CREATE TRIGGER trg_tenants_updated_at
