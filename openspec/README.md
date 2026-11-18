@@ -4,4 +4,4 @@ Home base for the Architect. Contains the task registry, per-task briefs (task.m
 
 ## Task registry
 
-See `openspec/tasks-registry.md` for the current task list (TASK-001 through TASK-004 complete; TASK-005 pending).
+See `openspec/tasks-registry.md` for the current task list (TASK-001 through TASK-009 complete).

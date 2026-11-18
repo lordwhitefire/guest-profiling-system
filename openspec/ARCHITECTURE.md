@@ -16,7 +16,16 @@ A hotel add-on that:
 2. Presents live-filtered matching profiles as a receptionist types (target: p95 search response < 300ms)
 3. Auto-fills the hotel's existing registration form on click (target: p95 form-fill < 100ms)
 
-The system never writes back to the hotel's database. It is custom-built per hotel, maintained by a single developer, with a shared core across hotels and a per-hotel adapter.
+The system never writes back to any hotel's database. It is custom-built per hotel, maintained by a single developer, with a shared core across hotels and a per-hotel adapter.
+
+> **A note on the demo's "Register" button.** In the local demo, pressing Register
+> writes one raw row into the "messy" source database. That messy database is a
+> **stand-in for the hotel's own PMS** — the row represents the hotel's own system
+> recording its own guest, not our software writing into a third party's database.
+> In production this step is the hotel's own PMS persisting the form that the
+> receptionist submits (the form our Adapter-Fill extension fills). Our software
+> itself never writes to any external database; the sync/adapter path is strictly
+> read-only.
 
 ## Architecture overview
 
@@ -72,7 +81,7 @@ They share only the guest-data contract (the `guests` table schema). Combining t
 - **Database**: PostgreSQL 15+
 - **DB driver**: postgres.js
 - **Query builder**: Kysely (type-safe, no ORM lock-in)
-- **Migrations**: node-pg-migrate (plain SQL)
+- **Migrations**: plain SQL files applied by a small custom runner (`packages/shared/scripts/migrate.mjs`). node-pg-migrate was originally planned but never adopted.
 - **Auth**: JWT (jose) with group claims; Argon2id password hashing
 - **Frontend styling**: Tailwind CSS 4 + shadcn/ui (Radix primitives)
 - **Browser extension**: Chrome Manifest V3, TypeScript, esbuild bundler
@@ -99,20 +108,36 @@ See PM Plan Section 10. Summary:
 - Frontend art-directed, polished, modern (per user design brief)
 - Backend re-implemented from scratch (no code reuse from any of the 5 reference repos)
 
+### How registration fits the read-only rule (clarification, not an exception)
+
+Our software never writes to any external database. The sync/adapter path is strictly
+read-only, and the one-way flow (source PMS → our DB) holds without exception.
+
+The local demo's **Register** button writes one raw row into the "messy" source
+database — but that database is a **stand-in for the hotel's own PMS**, and the row
+represents the hotel's own system recording its own guest. It is not our software
+writing into a third party's database. The demo's separate write connection
+(`adapter_connections.is_read_only = FALSE`) exists only to simulate the hotel's own
+PMS write; it is test scaffolding, not a product data path.
+
+In production, registration is the receptionist submitting the hotel's existing form.
+The hotel's own PMS persists that submission. Our only involvement is the Adapter-Fill
+extension filling that form in the browser. **We never write to any hotel database.**
+
 ## Phased build plan
 
 See `openspec/tasks-registry.md` for the current task list. Summary:
 
-- **Phase 0** (TASK-001) — Foundation: monorepo, schema, design system, auth scaffold, CI. Status: done.
-- **Phase 1** (TASK-002 through TASK-005) — Adapter-read + guest profile API + receptionist web UI + admin UI. Status: pending.
-- **Phase 2** (TASK-006) — Browser extension form-fill. Status: pending.
-- **Phase 3** (future tasks) — Additional PMS adapters (Mews, Cloudbeds, Apaleo; Windows desktop).
+- **Phase 0** (TASK-001) — Foundation: monorepo, schema, design system, auth scaffold, CI. Status: done (verified).
+- **Phase 1** (TASK-002 through TASK-005c, TASK-008, TASK-009) — Adapter-read + guest profile API + receptionist web UI + admin UI, plus real-DB and live-verification hardening. Status: done (verified, software scope).
+- **Phase 2** (TASK-006) — Browser extension form-fill. Status: done (verified).
+- **Phase 3** (future tasks) — Additional PMS adapters (Mews, Cloudbeds, Apaleo; Windows desktop). Status: deferred to v2.
 
-## Decisions not yet made (Blueprint Pending areas)
+## Decisions (resolved)
 
-Captured in PM Plan Section 18.1. Summary:
+Per owner directive (2026-11-12), captured in `openspec/tasks-registry.md`:
 
-- First hotel customer (blocks TASK-002)
-- Hosting provider (blocks deployment config only, not the scaffold)
-- Brand identity (blocks UI copy in TASK-004)
-- Open-source license (MIT by default; owner can swap)
+- **First hotel customer** — Not needed for production-grade software. The software reads any PMS matching the QloApps schema, or a new mapping can be added per the `mappings/types.ts` interface. The integration layer (connecting a specific hotel's PMS) is a separate concern handled when a customer is identified.
+- **Hosting provider** — **Render**. Declared in `render.yaml` (one web service + one managed Postgres + one cron worker). Declared, not yet deployed.
+- **Brand identity** — **Decided**. The workspace UI ships its own visual identity: gps-brand-mark in the sidebar, "Guest Profiling System" wordmark, hotel-name placeholders throughout. No further brand work needed for v1.
+- **Open-source license** — **MIT** (per the discovery report recommendation and the existing `LICENSE` file).
