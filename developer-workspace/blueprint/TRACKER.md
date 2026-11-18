@@ -1,59 +1,70 @@
 # Build Tracker
 
-**Last updated:** 2026-11-18 12:50 UTC
-**Current phase:** Free-tier Neon migration — data loaded, deploy waiting on a push
+**Last updated:** 2026-11-18 13:00 UTC
+**Current phase:** Neon data live and verified — deploy waiting on a push
 **Rule:** updated after every task.
 
 ## Where I am right now
 
 | Step | Status | Notes |
 |---|---|---|
-| Render CLI + skills | **Done** | v2.37.0, 22 skills, logged in as `victormakuo2002@gmail.com` |
+| Render CLI + skills | **Done** | v2.37.0, 22 skills, logged in |
 | Render free Blueprint | **Validates clean** | `{"valid": true}`, no billing needed |
 | Three Neon projects (Frankfurt, PG 18) | **Done** | gps / pms / pms_lakeside |
-| Hotel schemas on Neon | **Done** | 207 rows each |
-| Clean DB schema on Neon | **Done** | migrations 001–006 |
+| Hotel DBs on Neon | **Done** | real local data: 212 and 210 rows |
+| Clean DB on Neon | **Done** | migrations 001–006 + data |
 | Adapter connections on Neon | **Done** | read + write per hotel |
-| First sync into Neon | **Done** | GV 161 links, LS ~161 |
+| Sync into Neon | **Done** | GV 166 links, LS 164 links |
+| App verified against Neon | **Done** | search, guest, visits, stats all correct |
 | Render deploy | **Blocked on you** | needs `git push` |
-| Neon cron function | **Not started** | optional; demo uses manual Sync Now |
+| Neon cron function | **Optional** | demo uses manual Sync Now |
+
+## Verified on Neon
+
+| Hotel | Guest | Visits |
+|---|---|---|
+| Grand Vista | Zainab Wang (`31e19df0-…`) | **3** |
+| Lakeside | Zainab Wang (`d9035c0c-…`) | **2** |
+
+Both confirmed through `/api/guests/search`, `/api/guests/{id}` and
+`/api/guests/{id}/visits`. (Lakeside is 2, not 1 — the Lakeside source DB gained a second
+Zainab row on 2026-11-16.)
 
 ## What I found and fixed
 
 1. **Two migrations were incomplete** — a fresh database could not be built:
-   - `tenants.settings` was updated by `003` but never created → `001` fixed + `005`
+   - `tenants.settings` updated by `003` but never created → `001` fixed + `005`
    - `data_requests` table never existed → `006`
-2. **`connect_timeout` was 5s**; Neon cold start measured **6.1s**, so sync reported a false
-   `CONNECT_TIMEOUT`. Now **30s**.
-3. **Sync now retries** up to 3× on network drops (Neon reset a long connection mid-sync).
-4. **Neon connection rule:** use the **direct** endpoint with
-   `options=-c%20search_path%3Dpublic`. The pooler silently drops `search_path` and every
-   query fails with "relation does not exist".
+2. **`connect_timeout` 5s → 30s** (Neon cold start measured 6.1s).
+3. **Sync retries** up to 3× on network drops.
+4. **Neon connection rule:** direct endpoint + `options=-c%20search_path%3Dpublic`.
+   The pooler silently drops `search_path` and every query fails.
 
-## Important performance finding
+## Performance finding
 
-From this laptop to Frankfurt, each query is **~600 ms** (40 queries took 24 s, 0 failures).
-A full sync is ~500 queries ≈ 5 minutes, and long connections get reset.
-
-**The sync belongs on Render, not on the laptop.** From Render (Frankfurt) to Neon (Frankfurt)
-the same sync should take seconds. Do not judge sync speed from a local run.
+Laptop → Frankfurt is **~600 ms per query**. A full sync is ~500 queries ≈ 5 minutes and
+Neon resets long connections. **The sync belongs on Render**, where the same work takes
+seconds. Do not judge sync speed from a local run.
 
 ## Commits (local, unpushed)
 
 - `7db5f83` migrations + connect timeout + render.yaml
 - `35bc96d` docs
 - `c01a6ff` sync retry
+- `310b5e4` tracker
+- demo-script edits (uncommitted)
 
 ## What I need from you
 
-**`git push`** — Render deploys from `main`. Until then the Blueprint I validated is not what
-Render would deploy.
+**`git push`** — Render deploys from `main`.
 
 Then I will:
 1. Create the free web service from the Blueprint
 2. Set `DATABASE_URL`, `SOURCE_PMS_URL`, `JWT_SECRET`, `ARGON2_PEPPER`, `FIELD_ENCRYPTION_KEY`
-3. First deploy, then set `NEXT_PUBLIC_APP_URL`
-4. Run the first sync from Render and verify GV Zainab = 3, LS = 1
+3. Deploy, then set `NEXT_PUBLIC_APP_URL`
+4. Run the first sync from Render and verify the same counts
+
+Secrets are prepared in `~/.config/gps/render.env` (chmod 600).
 
 ## Neon project ids
 

@@ -2,6 +2,8 @@
 
 **Decision:** the demo uses **manual Sync Now**. Registration writes one raw hotel row immediately; the clean profile's derived visit count changes only after the operator clicks **Sync Now** on **PMS Integration**. This is deliberate: it makes the boundary between the hotel source database and our clean database visible.
 
+**Hosting (2026-11-18):** free tier. Render free web service + three Neon databases (Frankfurt). The Render service **sleeps after 15 minutes idle**, so the first visit can take ~50 seconds. Open the site first, wait for it to wake, then start the demo.
+
 ## 0. Start
 
 ```bash
@@ -26,10 +28,10 @@ Open `http://127.0.0.1:3100/login`.
 4. Open her profile. Expected: **3** in the header and **3** rows under **Visit history**.
 5. Open **Guest History** from the profile link. Expected: **3** total visits, **3** source rows.
 6. Use the hotel badge (bottom left) to switch to **Lakeside Suites**.
-7. Find **Zainab Wang** again. Expected: **1** visit. She is a different profile in a different hotel, not the Grand Vista record.
+7. Find **Zainab Wang** again. Expected: **2** visits. She is a different profile in a different hotel, not the Grand Vista record.
 8. Optional direct-link check: copy the `guestId` from the directory row and open `/profile/<guestId>`; the URL id and the API id must match.
 
-**Pass:** GV Zainab = 3 on directory, profile, and visit history. LS Zainab = 1. No screen shows the other hotel's count.
+**Pass:** GV Zainab = 3 on directory, profile, and visit history. LS Zainab = 2 (the Lakeside source DB has two Zainab Wang rows). No screen shows the other hotel's count.
 
 ## 2. Registration → manual sync → one new visit (BP-02)
 
