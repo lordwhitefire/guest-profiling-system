@@ -33,8 +33,11 @@ export default async function ProfilePage({ params }: PageProps) {
   // configuration (or the local server port), never from the Host header:
   // forwarding cookies to a Host-derived URL would be an SSRF/cookie leak.
   const cookieStore = await cookies();
+  // Render injects RENDER_EXTERNAL_URL, so a deployed service needs no
+  // NEXT_PUBLIC_ variable. The 127.0.0.1 fallback is for local production runs.
   const base =
     process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.RENDER_EXTERNAL_URL ??
     `http://127.0.0.1:${process.env.PORT ?? "3000"}`;
 
   const cookieHeader = cookieStore
