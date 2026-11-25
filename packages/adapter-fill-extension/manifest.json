@@ -21,6 +21,10 @@
     }
   ],
   "externally_connectable": {
-    "matches": ["http://localhost:3000/*", "https://*.guestprofiling.com/*"]
+    "matches": [
+      "http://localhost:3000/*",
+      "https://gps-core.onrender.com/*",
+      "https://*.guestprofiling.com/*"
+    ]
   }
 }

@@ -2,6 +2,7 @@
 
 **Build:** `packages/adapter-fill-extension/gps-fill-extension-v0.1.0.zip`
 **Chrome:** desktop only; phones cannot run extensions.
+**Live app:** https://gps-core.onrender.com (free tier — first load can take ~50 s)
 
 ## Install (Load unpacked)
 
@@ -25,4 +26,4 @@ If the extension is missing, the workspace says **“Extension not detected. Ins
 
 A plain web link cannot install a Chrome extension without a Web Store review. The clean long-term path is an **unlisted Chrome Web Store** listing. The enterprise `.crx` + policy path is overkill for this demo.
 
-The Render URL must be added to `externally_connectable` when the app is public; the local demo uses the content-script bridge and does not need it.
+The Render URL (`https://gps-core.onrender.com/*`) is now in `externally_connectable`, alongside `localhost:3000`.
