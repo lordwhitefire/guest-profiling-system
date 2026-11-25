@@ -28,10 +28,21 @@ Receptionist: `receptionist@grandvista.test` / `Reception123!`
 |---|---|
 | 0. Update this tracker | **done** |
 | 1. Extension allow Render URL | **done** — manifest + rebuilt ZIP |
-| 2. Rebuild + re-verify ZIP | **blocked** — no Chrome on CDP `:9222` |
+| 2. Rebuild + re-verify ZIP | **done** — loaded unpacked, fill verified live |
 | 3. Push commits | **done** — `7406773` deployed |
 | 4. Optional Neon cron sync | not started (optional) |
-| 5. Final check | **app verified** — extension check still blocked |
+| 5. Final check | **done** |
+
+## Live extension check (2026-11-25)
+
+| Check | Result |
+|---|---|
+| Extension loaded | `ednclpjlmnijooahfdmmelhfjcooiolb` |
+| Prepare Registration | **Guest prepared** (extension acknowledged) |
+| Fill result | 7 fields · 2 high confidence · 1 needs review |
+| Full Name | **Zainab Wang** |
+| Email | **zwang@proton.me** |
+| Phone | **0746350685** |
 
 ## Deploy of `7406773`
 
