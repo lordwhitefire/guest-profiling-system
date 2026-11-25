@@ -29,9 +29,18 @@ Receptionist: `receptionist@grandvista.test` / `Reception123!`
 | 0. Update this tracker | **done** |
 | 1. Extension allow Render URL | **done** — manifest + rebuilt ZIP |
 | 2. Rebuild + re-verify ZIP | **blocked** — no Chrome on CDP `:9222` |
-| 3. Push two commits | **waiting on you** |
+| 3. Push commits | **done** — `7406773` deployed |
 | 4. Optional Neon cron sync | not started (optional) |
-| 5. Final check | not started |
+| 5. Final check | **app verified** — extension check still blocked |
+
+## Deploy of `7406773`
+
+| Check | Result |
+|---|---|
+| Deploy status | **live** |
+| `GET /api/health` | `200` · `{"status":"ok","database":"ok"}` in 0.63 s |
+| GV Zainab visits | **3** |
+| `/profile/<guestId>` | `200`, renders visit history (RENDER_EXTERNAL_URL fallback works) |
 
 ## Architecture
 
@@ -44,9 +53,10 @@ Receptionist: `receptionist@grandvista.test` / `Reception123!`
 
 | Commit | State |
 |---|---|
-| `5958064` | pushed — **deployed** |
-| `4955bce` | local, not pushed (RENDER_EXTERNAL_URL fallback) |
-| `98204a0` | local, not pushed (tracker) |
+| `5958064` | pushed — previous live version |
+| `4955bce` | **pushed** |
+| `98204a0` | **pushed** |
+| `7406773` | **pushed — deploying now** |
 
 ## Neon project ids
 
