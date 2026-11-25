@@ -42,6 +42,7 @@ Receptionist: `receptionist@grandvista.test` / `Reception123!`
 | Manual invoke | `200` in 4.8 s · both tenants synced |
 | Guard | wrong key → `403 {"ok":false,"error":"forbidden"}` |
 | Idempotent | second run: `newLinks: 0` |
+| **Scheduled run** | **04:10:03 / 04:10:04 UTC — SYNC audit rows for both tenants, no human involved** |
 
 Source: `infra/neon-sync/` (build output gitignored).
 
