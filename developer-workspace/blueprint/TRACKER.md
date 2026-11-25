@@ -14,8 +14,9 @@
 | Panel click hands guest to extension | **done** |
 | Content script fills without the popup | **done** |
 | Badge shows real extension status | **done** — Ready / Connected / Not detected |
-| Verify with `@browser-attach` | **done** — panel check passed |
-| Deploy + push | in progress |
+| Verify with `@browser-attach` | **done locally** — panel check passed |
+| Deploy + push | **done** — `739ddd5` is live |
+| Re-verify on the live site | **blocked** — no Chrome on CDP `:9222` |
 
 ## Panel check result
 
