@@ -807,6 +807,41 @@ function Registration({form,setForm,onAction,tenantName,matches,searchLoading,se
   const [confirmed,setConfirmed] = useState(true);
   const [submitting,setSubmitting] = useState(false);
   const brandInitials = tenantName.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "GP";
+  // The panel is the fill adapter's UI: a click both fills the form and hands
+  // the guest to the extension, which fills the active page.
+  const [extensionState, setExtensionState] = useState<"ready" | "connected" | "missing">("ready");
+
+  const fillFromMatch = async (guest: GuestLike) => {
+    setForm({ name: guest.name, email: guest.email, phone: guest.phone, room: "Deluxe Room" });
+    const raw = guest.raw;
+    const delivered = await storeGuestInExtension({
+      guest: {
+        guestId: guest.guestId,
+        firstName: raw.firstName,
+        lastName: raw.lastName,
+        fullName: guest.name,
+        email: guest.email === "—" ? null : guest.email,
+        phone: guest.phone === "—" ? null : guest.phone,
+        dateOfBirth: isoDate(raw.dateOfBirth),
+        nationality: raw.nationality,
+        addressLine1: raw.addressLine1,
+        addressLine2: raw.addressLine2,
+        city: raw.city,
+        state: raw.state,
+        postalCode: raw.postalCode,
+        country: raw.country,
+        company: null,
+        notes: null,
+      },
+      storedAt: Date.now(),
+    });
+    setExtensionState(delivered ? "connected" : "missing");
+    onAction(
+      delivered
+        ? `${guest.name} filled into the form. Extension connected.`
+        : `${guest.name} filled into the form. Extension not detected.`,
+    );
+  };
 
   const reset = () => {
     setForm({name:"",email:"",phone:"",room:""});
@@ -865,11 +900,11 @@ function Registration({form,setForm,onAction,tenantName,matches,searchLoading,se
       <label>Room Type<select className="gps-input" value={form.room} onChange={e=>setForm({...form,room:e.target.value})}><option value="">Select room type</option><option>Deluxe Room</option><option>Executive Suite</option><option>Standard Room</option></select></label>
       <label>Check-in Date<input className="gps-input" type="date" value={checkIn} onChange={e=>setCheckIn(e.target.value)}/></label>
       <label>Check-out Date<input className="gps-input" type="date" value={checkOut} onChange={e=>setCheckOut(e.target.value)}/></label>
-    </div><p className="gps-match-note">The hotel source table has no room, check-in or check-out columns. Those fields are kept in the registration form and recorded in the audit trail, but they are not written to the PMS row.</p><p className="gps-match-note">Demo sync is manual: after registration, open <button className="gps-text-button" onClick={()=>window.location.assign("/workspace/pms-sync")}>PMS Integration → Sync Now</button> to group the new raw row into the guest profile.</p><label className="gps-checkbox"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/> I confirm the guest information has been reviewed.</label><div className="gps-form-actions"><button className="gps-outline" onClick={reset} disabled={submitting}>Cancel</button><button className="gps-primary" onClick={submit} disabled={submitting}>{submitting ? "Registering…" : <>Complete Registration <ArrowRight size={14}/></>}</button></div></div><aside className="gps-match-aside"><div className="gps-match-head"><Sparkles size={18}/><b>Guest Profiling</b><span className="gps-pill pill-green">Active</span></div><h3>Returning guest matches</h3><p>As you enter guest information, matching profiles appear here from this hotel's clean database.</p>
+    </div><p className="gps-match-note">The hotel source table has no room, check-in or check-out columns. Those fields are kept in the registration form and recorded in the audit trail, but they are not written to the PMS row.</p><p className="gps-match-note">Demo sync is manual: after registration, open <button className="gps-text-button" onClick={()=>window.location.assign("/workspace/pms-sync")}>PMS Integration → Sync Now</button> to group the new raw row into the guest profile.</p><label className="gps-checkbox"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/> I confirm the guest information has been reviewed.</label><div className="gps-form-actions"><button className="gps-outline" onClick={reset} disabled={submitting}>Cancel</button><button className="gps-primary" onClick={submit} disabled={submitting}>{submitting ? "Registering…" : <>Complete Registration <ArrowRight size={14}/></>}</button></div></div><aside className="gps-match-aside"><div className="gps-match-head"><Sparkles size={18}/><b>Guest Profiling</b><span className={`gps-pill ${extensionState === "missing" ? "pill-orange" : "pill-green"}`}>{extensionState === "connected" ? "Connected" : extensionState === "missing" ? "Not detected" : "Ready"}</span></div><h3>Returning guest matches</h3><p>As you enter guest information, matching profiles appear here from this hotel's clean database.</p>
       {searchLoading && <p className="gps-match-note">Searching guest profiles…</p>}
       {searchError && <p className="gps-match-note" style={{color:"#b91c1c"}}>{searchError}</p>}
       {!searchLoading && !searchError && matches.length===0 && <p className="gps-match-note">No matching profile yet. Keep typing, or complete the form as a new guest.</p>}
-      {matches.slice(0,3).map((g)=><button className="gps-match-row" key={g.guestId} onClick={()=>{setForm({name:g.name,email:g.email,phone:g.phone,room:"Deluxe Room"});onAction(`${g.name} details filled into the registration form.`);}}><span className="gps-avatar">{g.initials}</span><span><b>{g.name}</b><small>{g.phone}</small></span><ArrowRight size={14}/></button>)}
+      {matches.slice(0,3).map((g)=><button className="gps-match-row" key={g.guestId} onClick={()=>void fillFromMatch(g)}><span className="gps-avatar">{g.initials}</span><span><b>{g.name}</b><small>{g.phone}</small></span><ArrowRight size={14}/></button>)}
       <div className="gps-match-note"><ShieldCheck size={15}/> Guest data is read-only. Your PMS remains the source of truth.</div></aside></div>
   </div>;
 }

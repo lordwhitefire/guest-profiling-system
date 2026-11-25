@@ -24,16 +24,22 @@ import {
   type FillResultPayload,
 } from "../messaging/messages.js";
 
-// Bridge for the workspace UI ("Prepare Registration").
+// Bridge for the workspace UI ("Prepare Registration" / the matching panel).
 // The page cannot call chrome.runtime directly without the extension id, so
 // it posts a window message. We verify it came from this page's own window
 // and origin, forward it to the background worker, then acknowledge so the
 // UI can tell the receptionist whether the extension actually received it.
+//
+// The workspace panel is the fill adapter's UI: the same click that stores the
+// guest also fills the active page, so no popup click is required.
 window.addEventListener("message", (event: MessageEvent) => {
   if (event.source !== window) return;
   if (event.origin !== window.location.origin) return;
   const data = event.data as { type?: string; payload?: unknown } | null;
   if (data?.type !== "GPS_STORE_GUEST") return;
+
+  const stored = data.payload as { guest?: Record<string, unknown> } | undefined;
+  const guest = stored?.guest;
 
   chrome.runtime.sendMessage({ type: "STORE_GUEST", payload: data.payload }, () => {
     // No listener means the background worker is asleep or broken; either
@@ -41,6 +47,25 @@ window.addEventListener("message", (event: MessageEvent) => {
     void chrome.runtime.lastError;
     window.postMessage({ type: "GPS_STORE_GUEST_ACK", ok: true }, window.location.origin);
   });
+
+  if (guest) {
+    handleFillRequest({
+      type: "FILL_REQUEST",
+      payload: { profile: guest, autoFillHighConfidence: true },
+    })
+      .then((result) => {
+        window.postMessage(
+          { type: "GPS_AUTO_FILL_RESULT", ok: true, result },
+          window.location.origin,
+        );
+      })
+      .catch((err) => {
+        window.postMessage(
+          { type: "GPS_AUTO_FILL_RESULT", ok: false, error: String(err) },
+          window.location.origin,
+        );
+      });
+  }
 });
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {

@@ -1,8 +1,31 @@
 # Build Tracker
 
-**Last updated:** 2026-11-25 03:45 UTC
-**Current phase:** live on Render free tier — finishing the extension hand-off
+**Last updated:** 2026-11-25 05:15 UTC
+**Current phase:** making the registration panel the fill-adapter UI
 **Rule:** updated before and after every task.
+
+## Current task
+
+**Plan:** `developer-workspace/plans/panel-as-fill-adapter.md`
+
+| Step | Status |
+|---|---|
+| Write plan + tracker | **done** |
+| Panel click hands guest to extension | **done** |
+| Content script fills without the popup | **done** |
+| Badge shows real extension status | **done** — Ready / Connected / Not detected |
+| Verify with `@browser-attach` | **done** — panel check passed |
+| Deploy + push | in progress |
+
+## Panel check result
+
+| Check | Result |
+|---|---|
+| Badge before | `Ready` |
+| Typing "Zainab Wang" | match appears (read path) |
+| Click match | form filled: Zainab Wang / zwang@proton.me / 0746350685 |
+| Badge after | `Connected` |
+| Toast | `Extension connected` |
 
 ## The demo is live
 
