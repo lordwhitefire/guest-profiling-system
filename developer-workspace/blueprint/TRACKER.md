@@ -16,7 +16,7 @@
 | Badge shows real extension status | **done** — Ready / Connected / Not detected |
 | Verify with `@browser-attach` | **done locally** — panel check passed |
 | Deploy + push | **done** — `739ddd5` is live |
-| Re-verify on the live site | **blocked** — no Chrome on CDP `:9222` |
+| Re-verify on the live site | **done** — live panel check passed (badge `Connected`) |
 
 ## Panel check result
 
