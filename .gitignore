@@ -40,3 +40,6 @@ packages/adapter-fill-extension/dist/
 packages/adapter-fill-extension/*.zip
 packages/core/.next/
 packages/core/next-env.d.ts
+
+# Neon function build output
+infra/neon-sync/index.mjs

@@ -30,8 +30,20 @@ Receptionist: `receptionist@grandvista.test` / `Reception123!`
 | 1. Extension allow Render URL | **done** — manifest + rebuilt ZIP |
 | 2. Rebuild + re-verify ZIP | **done** — loaded unpacked, fill verified live |
 | 3. Push commits | **done** — `7406773` deployed |
-| 4. Optional Neon cron sync | not started (optional) |
+| 4. Automatic sync on Neon | **done** — Function + 5-minute trigger |
 | 5. Final check | **done** |
+
+## Automatic sync (live)
+
+| Check | Result |
+|---|---|
+| Function | `gpssync` on branch `br-young-surf-bafbh037` |
+| Trigger | `every-five-minutes` · `*/5 * * * *` · enabled |
+| Manual invoke | `200` in 4.8 s · both tenants synced |
+| Guard | wrong key → `403 {"ok":false,"error":"forbidden"}` |
+| Idempotent | second run: `newLinks: 0` |
+
+Source: `infra/neon-sync/` (build output gitignored).
 
 ## Live extension check (2026-11-25)
 
